@@ -17,4 +17,9 @@ public class MyController {
         return "test1";          // 실제 호출 될 /WEB-INF/views/test1.jsp       
     }
     
+    @RequestMapping("/main")    // localhost:8081/test1
+    public String main() {
+        return "main_view";          // 실제 호출 될 /WEB-INF/views/test1.jsp       
+    }
+    
 }
