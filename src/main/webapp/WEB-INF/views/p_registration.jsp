@@ -8,7 +8,8 @@
 </head>
 <body>
 <%
-    out.println("Hello World");
+    out.println("상품 등록 페이지 입니다.");
+    out.println("상품 등록 페이지 입니다.");
 %>
 </body>
 </html>
