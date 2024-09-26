@@ -66,12 +66,23 @@
         <div class="custom-container">
             <div class="row align-items-center py-3">
                 <div class="col-9 logo-container">
-                    <a href="main">
+                    <a href="main_view.do">
                         <img src="images/logo.png" alt="로고">
                     </a>
                 </div>
-                <div class="col-3 text-right">
-                    <a href="#" class="btn btn-outline-warning">로그인</a>
+				
+				<div class="col-3 text-right">
+					<%
+					//아이디 취득 후 id가 Null인지 확인
+					String id = (String)session.getAttribute("id");
+					if (id == null)
+					{
+					%>
+                    	<a href="#" class="btn btn-outline-warning">로그인</a>
+                    <%}else{%>
+                    	<a href="#" class="btn btn-outline-warning">마이페이지</a>
+                    	<a href="#" class="btn btn-outline-warning">장바구니</a>
+                    <%} %>
                 </div>
             </div>
         </div>
