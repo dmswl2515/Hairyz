@@ -17,4 +17,9 @@ public class MyController {
         return "test1";          // 실제 호출 될 /WEB-INF/views/test1.jsp       
     }
     
+    @RequestMapping("/p_registration")    
+    public String p_registration() {
+        return "p_registration";                 
+    }
+    
 }
