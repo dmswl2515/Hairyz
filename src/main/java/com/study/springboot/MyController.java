@@ -112,4 +112,10 @@ public class MyController {
         return "p_manage"; // 업로드 후 리다이렉트                 
     }
     
+    @RequestMapping("/myProfile_view.do")
+    public String myProfileView() {
+    	
+        return "myProfile_view";                 
+    }
+    
 }
