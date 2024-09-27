@@ -102,5 +102,9 @@ public class PController {
 
         return "p_manage"; // 업로드 후 리다이렉트                 
     }
-    
+ 
+    @RequestMapping("/p_modify")    
+    public String pModifyForm() {
+        return "p_modify";                 
+    }
 }
