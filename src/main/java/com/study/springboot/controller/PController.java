@@ -1,4 +1,4 @@
-package com.study.springboot;
+package com.study.springboot.controller;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.study.springboot.dto.PDto;
@@ -31,19 +31,26 @@ public class PController {
     private final String uploadDir = "uploads/"; //파일 저장 경로
     
     @PostMapping("/p_registration")    
-    public String handleInformation(MultipartFile file, 
-    							    MultipartFile file2,
-    		                        String pd_name, 
-    							    String pd_category, 
-                                    String pd_animal, 
-                                    Integer pd_price, 
-                                    Integer pd_amount) throws IOException  {
+    public String handleInformation(@RequestParam("file") MultipartFile file, 
+						    		@RequestParam("file2") MultipartFile file2,
+						            @RequestParam String pd_name, 
+						            @RequestParam String pd_category, 
+						            @RequestParam String pd_animal, 
+						            @RequestParam Integer pd_price, 
+						            @RequestParam Integer pd_amount) throws IOException  {
         
+    	// 파일 존재 여부 체크
+    	if (file.isEmpty() || file2.isEmpty()) {
+            throw new IllegalArgumentException("모든 파일을 선택해야 합니다.");
+        }
     	
-    	// 랜덤한 파일 번호 생성
-        Integer pd_fnum = new Random().nextInt(10000); // 중복되지 않는 번호 생성 로직 필요
+    	// 랜덤한 파일 번호 생성(중복 체크)
+    	Integer pd_fnum;
+        do {
+            pd_fnum = new Random().nextInt(10000);
+        } while (pRepository.existsById(pd_fnum));
 
-        // 파일 정보 처리
+        // 첫 번째 파일 정보 처리
         String originalFilename1 = file.getOriginalFilename();
         String changedFilename1 = System.currentTimeMillis() + "_" + originalFilename1; // 현재 시간 기반의 랜덤 파일 이름
         String filePath1 = uploadDir + changedFilename1;
