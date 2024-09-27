@@ -65,4 +65,6 @@ public class PDto
 
     private String pd_fsize2; // 파일 크기(상세)
     
+    
+    
 }

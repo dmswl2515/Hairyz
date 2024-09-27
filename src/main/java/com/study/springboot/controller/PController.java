@@ -8,7 +8,13 @@ import java.util.Date;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,12 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.study.springboot.dto.PDto;
 import com.study.springboot.repository.PRepository;
+import com.study.springboot.service.PService;
 
 @Controller
 public class PController {
 	
 	@Autowired
 	private PRepository pRepository;
+	
+	@Autowired
+	private PService pService;
+	
     
     @RequestMapping("/p_registration")    
     public String pRegisterForm() {
@@ -107,4 +118,55 @@ public class PController {
     public String pModifyForm() {
         return "p_modify";                 
     }
+    
+    @RequestMapping("/p_manage")    
+    public String pManagement() {
+        return "p_manage";                 
+    }
+    
+    @GetMapping("/p_manage")
+	public String getList(
+	        @RequestParam(value = "page", defaultValue = "1") int page,
+	        @RequestParam(value = "sOption", required = false) String sOption,
+	        @RequestParam(value = "sKeyword", required = false) String sKeyword,
+	        Model model) {
+	    
+	    System.out.println("***"+ page + "***");
+	    System.out.println("***"+ sOption + "***");
+	    System.out.println("***"+ sKeyword + "***");
+	    
+	    // 페이지 요청 번호는 0부터 시작하므로 -1
+	    int nPage = page - 1;
+	    // 페이지 요청을 설정합니다.
+        Pageable pageable = PageRequest.of(nPage, 10, Sort.by(Sort.Order.desc("pd_name")));
+	    
+	    // 서비스 호출하여 데이터를 가져옵니다.
+	    Page<PDto> result;
+	    
+	    if (sOption != null && sKeyword != null && !sKeyword.isEmpty()) {
+	    	// sOption과 sKeyword를 사용한 검색
+	        result = pService.searchList(sOption, sKeyword, pageable);
+	    }
+	    else {
+	    	result = pRepository.findAll(pageable);
+	    }
+	    
+	    
+	 // 페이지 정보
+	    int totalPages = result.getTotalPages();
+	    int startPage = Math.max(1, page - 5); // 시작 페이지
+	    int endPage = Math.min(totalPages, page + 5); // 끝 페이지
+	    
+	    model.addAttribute("boardPage", result);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("totalElements", result.getTotalElements());
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);
+	    model.addAttribute("sOption", sOption);
+	    model.addAttribute("sKeyword", sKeyword);
+
+	    return "p_manage"; // 반환하는 뷰 이름
+	}
+
 }
