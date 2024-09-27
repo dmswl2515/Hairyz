@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>털뭉치즈</title>
+    <title>비밀번호 수정</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -140,6 +140,20 @@ hr {
 	text-decoration: underline;
 }
 </style>
+<script>
+	
+	function infoConfirm() {
+		if (document.reg_frm.newPassword.value != document.reg_frm.newPw_check.value) {
+			alert("새 비밀번호가 일치하지 않습니다.");
+			reg_frm.newPassword.focus();
+			return;
+		}
+
+		document.reg_frm.submit();
+
+	}
+	
+</script>
 </head>
 <body>
 	<!-- 로그 및 로그인 -->
@@ -185,10 +199,10 @@ hr {
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do"><b>내 프로필</b></a>
+				<li><a href="myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ profile_view.mb_id }">&nbsp;-회원정보 수정</a></li>
-						<li><a href="editPassword.do?id=${ profile_view.mb_id }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="editProfile.do?id=${ editPassword }">&nbsp;-회원정보 수정</a></li>
+						<li><a href="editPassword.do?id=${ editPassword }">&nbsp;-<b>비밀번호 변경</b></a></li>
 					</ul>
 				</li>
 				<li><a href="#">반려동물 프로필</a></li>
@@ -198,42 +212,36 @@ hr {
 		</div>
 
 
-		<!-- 내 프로필 페이지 -->
+		<!-- 회원정보 수정 페이지 -->
 	    <div class="content">
 	        <div class="custom-container">
-	            <h1 class="myPage-title">내 프로필</h1>
+	            <h1 class="myPage-title">비밀번호 변경</h1>
 	
-	            <!-- 프로필 사진 -->
-	            <div class="box">
-	                <img class="profile" src="/images/logo.png">
-				</div>
+	            <form action="updatePassword.do?id=${ editPassword }" method="post" name="reg_frm" class="was-validated">
+					<div class="form-group">
+		                <div class="input-group">
+		                	<input type="password" class="form-control" name="password" id="password" size="15" placeholder="기존 비밀번호" required>
+		                </div>
+		            </div>
+		            <div class="form-group">
+						<input type="password" class="form-control" name="newPassword" id="newPassword" size="15" placeholder="새 비밀번호"  required>
+		            </div>
+		            <div class="form-group">
+		                <input type="password" class="form-control" name="newPw_check" id="newPw_check" size="15" placeholder="새 비밀번호 확인" required>
+		            </div>
+		            
+		            <!-- Divider -->
+		            <hr>
+		
+		            <!-- 회원정보 수정, 로그아웃 버튼 -->
+		            <div class="btn-container">
+		                <button type="button" class="btn btn-warning" onclick="infoConfirm()">수정하기</button>
+		            </div>
+		            <div class="btn-container">
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='myProfile_view.do'">취소</button>
+		            </div>
+		        </form>
 	
-	            <!-- 이메일, 이름, 닉네임 출력 -->
-	            <div class="info-container">
-	            	<span>이메일</span>
-	                <input disabled value="${profile_view.mb_id}">
-	            </div>
-	            <div></div>
-	            <div class="info-container">
-	            	<span>이름</span>
-	                <input disabled value="${profile_view.mb_name}">
-	            </div>
-	            <div></div>
-	            <div class="info-container">
-	            	<span>닉네임</span>
-	                <input disabled value="${profile_view.mb_nickname}">
-	            </div>
-	
-	            <!-- Divider -->
-	            <hr>
-	
-	            <!-- 회원정보 수정, 로그아웃 버튼 -->
-	            <div class="btn-container">
-	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='editProfile.do?id=${ profile_view.mb_id }'">회원정보 수정</button>
-	            </div>
-	            <div class="btn-container">
-	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='#'">로그아웃</button>
-	            </div>
 	        </div>
 	    </div>
     <!-- Divider -->

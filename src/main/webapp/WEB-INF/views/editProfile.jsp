@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>털뭉치즈</title>
+    <title>회원정보 수정</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -185,10 +185,10 @@ hr {
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do"><b>내 프로필</b></a>
+				<li><a href="myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ profile_view.mb_id }">&nbsp;-회원정보 수정</a></li>
-						<li><a href="editPassword.do?id=${ profile_view.mb_id }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="editProfile.do?id=${ editProfile.mb_id }">&nbsp;-<b>회원정보 수정</b></a></li>
+						<li><a href="editPassword.do?id=${ editProfile.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
 				<li><a href="#">반려동물 프로필</a></li>
@@ -198,42 +198,66 @@ hr {
 		</div>
 
 
-		<!-- 내 프로필 페이지 -->
+		<!-- 회원정보 수정 페이지 -->
 	    <div class="content">
 	        <div class="custom-container">
-	            <h1 class="myPage-title">내 프로필</h1>
+	            <h1 class="myPage-title">회원정보 수정</h1>
 	
-	            <!-- 프로필 사진 -->
-	            <div class="box">
-	                <img class="profile" src="/images/logo.png">
-				</div>
+	            <form action="updateProfile.do" method="post" name="reg_frm" class="was-validated">
+		            <!-- 프로필 사진 -->
+		            <div class="box">
+		                <img class="profile" src="/images/logo.png">
+					</div>
+					<div class="btn-container text-center mt-3">
+						<button type="button" class="btn btn-warning" onclick="#">사진추가</button>
+					</div>
+					<br>
+					<div class="form-group">
+		                <div class="input-group">
+		                	<input readonly type="text" class="form-control" name="id" id="id" size="20" value="${editProfile.mb_id}" required>
+		                </div>
+		            </div>
+		            <div class="form-group">
+						<input readonly type="text" class="form-control" name="name" id="name" size="25" value="${editProfile.mb_name}" required>
+		            </div>
+		            <div class="form-group">
+		                <input type="text" class="form-control" name="nickName" id="nickName" size="40" value="${editProfile.mb_nickname}" required>
+		            </div>
+		            <div class="form-group">
+		                <input type="text" class="form-control" name="phone" id="phone" size="13" value="${editProfile.mb_phone}" required>
+		            </div>
+		            <div class="form-group">
+					    <!-- 우편번호 입력창과 우편번호 검색 버튼 -->
+					    <div class="input-group mb-3">
+					        <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="우편번호" size="6" value="${editProfile.mb_zipcode}" required>
+					        <div class="input-group-append">
+					            <button type="button" class="btn btn-outline-secondary" onclick="#">우편번호 검색</button>
+					        </div>
+					    </div>
+					</div>
+					
+					<div class="form-group">
+					    <!-- 주소 입력창 -->
+					    <input type="text" class="form-control" name="addr1" id="addr1" placeholder="주소" value="${editProfile.mb_addr1}" required>
+					</div>
+					
+					<div class="form-group">
+					    <!-- 상세 주소 입력창 -->
+					    <input type="text" class="form-control" name="addr2" id="addr2" placeholder="상세주소" value="${editProfile.mb_addr2}" required>
+					</div>
+		            
+		            <!-- Divider -->
+		            <hr>
+		
+		            <!-- 회원정보 수정, 로그아웃 버튼 -->
+		            <div class="btn-container">
+		                <button type="submit" class="btn btn-warning">수정하기</button>
+		            </div>
+		            <div class="btn-container">
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='#'">회원탈퇴</button>
+		            </div>
+		        </form>
 	
-	            <!-- 이메일, 이름, 닉네임 출력 -->
-	            <div class="info-container">
-	            	<span>이메일</span>
-	                <input disabled value="${profile_view.mb_id}">
-	            </div>
-	            <div></div>
-	            <div class="info-container">
-	            	<span>이름</span>
-	                <input disabled value="${profile_view.mb_name}">
-	            </div>
-	            <div></div>
-	            <div class="info-container">
-	            	<span>닉네임</span>
-	                <input disabled value="${profile_view.mb_nickname}">
-	            </div>
-	
-	            <!-- Divider -->
-	            <hr>
-	
-	            <!-- 회원정보 수정, 로그아웃 버튼 -->
-	            <div class="btn-container">
-	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='editProfile.do?id=${ profile_view.mb_id }'">회원정보 수정</button>
-	            </div>
-	            <div class="btn-container">
-	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='#'">로그아웃</button>
-	            </div>
 	        </div>
 	    </div>
     <!-- Divider -->

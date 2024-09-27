@@ -1,6 +1,7 @@
 package com.study.springboot;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +20,10 @@ import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.repository.PRepository;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MyController {
@@ -119,13 +123,92 @@ public class MyController {
         return "p_manage"; // 업로드 후 리다이렉트                 
     }
     
+    //내 프로필 화면
     @RequestMapping("/myProfile_view.do")
-    public String myProfileView(HttpServletRequest request, Model model) {
+    public String myProfileView(HttpServletRequest request, Model model, HttpSession session) {
     	
-    	String mdId = request.getParameter("mb_id");
+    	String mdId = (String) session.getAttribute("id");
+//    	String id = "test"; 테스트용
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("profile_view", dto);
-        return "myProfile_view";                 
+        return "myProfile_view";
+    }
+    
+    // 회원정보 수정 화면
+    @RequestMapping("/editProfile.do")
+    public String editProfile(Model model, HttpServletRequest request) {
+    	
+    	String mdId = request.getParameter("id");
+		MemberDto dto = memberDao.selectMember(mdId);
+		model.addAttribute("editProfile", dto);
+        return "editProfile";
+    }
+    
+    // 회원정보 수정 및 내 프로필 이동
+    @RequestMapping("/updateProfile.do")
+    public String updateProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws ServletException, IOException {
+    	
+    	String id = request.getParameter("id");
+    	String nickName = request.getParameter("nickName");
+    	String phone = request.getParameter("phone");
+    	String zipcode = request.getParameter("zipcode");
+    	String addr1 = request.getParameter("addr1");
+    	String addr2 = request.getParameter("addr2");
+    	
+    	int iZipcode = Integer.parseInt(zipcode);
+    	
+    	memberDao.updateProfile(id, nickName, phone, iZipcode, addr1, addr2);
+    	
+    	MemberDto dto = memberDao.selectMember(id);
+    	model.addAttribute("profile_view", dto);
+    	
+        return "myProfile_view";
+    }
+    
+    // 비밀번호변경 화면
+    @RequestMapping("/editPassword.do")
+    public String editPassword(Model model, HttpServletRequest request) {
+    	
+    	String mdId = request.getParameter("id");
+    	
+		model.addAttribute("editPassword", mdId);
+		
+        return "editPassword";
+    }
+    
+    // 비밀번호 변경 및 체크, 내 프로필 화면 이동
+    @RequestMapping("/updatePassword.do")
+    public String updatePassword(Model model, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
+    	String mdId = request.getParameter("id");
+    	String pw = request.getParameter("password");
+    	String nPw = request.getParameter("newPassword");
+    	
+    	MemberDto dto = memberDao.selectMember(mdId);
+    	
+    	if(dto.getMb_pw().equals(pw)) {
+    		memberDao.updatePw(mdId, nPw);
+    	}else {
+    		
+    		response.setContentType("text/html; charset=UTF-8");
+    	    PrintWriter writer = response.getWriter();
+    		
+    	    writer.println("<html><head></head><body>");
+			writer.println("<script language=\"javascript\">");
+			writer.println("alert(\"기존 비밀번호가 일치하지 않습니다. 다시 입력해 주세요.\");");
+			writer.println("history.back();");
+			writer.println("</script>");
+			writer.println("</body></html>");
+			writer.close();
+
+	        return null;
+    		
+    	}
+    	
+    	dto = memberDao.selectMember(mdId);
+    	model.addAttribute("profile_view", dto);
+		
+        return "myProfile_view";
     }
     
 }
