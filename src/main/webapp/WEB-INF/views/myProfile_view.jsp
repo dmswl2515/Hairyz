@@ -39,11 +39,13 @@ hr {
 	max-width: 1000px;
 	margin: 0 auto;
 }
-.custom-container hr{
+
+.custom-container hr {
 	border: 1px solid #d8d8d8;
 	width: 100%;
 	margin-top: 100px
 }
+
 .logo-container {
 	text-align: center;
 }
@@ -97,13 +99,44 @@ hr {
 }
 
 /* 버튼 스타일 */
-.btn-container button{
+.btn-container button {
 	margin: 5px 0;
-    width: 30%;
-    height: 50px; 
+	width: 30%;
+	height: 50px;
 }
-.btn-container{
+
+.btn-container {
 	text-align: center;
+}
+
+/* 세로 메뉴 스타일 */
+.sidebar {
+	background-color: #f8f9fa;
+	padding: 20px;
+	width: 200px;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.sidebar ul {
+	list-style: none;
+	padding: 0;
+}
+
+.sidebar li {
+	margin-bottom: 10px;
+}
+
+.sidebar a {
+	text-decoration: none;
+	color: #333;
+	font-weight: bold;
+}
+
+.sidebar a:hover {
+	text-decoration: underline;
 }
 </style>
 </head>
@@ -147,8 +180,24 @@ hr {
                 </ul>
             </div>
         </nav>
-        
-        <!-- 내 프로필 페이지 -->
+
+		<!-- 세로 메뉴 -->
+		<div class="sidebar">
+			<ul>
+				<li><a href="myProfile_view.do">내 프로필</a>
+					<ul>
+						<li><a href="#">&nbsp;-회원정보 수정</a></li>
+						<li><a href="#">&nbsp;-비밀번호 변경</a></li>
+					</ul>
+				</li>
+				<li><a href="#">반려동물 프로필</a></li>
+				<li><a href="#">주문 조회</a></li>
+				<li><a href="#">취소/교환/반품</a></li>
+			</ul>
+		</div>
+
+
+		<!-- 내 프로필 페이지 -->
 	    <div class="content">
 	        <div class="custom-container">
 	            <h1 class="myPage-title">내 프로필</h1>
@@ -161,17 +210,17 @@ hr {
 	            <!-- 이메일, 이름, 닉네임 출력 -->
 	            <div class="info-container">
 	            	<span>이메일</span>
-	                <input disabled value="test@gmail.com">
+	                <input disabled value="${profile_view.mb_id}">
 	            </div>
 	            <div></div>
 	            <div class="info-container">
 	            	<span>이름</span>
-	                <input disabled value="이름">
+	                <input disabled value="${profile_view.mb_name}">
 	            </div>
 	            <div></div>
 	            <div class="info-container">
 	            	<span>닉네임</span>
-	                <input disabled value="닉네임">
+	                <input disabled value="${profile_view.mb_nickname}">
 	            </div>
 	
 	            <!-- Divider -->

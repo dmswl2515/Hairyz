@@ -9,23 +9,30 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.study.springboot.dao.IMemberDao;
+import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.repository.PRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class MyController {
 	
 	@Autowired
 	private PRepository pRepository;
+	
+	@Autowired
+	IMemberDao memberDao;
 
     @RequestMapping("/")
-    public @ResponseBody String root() throws Exception{
-        return "JSP in Gradle";
+    public String root() throws Exception{
+        return "redirect:main_view.do";
     }
  
     @RequestMapping("/test1")    // localhost:8081/test1
@@ -113,8 +120,11 @@ public class MyController {
     }
     
     @RequestMapping("/myProfile_view.do")
-    public String myProfileView() {
+    public String myProfileView(HttpServletRequest request, Model model) {
     	
+    	String mdId = request.getParameter("mb_id");
+		MemberDto dto = memberDao.selectMember(mdId);
+		model.addAttribute("profile_view", dto);
         return "myProfile_view";                 
     }
     
