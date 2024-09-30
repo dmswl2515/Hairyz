@@ -142,7 +142,7 @@
 			        </div>
 			
 			        
-			            <input type="text" name="pd_name" class="form-control custom-input-width mt-2" placeholder="상품명" required /><br>
+			            <input type="text" name="pdName" class="form-control custom-input-width mt-2" placeholder="상품명" required /><br>
 			        
 			
 			        <div class="d-flex justify-content-center">

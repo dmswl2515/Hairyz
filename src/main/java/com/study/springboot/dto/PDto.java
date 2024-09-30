@@ -1,5 +1,7 @@
 package com.study.springboot.dto;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -8,11 +10,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import lombok.Data;
 
-@Entity(name = "product")
+@Entity
+@Table(name = "product")
 public class PDto
 {	
 	@Id
@@ -39,7 +42,8 @@ public class PDto
     private Character pd_selling; // 상품 판매상태 (Y/N)
 
     @Temporal(TemporalType.DATE)
-    private Date pd_rdate; // 상품 등록일
+    @Column(name = "pd_rdate")
+    private Date pdRdate; // 상품 등록일
 
     private Integer pd_fnum; // 파일 번호
 
@@ -64,14 +68,16 @@ public class PDto
     private String pd_fpath2; // 저장된 파일 경로(상세)
 
     private String pd_fsize2; // 파일 크기(상세)
+    
+    
 
 	public PDto()
 	{
 		super();
 	}
 
-	public PDto(Integer pd_no, Integer pd_num, String pd_name, String pd_category, String pd_animal, Integer pd_price,
-			Integer pd_amount, Integer pd_fee, Character pd_selling, Date pd_rdate, Integer pd_fnum,
+	public PDto(Integer pd_no, Integer pdNum, String pdName, String pd_category, String pd_animal, Integer pd_price,
+			Integer pd_amount, Integer pd_fee, Character pd_selling, Date pdRdate, Integer pd_fnum,
 			String pd_ori_fname, String pd_chng_fname, Date pd_fdate, String pd_fpath, String pd_fsize,
 			String pd_ori_fname2, String pd_chng_fname2, Date pd_fdate2, String pd_fpath2, String pd_fsize2)
 	{
@@ -85,7 +91,7 @@ public class PDto
 		this.pd_amount = pd_amount;
 		this.pd_fee = pd_fee;
 		this.pd_selling = pd_selling;
-		this.pd_rdate = pd_rdate;
+		this.pdRdate = pdRdate;
 		this.pd_fnum = pd_fnum;
 		this.pd_ori_fname = pd_ori_fname;
 		this.pd_chng_fname = pd_chng_fname;
@@ -109,14 +115,14 @@ public class PDto
 		this.pd_no = pd_no;
 	}
 
-	public Integer getPd_num()
+	public Integer getPdNum()
 	{
 		return pdNum;
 	}
 
-	public void setPd_num(Integer pd_num)
+	public void setPdNum(Integer pdNum)
 	{
-		this.pdNum = pd_num;
+		this.pdNum = pdNum;
 	}
 
 	public String getPdName()
@@ -189,14 +195,14 @@ public class PDto
 		this.pd_selling = pd_selling;
 	}
 
-	public Date getPd_rdate()
+	public Date getPdRdate()
 	{
-		return pd_rdate;
+		return pdRdate;
 	}
 
-	public void setPd_rdate(Date pd_rdate)
+	public void setPdRdate(Date pdRdate)
 	{
-		this.pd_rdate = pd_rdate;
+		this.pdRdate = pdRdate;
 	}
 
 	public Integer getPd_fnum()

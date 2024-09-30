@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +36,8 @@ public class PController {
         return "p_registration";                 
     }
     
-    private final String uploadDir = "uploads/"; //파일 저장 경로
+    
+    private final String uploadDir = "uploads/";
     
     @PostMapping("/p_registration")    
     public String handleInformation(@RequestParam("file") MultipartFile file, 
@@ -57,7 +56,7 @@ public class PController {
     	// 랜덤한 파일 번호 생성(중복 체크)
     	Integer pd_fnum;
         do {
-            pd_fnum = new Random().nextInt(10000);
+            pd_fnum = new Random().nextInt(100000);
         } while (pRepository.existsById(pd_fnum));
 
         // 첫 번째 파일 정보 처리
@@ -82,7 +81,7 @@ public class PController {
 
         // PDto 객체 생성 및 저장
         PDto product = new PDto();
-        product.setPd_num(pd_fnum);
+        product.setPdNum(pd_fnum);
         product.setPdName(pdName);
         product.setPd_category(pd_category);
         product.setPd_animal(pd_animal);
@@ -90,7 +89,7 @@ public class PController {
         product.setPd_amount(pd_amount);
         product.setPd_fee(0); // 기본값 설정
         product.setPd_selling('Y'); // 기본값 설정
-        product.setPd_rdate(new Date());
+        product.setPdRdate(new Date());
         
         
         // 첫 번째 파일 정보 저장
@@ -110,20 +109,58 @@ public class PController {
 
         pRepository.save(product); // DB에 저장
 
-        return "p_manage"; // 업로드 후 리다이렉트                 
+        return "redirect:/p_manage"; // 업로드 후 리다이렉트                 
     }
 
+    @GetMapping("/p_manage")
+    public String getAllProducts(@RequestParam(value = "page", defaultValue = "1") int currentPage,
+    							 @RequestParam(value = "size", defaultValue = "5") int size, // 한 페이지당 항목 수
+    							 @RequestParam(value = "condition", required = false) String condition,
+        						 @RequestParam(value = "keyword", required = false) String keyword,
+        						 Model model) {
+    	
+    	
+    	
+    	List<PDto> productList;
+
+        if ("productNumber".equals(condition) && keyword != null && !keyword.isEmpty()) {
+            try {
+                Integer productNum = Integer.parseInt(keyword);
+                productList = pService.getProductsByNumber(productNum); // 상품 번호로 검색
+            } catch (NumberFormatException e) {
+                productList = pService.getAllProducts(); // 잘못된 입력일 경우 모든 상품 반환
+            }
+        } else if ("productName".equals(condition) && keyword != null && !keyword.isEmpty()) {
+            productList = pService.getProductsByName(keyword); // 상품명으로 검색
+        } else if ("all".equals(condition)) {
+            productList = pService.getAllProducts();
+        } else {
+            productList = pService.getAllProducts(); // 기본적으로 모든 상품 반환
+        }
+        
+        // 페이지네이션 설정
+        int totalProducts = productList.size(); // 전체 상품 수
+        int totalPages = (int) Math.ceil((double) totalProducts / size); // 총 페이지 수
+        int startPage = Math.max(1, currentPage - 2); // 시작 페이지
+        int endPage = Math.min(totalPages, currentPage + 2); // 끝 페이지
+
+        model.addAttribute("products", productList);
+        model.addAttribute("condition", condition); 
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "p_manage"; // JSP 이름
+    }
+    
  
     @RequestMapping("/p_modify")    
     public String pModifyForm() {
         return "p_modify";                 
     }
     
-    
-    @RequestMapping("/p_manage")    
-    public String pManagement() {
-        return "p_manage";                 
-    }
     
     @RequestMapping("/s_main")    
     public String shoppingMainPage() {

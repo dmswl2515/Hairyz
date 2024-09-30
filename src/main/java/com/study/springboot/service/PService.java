@@ -1,7 +1,10 @@
 package com.study.springboot.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -19,22 +22,18 @@ public class PService
         pRepository.save(product);
     }
 	
-	public Page<PDto> searchProducts(String sOption, String sKeyword, Pageable pageable) {
-        if ("pdNum".equals(sOption)) {
-            Integer pdNum;
-            try {
-                pdNum = Integer.valueOf(sKeyword);
-            } catch (NumberFormatException e) {
-                // 변환 실패 시 빈 페이지 반환
-                return Page.empty(pageable);
-            }
-            return pRepository.findByPdNum(pdNum, pageable);
-        } else if ("pd_name".equals(sOption)) {
-            return pRepository.findByPdNameContaining(sKeyword, pageable);
-        } else {
-            return pRepository.findAll(pageable);
-        }
+	// 모든 상품 리스트 
+	public List<PDto> getAllProducts() {
+        return pRepository.findAll(); 
     }
+	
+	public List<PDto> getProductsByNumber(Integer productNum) {
+	    return pRepository.findByPdNum(productNum);
+	}
+
+	public List<PDto> getProductsByName(String productName) {
+	    return pRepository.findByPdNameContaining(productName);
+	}
 	
 	
 }

@@ -1,4 +1,10 @@
+<%@ page import="com.study.springboot.dto.PDto" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -104,12 +110,14 @@
         
         <!-- 통합검색 창 -->
         <div class="custom-container my-4">
-            <form class="form-inline d-flex justify-content-center">
-            	 <select class="form-control mr-2" id="searchCondition">
-		            <option value="productName">상품명</option>
-		            <option value="productNumber">상품 번호</option>
+            <form class="form-inline d-flex justify-content-center" method="get" action="${pageContext.request.contextPath}/p_manage">
+            	 <select class="form-control mr-2" id="searchCondition" name="condition">
+		            <option value="all" <c:if test="${condition == 'all'}">selected</c:if>>전체</option>
+		            <option value="productName" <c:if test="${condition == 'productName'}">selected</c:if>>상품명</option>
+		            <option value="productNumber" <c:if test="${condition == 'productNumber'}">selected</c:if>>상품 번호</option>
+		        	
 		        </select>
-                <input class="form-control mr-sm-2" type="search" placeholder="통합검색" aria-label="Search" style="width: 30%;">
+                <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="통합검색" aria-label="Search" style="width: 30%;" value="${keyword}">
                 <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">검색</button>
             </form>
         </div>
@@ -130,7 +138,6 @@
     .product-box {
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 20px;
             margin: 10px;
             text-align: center;
             width: 130px;
@@ -144,138 +151,96 @@
 </style>     
 		<div class="container">
 		    <table class="table table-bordered mb-2">
-			  <thead>
-			    <tr class="table-warning text-center">
-			      <th scope="col">상품번호</th>
-			      <th scope="col">상품명</th>
-			      <th scope="col">재고</th>
-			      <th scope="col">상품관리</th>
-			    </tr>
-			  </thead>
-		      <tbody>
-		        <c:forEach var="item" items="${boardPage.content}">
-		            <tr>
-		                <td class="text-center align-middle">${item.pdnum}2024202420</td>
-		                <td>
-		                   <div class="product-container">	
-			                   <div class="product-box">
-			                		<img src="<%= request.getContextPath() %>/images/RoyalCanin.png" alt="상품 이미지" style="width:50px; height:50px; margin-right:10px;">
-			                   </div> 
-				                    <c:forEach begin="1" end="${item.pdname}">미니 스타터 마더 앤 베이비독</c:forEach>
-				                        <c:if test="${item.isnew}">
-				                            <span class="badge badge-secondary">New</span>
-				                    </c:if>
-			               </div>     
-		                </td>
-		                <td class="text-center align-middle">${item.pd_amount}32개</td>
-		                <td class="text-center align-middle">
-		                	<input type="button" class="btn btn-outline-warning custom-width mb-2" value="판매 중지"/></br>
-			      			<input type="button" class="btn btn-outline-warning custom-width" value="상품 수정"  onclick="window.location.href='p_modify';"/>
-		                </td>
+		        <thead>
+		            <tr class="table-warning text-center">
+		                <th scope="col">상품번호</th>
+		                <th scope="col">상품명</th>
+		                <th scope="col">재고</th>
+		                <th scope="col">상품관리</th>
 		            </tr>
-		        </c:forEach>
-		        <c:forEach var="item" items="${boardPage.content}">
-		            <tr>
-		                <td class="text-center align-middle">${item.pdnum}2024202420</td>
-		                <td>
-		                   <div class="product-container">	
-			                   <div class="product-box">
-			                		<img src="<%= request.getContextPath() %>/images/RoyalCanin.png" alt="상품 이미지" style="width:50px; height:50px; margin-right:10px;">
-			                   </div> 
-				                    <c:forEach begin="1" end="${item.pdname}">미니 스타터 마더 앤 베이비독</c:forEach>
-				                        <c:if test="${item.isnew}">
-				                            <span class="badge badge-secondary">New</span>
-				                    </c:if>
-			               </div>     
-		                </td>
-		                <td class="text-center align-middle">${item.pd_amount}32개</td>
-		                <td class="text-center align-middle">
-		                	<input type="button" class="btn btn-outline-warning custom-width mb-2" value="판매 중지"/></br>
-			      			<input type="button" class="btn btn-outline-warning custom-width" value="상품 수정"  onclick="window.location.href='p_modify';"/>
-		                </td>
-		            </tr>
-		        </c:forEach>
-		        <c:forEach var="item" items="${boardPage.content}">
-		            <tr>
-		                <td class="text-center align-middle">${item.pdnum}2024202420</td>
-		                <td>
-		                   <div class="product-container">	
-			                   <div class="product-box">
-			                		<img src="<%= request.getContextPath() %>/images/RoyalCanin.png" alt="상품 이미지" style="width:50px; height:50px; margin-right:10px;">
-			                   </div> 
-				                    <c:forEach begin="1" end="${item.pdname}">미니 스타터 마더 앤 베이비독</c:forEach>
-				                        <c:if test="${item.isnew}">
-				                            <span class="badge badge-secondary">New</span>
-				                    </c:if>
-			               </div>     
-		                </td>
-		                <td class="text-center align-middle">${item.pd_amount}32개</td>
-		                <td class="text-center align-middle">
-		                	<input type="button" class="btn btn-outline-warning custom-width mb-2" value="판매 중지"/></br>
-			      			<input type="button" class="btn btn-outline-warning custom-width" value="상품 수정"  onclick="window.location.href='p_modify';"/>
-		                </td>
-		            </tr>
-		        </c:forEach>
-		      </tbody>
-			</table>  	    
+		        </thead>
+		        <tbody>
+		            <c:forEach var="item" items="${products}">
+		                <tr>
+		                    <td class="text-center align-middle">${item.pdNum}</td>
+		                    <td>
+		                        <div class="product-container">    
+		                            <div class="product-box">
+		                                 <img src="${pageContext.request.contextPath}/uploads/${item.pd_chng_fname}" alt="${item.pdName}" style="width:100%; height:100%; object-fit:cover;">
+		                            	 <p>Image Path: ${pageContext.request.contextPath}/uploads/${item.pd_chng_fname}</p>
+		                            </div> 
+		                            ${item.pdName}
+		                            
+		                        </div>     
+		                    </td>
+		                    <td class="text-center align-middle">${item.pd_amount}개</td>
+		                    <td class="text-center align-middle">
+		                        <input type="button" class="btn btn-outline-warning custom-width mb-2" value="판매 중지"/>
+		                        <br>
+		                        <input type="button" class="btn btn-outline-warning custom-width" value="상품 수정" onclick="window.location.href='p_modify';"/>
+		                    </td>
+		                </tr>
+		            </c:forEach>
+		        </tbody>
+		    </table>   	    
 		<div class="container d-flex justify-content-end">
 	        <input type="button" class="btn btn-outline-warning custom-width" value="등록하기"  onclick="window.location.href='p_registration';"/>
        	</div>
        	</div>
        	
        	<!-- 페이지네이션 -->
-		<div class="director">
-	    <!-- 첫 페이지 -->
-	    <c:choose>
-	        <c:when test="${currentPage == 1}">
-	            <button type="button" class="btn btn-outline-light" disabled>&lt;&lt;</button>
-	        </c:when>
-	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=1&bType=${bType}'">&lt;&lt;</button>
-	        </c:otherwise>
-	    </c:choose>
-	
-	    <!-- 이전 페이지 -->
-	    <c:choose>
-	        <c:when test="${currentPage == 1}">
-	            <button type="button" class="btn btn-outline-light" disabled>&lt;</button>
-	        </c:when>
-	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${currentPage - 1}&bType=${bType}'">&lt;</button>
-	        </c:otherwise>
-	    </c:choose>
-	
-	    <!-- 개별 페이지 -->
-	    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
-	        <c:choose>
-	            <c:when test="${currentPage == i}">
-	                <button type="button" class="btn btn-outline-light" disabled>${i}</button>
-	            </c:when>
-	            <c:otherwise>
-	                <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${i}&bType=${bType}'">${i}</button>
-	            </c:otherwise>
-	        </c:choose>
-	    </c:forEach>
-	
-	    <!-- 다음 페이지 -->
-	    <c:choose>
-	        <c:when test="${currentPage == totalPages}">
-	            <button type="button" class="btn btn-outline-light" disabled>&gt;</button>
-	        </c:when>
-	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${currentPage + 1}&bType=${bType}'">&gt;</button>
-	        </c:otherwise>
-	    </c:choose>
-	
-	    <!-- 끝 페이지 -->
-	    <c:choose>
-	        <c:when test="${currentPage == totalPages}">
-	            <button type="button" class="btn btn-outline-light" disabled>&gt;&gt;</button>
-	        </c:when>
-	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${totalPages}&bType=${bType}'">&gt;&gt;</button>
-	        </c:otherwise>
-	    </c:choose>
+       	<div class="director">
+		    <!-- 첫 페이지 -->
+		    <c:choose>
+		        <c:when test="${currentPage == 1}">
+		            <button type="button" class="btn btn-outline-warning" disabled>&lt;&lt;</button>
+		        </c:when>
+		        <c:otherwise>
+		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
+		        </c:otherwise>
+		    </c:choose>
+		
+		    <!-- 이전 페이지 -->
+		    <c:choose>
+		        <c:when test="${currentPage == 1}">
+		            <button type="button" class="btn btn-outline-warning" disabled>&lt;</button>
+		        </c:when>
+		        <c:otherwise>
+		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
+		        </c:otherwise>
+		    </c:choose>
+		
+		    <!-- 개별 페이지 -->
+		    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
+		        <c:choose>
+		            <c:when test="${currentPage == i}">
+		                <button type="button" class="btn btn-outline-warning" disabled>${i}</button>
+		            </c:when>
+		            <c:otherwise>
+		                <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
+		            </c:otherwise>
+		        </c:choose>
+		    </c:forEach>
+		
+		    <!-- 다음 페이지 -->
+		    <c:choose>
+		        <c:when test="${currentPage == totalPages}">
+		            <button type="button" class="btn btn-outline-warning" disabled>&gt;</button>
+		        </c:when>
+		        <c:otherwise>
+		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
+		        </c:otherwise>
+		    </c:choose>
+		
+		    <!-- 끝 페이지 -->
+		    <c:choose>
+		        <c:when test="${currentPage == totalPages}">
+		            <button type="button" class="btn btn-outline-warning" disabled>&gt;&gt;</button>
+		        </c:when>
+		        <c:otherwise>
+		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
+		        </c:otherwise>
+		    </c:choose>
 		</div>
 		<!-- 페이지네이션 -->
 		
