@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -164,8 +165,31 @@ public class PController {
     
  
     @RequestMapping("/p_modify")    
-    public String pModifyForm() {
-        return "p_modify";                 
+    public String pModifyForm(@RequestParam("pdNum") Integer pdNum, Model model) {
+        List<PDto> products = pRepository.findByPdNum(pdNum);
+        
+        if (!products.isEmpty()) {
+            model.addAttribute("product", products.get(0)); // 첫 번째 상품을 모델에 추가
+            return "p_modify"; // 수정 페이지 이름
+        } else {
+            return "redirect:/error"; 
+        }               
+    }
+    
+    @PostMapping("/p_update")
+    public String updateProduct(@ModelAttribute PDto product, 
+    							@RequestParam("file") MultipartFile file,
+					    		@RequestParam("file2") MultipartFile file2,
+    							Model model) {
+    	if (product.getPdNum() != null) {
+            // 상품 정보를 업데이트하는 로직 추가
+            pRepository.save(product); // pdNum이 있는 경우 업데이트
+        } else {
+            // 에러 처리: pdNum이 null이면 수정할 수 없음
+            model.addAttribute("error", "상품 번호가 누락되었습니다.");
+            return "p_update"; // 에러가 발생한 경우 수정 페이지로 돌아감
+        }
+        return "redirect:/p_manage";
     }
     
     

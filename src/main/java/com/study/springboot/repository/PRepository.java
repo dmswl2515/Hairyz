@@ -15,6 +15,9 @@ public interface PRepository extends JpaRepository<PDto, Integer>
 	
 	List<PDto> findByPdNum(Integer pdNum); // 상품 번호로 검색
     List<PDto> findByPdNameContaining(String pdName);
+    
+    
+    
 }
 
 

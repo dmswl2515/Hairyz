@@ -201,7 +201,9 @@
 		                    <td class="text-center align-middle">
 		                        <input type="button" class="btn btn-outline-warning custom-width mb-2" value="판매 중지"/>
 		                        <br>
-		                        <input type="button" class="btn btn-outline-warning custom-width" value="상품 수정" onclick="window.location.href='p_modify';"/>
+		                        <input type="button" class="btn btn-outline-warning custom-width" 
+		                        value="상품 수정" 
+		                        onclick="window.location.href='p_modify?pdNum=${item.pdNum}';"/>
 		                    </td>
 		                </tr>
 		            </c:forEach>
