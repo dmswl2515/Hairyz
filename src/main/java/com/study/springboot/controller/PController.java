@@ -8,7 +8,13 @@ import java.util.Date;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,12 +22,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.study.springboot.dto.PDto;
 import com.study.springboot.repository.PRepository;
+import com.study.springboot.service.PService;
 
 @Controller
 public class PController {
 	
 	@Autowired
 	private PRepository pRepository;
+	
+	@Autowired
+	private PService pService;
     
     @RequestMapping("/p_registration")    
     public String pRegisterForm() {
@@ -33,7 +43,7 @@ public class PController {
     @PostMapping("/p_registration")    
     public String handleInformation(@RequestParam("file") MultipartFile file, 
 						    		@RequestParam("file2") MultipartFile file2,
-						            @RequestParam String pd_name, 
+						            @RequestParam String pdName, 
 						            @RequestParam String pd_category, 
 						            @RequestParam String pd_animal, 
 						            @RequestParam Integer pd_price, 
@@ -73,7 +83,7 @@ public class PController {
         // PDto 객체 생성 및 저장
         PDto product = new PDto();
         product.setPd_num(pd_fnum);
-        product.setPd_name(pd_name);
+        product.setPdName(pdName);
         product.setPd_category(pd_category);
         product.setPd_animal(pd_animal);
         product.setPd_price(pd_price);
@@ -109,5 +119,10 @@ public class PController {
         return "p_modify";                 
     }
     
+    
+    @RequestMapping("/p_manage")    
+    public String pManagement() {
+        return "p_manage";                 
+    }
 }
 
