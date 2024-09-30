@@ -10,8 +10,10 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 
 <script src="http://code.jquery.com/jquery.js"></script>
+
 <script>
 var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+var phonePattern = /^010-\d{4}-\d{4}$/;
 
 function form_check(event) {
 	event.preventDefault(); // 기본 제출 방지
@@ -31,12 +33,12 @@ function form_check(event) {
 		return;
 	}
 
-	// 비밀번호 확인
-//	if ($('#pw').val() != $('#pw_check').val()) {
-//		alert("비밀번호가 일치하지 않습니다.");
-//		$('#pw_check').focus();
-//		return;
-//	}
+	// 핸드폰 번호 형식 확인
+	if (!phonePattern.test($('#mb_phone').val())) {
+		alert("핸드폰 번호는 '010-0000-0000' 형식이어야 합니다.");
+		$('#mb_phone').focus();
+		return;
+	}
 
 	submit_ajax();
 }
@@ -45,15 +47,16 @@ function form_check(event) {
 function submit_ajax() {
 	var queryString = $("#reg_frm").serialize();
 	$.ajax({
-		url: 'joinOk.do',
+		url: '/joinOk.do',
 		type: 'POST',
 		data: queryString,
 		dataType: 'text',
 		success: function(json) {
+			console.log(json); 
 			var result = JSON.parse(json);
 			if (result.code == "success") {
 				alert(result.desc);
-				window.location.replace("login.jsp");
+				window.location.replace("login.do");
 			} else {
 				alert(result.desc);
 			}
@@ -71,7 +74,7 @@ function checkDuplicateEmail() {
 	}
 
 	$.ajax({
-	    url: '/user/checkDuplicateEmail.do', // 절대 경로로 수정
+	    url: '/checkDuplicateEmail.do', // 절대 경로로 수정
 	    type: 'POST',
 	    data: { mb_id: email },
 	    success: function(response) {
@@ -87,6 +90,18 @@ function checkDuplicateEmail() {
             console.log("Error details: ", xhr.responseText); // 오류 내용 콘솔에 출력
         }
 	});
+}
+
+//우편번호 검색 기능
+function searchZipcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 선택한 주소의 우편번호와 주소를 입력
+            document.getElementById('mb_zipcode').value = data.zonecode; // 우편번호
+            document.getElementById('mb_addr1').value = data.roadAddress; // 도로명 주소
+            document.getElementById('mb_addr2').focus(); // 상세주소 입력으로 포커스 이동
+        }
+    }).open();
 }
 </script>
 </head>
@@ -143,7 +158,7 @@ function checkDuplicateEmail() {
 						    }
 						
 						    // pw와 pw_check 입력 시 실시간 체크
-						    $('#pw, #pw_check').on('keyup', checkPasswordMatch);
+						    $('#mb_pw, #pw_check').on('keyup', checkPasswordMatch);
 						</script>
 						
 						<style>
@@ -188,6 +203,16 @@ function checkDuplicateEmail() {
 						<label for="mb_addr2">상세주소 <code></code></label>
 						<input type="text" id="mb_addr2" name="mb_addr2" class="form-control">
 					</div>
+					<div class="mb-3">
+			            <label for="captcha">자동 가입 방지 <code>*</code></label>
+			            <img title="캡차이미지" src="${pageContext.request.contextPath}/captcha/image" alt="캡차이미지"/>
+						<input id="reload" type="button" onclick="javaScript:getImage()" value="새로고침"/>
+						<input id="soundOn" type="button" onclick="javaScript:audio()" value="음성듣기"/>
+						<div id="ccaudio" style="display:none"></div>
+			            
+			            <input type="text" id="captcha" name="captcha" class="form-control" required />
+			            <div class="invalid-feedback">자동 가입 방지는 필수 항목입니다.</div>
+			        </div>
 					<hr class="mb-4">
 					<input type="button" class="btn btn-primary btn-lg btn-block" value="회원가입" onclick="form_check(event)"> 
 					<input type="button" class="btn btn-outline-secondary btn-lg btn-block" value="로그인" onclick="window.location='login.jsp'">

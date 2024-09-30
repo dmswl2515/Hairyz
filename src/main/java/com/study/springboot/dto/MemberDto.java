@@ -13,7 +13,7 @@ public class MemberDto
 	private String mb_name;
 	private String mb_nickname;
 	private String mb_phone;
-	private int mb_zipcode;
+	private String mb_zipcode;
 	private String mb_addr1;
 	private String mb_addr2;
 	private int mb_state;
