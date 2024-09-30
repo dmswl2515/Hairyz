@@ -9,7 +9,7 @@ public class PetListDto
 	private int pl_id;
 	private String pl_name;
 	private int pl_mbNum;
-	private Timestamp pl_birth;
+	private String pl_birth;
 	private String pl_pettype;
 	private String pl_breed;
 	private String pl_gender;

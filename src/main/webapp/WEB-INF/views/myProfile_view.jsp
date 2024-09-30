@@ -191,7 +191,7 @@ hr {
 						<li><a href="editPassword.do?id=${ profile_view.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="#">반려동물 프로필</a></li>
+				<li><a href="petList.do?id=${ profile_view.mb_id }">반려동물 프로필</a></li>
 				<li><a href="#">주문 조회</a></li>
 				<li><a href="#">취소/교환/반품</a></li>
 			</ul>

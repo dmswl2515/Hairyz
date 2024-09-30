@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>회원정보 수정</title>
+    <title>반려동물 프로필 목록</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -87,18 +87,6 @@ hr {
 	font-weight: bold;
 }
 
-/* 이메일, 이름, 닉네임 출력 창 스타일 */
-.info-container {
-	margin-top: 20px;
-	text-align: center;
-}
-
-.info-container p {
-	margin: 5px 0;
-	font-size: 16px;
-	font-weight: bold;
-}
-
 /* 버튼 스타일 */
 .btn-container button {
 	margin: 5px 0;
@@ -138,6 +126,42 @@ hr {
 
 .sidebar a:hover {
 	text-decoration: underline;
+}
+
+.pet-profile {
+	border: 1px solid #d8d8d8;
+	border-radius: 10px;
+	padding: 20px;
+	margin-bottom: 20px;
+	display: flex;
+	align-items: center;
+}
+
+.pet-image {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	overflow: hidden;
+	background: #e0e0e0; /* 기본 배경색 */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 20px;
+}
+
+.pet-image img {
+	width: 100%;
+	height: auto;
+}
+
+.no-pet-message {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 200px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
 }
 </style>
 </head>
@@ -187,76 +211,56 @@ hr {
 			<ul>
 				<li><a href="myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ editProfile.mb_id }">&nbsp;-<b>회원정보 수정</b></a></li>
-						<li><a href="editPassword.do?id=${ editProfile.mb_id }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="editProfile.do?id=${ member.mb_id }">&nbsp;-회원정보 수정</a></li>
+						<li><a href="editPassword.do?id=${ member.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="petList.do?id=${ editProfile.mb_id }">반려동물 프로필</a></li>
+				<li><a href="petList.do?id=${ member.mb_id }"><b>반려동물 프로필</b></a></li>
 				<li><a href="#">주문 조회</a></li>
 				<li><a href="#">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
 
-		<!-- 회원정보 수정 페이지 -->
+		<!-- 반려동물 프로플 출력 -->
 	    <div class="content">
 	        <div class="custom-container">
-	            <h1 class="myPage-title">회원정보 수정</h1>
-	
-	            <form action="updateProfile.do" method="post" name="reg_frm" class="was-validated">
-		            <!-- 프로필 사진 -->
-		            <div class="box">
-		                <img class="profile" src="/images/logo.png">
-					</div>
-					<div class="btn-container text-center mt-3">
-						<button type="button" class="btn btn-warning" onclick="#">사진추가</button>
-					</div>
-					<br>
-					<div class="form-group">
-		                <div class="input-group">
-		                	<input readonly type="text" class="form-control" name="id" id="id" size="20" value="${editProfile.mb_id}" required>
-		                </div>
-		            </div>
-		            <div class="form-group">
-						<input readonly type="text" class="form-control" name="name" id="name" size="25" value="${editProfile.mb_name}" required>
-		            </div>
-		            <div class="form-group">
-		                <input type="text" class="form-control" name="nickName" id="nickName" size="40" value="${editProfile.mb_nickname}" required>
-		            </div>
-		            <div class="form-group">
-		                <input type="text" class="form-control" name="phone" id="phone" size="13" value="${editProfile.mb_phone}" required>
-		            </div>
-		            <div class="form-group">
-					    <!-- 우편번호 입력창과 우편번호 검색 버튼 -->
-					    <div class="input-group mb-3">
-					        <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="우편번호" size="6" value="${editProfile.mb_zipcode}" required>
-					        <div class="input-group-append">
-					            <button type="button" class="btn btn-outline-secondary" onclick="#">우편번호 검색</button>
-					        </div>
-					    </div>
-					</div>
-					
-					<div class="form-group">
-					    <!-- 주소 입력창 -->
-					    <input type="text" class="form-control" name="addr1" id="addr1" placeholder="주소" value="${editProfile.mb_addr1}" required>
-					</div>
-					
-					<div class="form-group">
-					    <!-- 상세 주소 입력창 -->
-					    <input type="text" class="form-control" name="addr2" id="addr2" placeholder="상세주소" value="${editProfile.mb_addr2}" required>
-					</div>
-		            
-		            <!-- Divider -->
-		            <hr>
+	            <h1 class="myPage-title">나의 반려동물</h1>
+				
+				<!-- 반려동물 목록 출력 -->
+	            <c:if test="${empty petList}">
+	                <div class="no-pet-message">
+                    	등록된 반려동물이 없습니다.
+                	</div>
+	            </c:if>
+	            <c:if test="${not empty petList}">
+	                <c:forEach var="pet" items="${petList}">
+	                    <div class="pet-profile">
+	                        <div class="pet-image">
+							    <c:choose>
+							        <c:when test="${not empty pet.pl_imgPath}">
+							            <img src="${pageContext.request.contextPath}/upload/${pet.pl_orgName}" alt="반려동물 사진">
+							        </c:when>
+							        <c:otherwise>
+							            <img src="images/logo.png" alt="기본 반려동물 사진">
+							        </c:otherwise>
+							    </c:choose>
+							</div>
+	                        <div>
+	                            <p><strong>이름:</strong> ${pet.pl_name}</p>
+	                            <p><strong>생일:</strong> ${pet.pl_birth}</p>
+	                            <p><strong>품종:</strong> ${pet.pl_breed}</p>
+	                            <p><strong>성별:</strong> ${pet.pl_gender}</p>
+	                            <p><strong>몸무게:</strong> ${pet.pl_weight} kg</p>
+	                        </div>
+	                    </div>
+	                </c:forEach>
+	            </c:if>
 		
-		            <!-- 회원정보 수정, 로그아웃 버튼 -->
-		            <div class="btn-container">
-		                <button type="submit" class="btn btn-warning">수정하기</button>
-		            </div>
-		            <div class="btn-container">
-		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='accountDelete.do?id=${ editProfile.mb_id }'">회원탈퇴</button>
-		            </div>
-		        </form>
+	            <!-- 반려동물 등록 버튼 -->
+	            <div class="btn-container">
+	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='petRegister.do?mbNum=${member.mb_no}'">추가하기</button>
+	            </div>
 	
 	        </div>
 	    </div>

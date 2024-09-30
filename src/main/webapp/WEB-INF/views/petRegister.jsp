@@ -159,6 +159,17 @@ input[type="radio"].btn-check {
 	color: white; /* 버튼 hover 시 글자색 */
 }
 </style>
+<!-- 이미지 미리보기 스크립트 -->
+<script>
+	function previewImage(event) {
+		var reader = new FileReader();
+		reader.onload = function() {
+			var output = document.getElementById('preview-image');
+			output.src = reader.result; // 업로드한 파일의 URL을 img 태그에 설정
+		};
+		reader.readAsDataURL(event.target.files[0]); // 선택된 파일을 읽음
+	}
+</script>
 </head>
 <body>
 	<!-- 로그 및 로그인 -->
@@ -210,7 +221,7 @@ input[type="radio"].btn-check {
 						<li><a href="editPassword.do?id=${ petRegister.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="#"><b>반려동물 프로필</b></a></li>
+				<li><a href="petList.do?id=${ petRegister.mb_id }"><b>반려동물 프로필</b></a></li>
 				<li><a href="#">주문 조회</a></li>
 				<li><a href="#">취소/교환/반품</a></li>
 			</ul>
@@ -222,15 +233,27 @@ input[type="radio"].btn-check {
 	        <div class="custom-container">
 	            <h1 class="myPage-title">반려동물 등록</h1>
 	
-	            <form action="petProfileCreate.do?mb_no=${petRegister.mb_no }" method="post" name="reg_frm" class="was-validated">
+	            <form action="petProfileCreate.do?mb_no=${petRegister.mb_no }" method="post" name="reg_frm" class="was-validated" enctype="multipart/form-data">
 		            <!-- 프로필 사진 -->
-		            <div class="box">
-		                <img class="profile" src="/images/logo.png">
+				    <div class="box">
+				        <!-- 이미지 미리보기 영역 -->
+				        <img id="preview-image" class="profile" src="/images/logo.png" alt="기본 이미지">
+				    </div>
+				
+				    <!-- 파일 업로드 버튼 -->
+				    <div class="btn-container text-center mt-3">
+					    <!-- 실제 파일 선택 input은 숨김 -->
+					    <input type="file" class="form-control-file" name="petImage" id="petImage" multiple="true" onchange="previewImage(event)" style="display: none;">
+					    
+					    <!-- 사용자 정의 버튼 (사진 추가) -->
+					    <label for="petImage" class="btn btn-warning">사진 추가</label>
+					    
+					    <!-- 미리보기 이미지 업로드 후 파일 이름 숨김 -->
+					    <span id="file-name" style="display: none;"></span>
 					</div>
-					<div class="btn-container text-center mt-3">
-						<button type="button" class="btn btn-warning" onclick="#">사진추가</button>
-					</div>
+					
 					<br>
+					
 					<div class="form-group">
 		                <div class="input-group">
 		                	<input type="text" class="form-control" name="name" id="name" size="20" placeholder="이름"  required>
@@ -281,7 +304,7 @@ input[type="radio"].btn-check {
 		                <button type="submit" class="btn btn-warning">등록</button>
 		            </div>
 		            <div class="btn-container">
-		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='#'">취소</button>
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='petList.do?id=${ petRegister.mb_id }'">취소</button>
 		            </div>
 		        </form>
 	
