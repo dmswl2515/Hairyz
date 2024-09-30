@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>상품 등록</title>
+    <title>상품 수정</title>
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -104,7 +104,7 @@
         
 <style>
     
-    /* 등록& 취소 버튼 넓이 */
+    /* 수정& 취소 버튼 넓이 */
     .custom-width {
         width: 200px; /* 원하는 너비로 설정 */
     }
@@ -128,7 +128,7 @@
     
 </style>     
 
-	   	 <h4 class="text-center mt-4">상품 등록</h4>
+	   	 <h4 class="text-center mt-4">상품 수정</h4>
 			<div class="d-flex justify-content-center align-items-center">
 			    <form action="p_registration" method="post" enctype="multipart/form-data" class="text-center">
 			        <!-- 첫 번째 파일 선택 -->
@@ -179,7 +179,7 @@
 			        
 			        <hr class="custom-hr">
 			        
-				        <input type="submit" class="btn btn-outline-warning mb-2 custom-width" value="등록하기" /></br>
+				        <input type="submit" class="btn btn-outline-warning mb-2 custom-width" value="수정하기" /></br>
 				        <input type="button" class="btn btn-outline-warning custom-width" value="취소하기" />
 			    </form>
 			</div>
