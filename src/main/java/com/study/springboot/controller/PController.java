@@ -22,6 +22,8 @@ import com.study.springboot.dto.PDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.PService;
 
+import jakarta.servlet.ServletContext;
+
 @Controller
 public class PController {
 	
@@ -37,7 +39,12 @@ public class PController {
     }
     
     
-    private final String uploadDir = "uploads/";
+    private final String uploadDir;
+
+    @Autowired
+    public PController(ServletContext servletContext) {
+        this.uploadDir = servletContext.getRealPath("/upload/");
+    }
     
     @PostMapping("/p_registration")    
     public String handleInformation(@RequestParam("file") MultipartFile file, 
@@ -62,7 +69,7 @@ public class PController {
         // 첫 번째 파일 정보 처리
         String originalFilename1 = file.getOriginalFilename();
         String changedFilename1 = System.currentTimeMillis() + "_" + originalFilename1; // 현재 시간 기반의 랜덤 파일 이름
-        String filePath1 = uploadDir + changedFilename1;
+        String filePath1 = "upload/" + changedFilename1;
 
         // 첫번 째 파일 저장
         Path path1 = Paths.get(filePath1);
@@ -72,7 +79,7 @@ public class PController {
         // 두 번째 파일 정보 처리
         String originalFilename2 = file2.getOriginalFilename();
         String changedFilename2 = System.currentTimeMillis() + "_" + originalFilename2; // 현재 시간 기반의 랜덤 파일 이름
-        String filePath2 = uploadDir + changedFilename2;
+        String filePath2 = "upload/" + changedFilename2;
 
         // 두 번째 파일 저장
         Path path2 = Paths.get(filePath2);

@@ -148,6 +148,31 @@
     .align-middle {
 	    vertical-align: middle !important; /* 모든 테이블 셀의 내용을 세로로 가운데 정렬 */
 	}
+	
+	.table {
+      border-color: #ffc107; /* 테이블 테두리 색상 */
+  }
+
+  .table th{
+  	  background-color: #fff9c4;
+  }
+  
+  .table td {
+      border-color: #ffc107; /* 테이블 헤더와 셀 테두리 색상 */
+  }
+  
+	.table thead th {
+	    border-bottom: 1px solid #ffcc00;
+	}
+	
+	.table-white {
+		background-color: #ffffff;
+	}
+	
+	.table-bottom-border {
+	    border-bottom: 1px solid #ffc107; /* 원하는 색상과 두께로 테두리 설정 */
+	}
+	
 </style>     
 		<div class="container">
 		    <table class="table table-bordered mb-2">
@@ -166,8 +191,7 @@
 		                    <td>
 		                        <div class="product-container">    
 		                            <div class="product-box">
-		                                 <img src="${pageContext.request.contextPath}/uploads/${item.pd_chng_fname}" alt="${item.pdName}" style="width:100%; height:100%; object-fit:cover;">
-		                            	 <p>Image Path: ${pageContext.request.contextPath}/uploads/${item.pd_chng_fname}</p>
+		                                 <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" style="width:100%; height:100%; object-fit:cover;">
 		                            </div> 
 		                            ${item.pdName}
 		                            
