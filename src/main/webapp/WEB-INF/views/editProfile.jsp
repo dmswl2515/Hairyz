@@ -254,7 +254,7 @@ hr {
 		                <button type="submit" class="btn btn-warning">수정하기</button>
 		            </div>
 		            <div class="btn-container">
-		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='#'">회원탈퇴</button>
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='accountDelete.do?id=${ editProfile.mb_id }'">회원탈퇴</button>
 		            </div>
 		        </form>
 	

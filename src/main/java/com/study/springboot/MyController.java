@@ -128,7 +128,7 @@ public class MyController {
     public String myProfileView(HttpServletRequest request, Model model, HttpSession session) {
     	
     	String mdId = (String) session.getAttribute("id");
-//    	String id = "test"; 테스트용
+//    	String id = "test"; //테스트용
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("profile_view", dto);
         return "myProfile_view";
@@ -210,5 +210,66 @@ public class MyController {
 		
         return "myProfile_view";
     }
+    
+	// 회원탈퇴 화면
+	@RequestMapping("/accountDelete.do")
+	public String accountDelete(Model model, HttpServletRequest request)
+	{
+
+		String mdId = request.getParameter("id");
+
+		model.addAttribute("accountDelete", mdId);
+
+		return "account_delete";
+	}
+
+	// 회원탈퇴
+	@RequestMapping("/deleteAccount.do")
+	public String deleteAccount(HttpSession session, Model model, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException
+	{
+
+		String mdId = request.getParameter("id");
+		String pw = request.getParameter("password");
+
+		MemberDto dto = memberDao.selectMember(mdId);
+
+		int state = 2;
+
+		if (dto.getMb_pw().equals(pw))
+		{
+			memberDao.updateState(mdId, state);
+		} else
+		{
+
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter writer = response.getWriter();
+
+			writer.println("<html><head></head><body>");
+			writer.println("<script language=\"javascript\">");
+			writer.println("alert(\"비밀번호가 일치하지 않습니다. 다시 입력해 주세요.\");");
+			writer.println("history.back();");
+			writer.println("</script>");
+			writer.println("</body></html>");
+			writer.close();
+
+			return null;
+
+		}
+
+		session.invalidate();
+
+		return "main_view";
+	}
+	
+	// 로그아웃
+	@RequestMapping("/logout.do")
+	public String logout(HttpSession session)
+	{
+		
+		session.invalidate();
+		
+		return "main_view";
+	}
     
 }

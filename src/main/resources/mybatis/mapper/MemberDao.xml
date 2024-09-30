@@ -17,4 +17,8 @@
 		update member set mb_pw = #{param2} where mb_id = #{param1}
 	</update>
 	
+	<update id="updateState">
+		update member set mb_state = #{param2} where mb_id = #{param1}
+	</update>
+	
 </mapper>
