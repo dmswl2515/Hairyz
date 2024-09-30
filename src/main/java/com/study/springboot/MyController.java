@@ -271,5 +271,36 @@ public class MyController {
 		
 		return "main_view";
 	}
+	
+	// 반려동물 등록 화면
+	@RequestMapping("/petRegister.do")
+	public String petRegister(Model model, HttpServletRequest request)
+	{
+		
+		String mdNum = request.getParameter("mbNum");
+		int num = 1;//테스트용
+		MemberDto dto = memberDao.selectMember2(num);
+
+		model.addAttribute("petRegister", dto);
+
+		return "petRegister";
+	}
+	
+	@RequestMapping("/petProfileCreate.do")
+	public String petProfileCreate(Model model, HttpServletRequest request)
+	{
+		
+		String mb_no = request.getParameter("mb_no");
+		String name = request.getParameter("name");
+		String birth = request.getParameter("birth");
+		String pettype = request.getParameter("pettype");
+		String breed = request.getParameter("breed");
+		String gender = request.getParameter("gender");
+		String weight = request.getParameter("weight");
+		int num = 1;//테스트용
+		
+
+		return "petRegister";
+	}
     
 }
