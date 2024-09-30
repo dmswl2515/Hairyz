@@ -194,7 +194,9 @@ public class PController {
     
     
     @RequestMapping("/s_main")    
-    public String shoppingMainPage() {
+    public String shoppingMainPage(Model model) {
+    	 List<PDto> productItems = pService.getAllProducts(); // 상품 목록 가져오기
+         model.addAttribute("ProductItems", productItems);
         return "s_main";                 
     }
     

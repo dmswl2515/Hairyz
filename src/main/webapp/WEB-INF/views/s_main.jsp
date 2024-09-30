@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -225,75 +226,15 @@
 		    <hr class="custom-hr">
 		    <div class="container">
 		    	<div class="row">
-		    		<c:forEach var="item" items="${foodItems}">
+		    		<c:forEach var="item" items="${ProductItems}">
 		                <div class="col-md-2 mb-3">
 		                    <div class="product-box">
-		                        <img src="${item.imageUrl}" alt="${item.name}" class="product-img">
+		                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" class="product-img">
 		                    </div>
 		                    
 		                    <div class="product-text">
-		                        <h6 class="product-name">${item.name}[로얄캐닌]독 미니 릴렉스 케어</h6>
-		                        <p class="product-price">${item.price}16,200원</p>
-		                    </div>
-		                </div>
-	            </c:forEach>
-	            <c:forEach var="item" items="${foodItems}">
-		                <div class="col-md-2 mb-3">
-		                    <div class="product-box">
-		                        <img src="${item.imageUrl}" alt="${item.name}" class="product-img">
-		                    </div>
-		                    
-		                    <div class="product-text">
-		                        <h6 class="product-name">${item.name}[로얄캐닌]독 미니 릴렉스 케어</h6>
-		                        <p class="product-price">${item.price}16,200원</p>
-		                    </div>
-		                </div>
-	            </c:forEach>
-	            <c:forEach var="item" items="${foodItems}">
-		                <div class="col-md-2 mb-3">
-		                    <div class="product-box">
-		                        <img src="${item.imageUrl}" alt="${item.name}" class="product-img">
-		                    </div>
-		                    
-		                    <div class="product-text">
-		                        <h6 class="product-name">${item.name}[로얄캐닌]독 미니 릴렉스 케어</h6>
-		                        <p class="product-price">${item.price}16,200원</p>
-		                    </div>
-		                </div>
-	            </c:forEach>
-	            <c:forEach var="item" items="${foodItems}">
-		                <div class="col-md-2 mb-3">
-		                    <div class="product-box">
-		                        <img src="${item.imageUrl}" alt="${item.name}" class="product-img">
-		                    </div>
-		                    
-		                    <div class="product-text">
-		                        <h6 class="product-name">${item.name}[로얄캐닌]독 미니 릴렉스 케어</h6>
-		                        <p class="product-price">${item.price}16,200원</p>
-		                    </div>
-		                </div>
-	            </c:forEach>
-	            <c:forEach var="item" items="${foodItems}">
-		                <div class="col-md-2 mb-3">
-		                    <div class="product-box">
-		                        <img src="${item.imageUrl}" alt="${item.name}" class="product-img">
-		                    </div>
-		                    
-		                    <div class="product-text">
-		                        <h6 class="product-name">${item.name}[로얄캐닌]독 미니 릴렉스 케어</h6>
-		                        <p class="product-price">${item.price}16,200원</p>
-		                    </div>
-		                </div>
-	            </c:forEach>
-	            <c:forEach var="item" items="${foodItems}">
-		                <div class="col-md-2 mb-3">
-		                    <div class="product-box">
-		                        <img src="${item.imageUrl}" alt="${item.name}" class="product-img">
-		                    </div>
-		                    
-		                    <div class="product-text">
-		                        <h6 class="product-name">${item.name}[로얄캐닌]독 미니 릴렉스 케어</h6>
-		                        <p class="product-price">${item.price}16,200원</p>
+		                        <h6 class="product-name">${item.pdName}</h6>
+		                        <p class="product-price">${item.pd_price}원</p>
 		                    </div>
 		                </div>
 	            </c:forEach>

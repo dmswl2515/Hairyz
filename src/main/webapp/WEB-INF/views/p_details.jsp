@@ -197,10 +197,11 @@
 		<div class=container>
 		    <div class="product-container">	
 	              <div class="product-box">
-	           		<img src="<%= request.getContextPath() %>/images/RoyalCanin.png" alt="상품 이미지" style="width:50px; height:50px; margin-right:10px;">
+	           		<img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" style="width:50px; height:50px; margin-right:10px;">
+	              	
 	              </div>
 	              <div class="product-text">
-		              <span class="product-name">${item.pd_name}[로얄캐닌] 독 미니 릴렉스 케어 (1kg)</span><br>
+		              <span class="product-name">${item.pdName}</span><br>
 		              <span class="product-price">${item.pd_price}16,200원</span>
 		              <hr class="product-hr">
 		              
