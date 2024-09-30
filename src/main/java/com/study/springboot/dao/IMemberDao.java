@@ -1,5 +1,7 @@
 package com.study.springboot.dao;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.study.springboot.dto.MemberDto;
@@ -11,4 +13,10 @@ public interface IMemberDao
 	public int updateProfile(String id, String nickname, String phone, int zipcode, String addr1, String addr2);
 	public int updatePw(String id, String pw);
 	public int updateState(String id, int state);
+	
+	// 이메일 중복 확인
+    int checkEmailExists(String email);
+    
+    // 회원가입 처리
+    int insertMember(Map<String, String> paramMap);
 }
