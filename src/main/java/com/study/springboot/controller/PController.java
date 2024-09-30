@@ -124,5 +124,10 @@ public class PController {
     public String pManagement() {
         return "p_manage";                 
     }
+    
+    @RequestMapping("/s_main")    
+    public String shoppingMainPage() {
+        return "s_main";                 
+    }
 }
 
