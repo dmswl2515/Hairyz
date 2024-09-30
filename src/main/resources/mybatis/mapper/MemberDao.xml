@@ -21,4 +21,8 @@
 		update member set mb_state = #{param2} where mb_id = #{param1}
 	</update>
 	
+	<select id="selectMember2" resultType="com.study.springboot.dto.MemberDto">
+		select * from member where mb_no = #{param1}
+	</select>
+	
 </mapper>

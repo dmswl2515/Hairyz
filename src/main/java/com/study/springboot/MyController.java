@@ -1,27 +1,43 @@
 package com.study.springboot;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 import com.study.springboot.dao.IMemberDao;
+import com.study.springboot.dao.IPetListDao;
 import com.study.springboot.dto.MemberDto;
+import com.study.springboot.dto.PetListDto;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 
 @Controller
 public class MyController {
 	
 	@Autowired
 	IMemberDao memberDao;
+	
+	@Autowired
+	IPetListDao pteListDao;
+	
+	@Autowired
+    private ServletContext servletContext;
 
     @RequestMapping("/")
     public String root() throws Exception{
@@ -44,7 +60,7 @@ public class MyController {
     public String myProfileView(HttpServletRequest request, Model model, HttpSession session) {
     	
     	String mdId = (String) session.getAttribute("id");
-//    	String id = "test"; //테스트용
+//    	String mdId = "test"; //테스트용
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("profile_view", dto);
         return "myProfile_view";
@@ -186,6 +202,107 @@ public class MyController {
 		session.invalidate();
 		
 		return "main_view";
+	}
+	
+	// 반려동물 등록 화면
+	@RequestMapping("/petRegister.do")
+	public String petRegister(Model model, HttpServletRequest request)
+	{
+		
+		String mdNum = request.getParameter("mbNum");
+		int num = Integer.parseInt(mdNum);
+//		int num = 1;//테스트용
+		MemberDto dto = memberDao.selectMember2(num);
+
+		model.addAttribute("petRegister", dto);
+
+		return "petRegister";
+	}
+	
+	@RequestMapping("/petProfileCreate.do")
+	public String petProfileCreate(Model model, HttpServletRequest request)
+	{
+		
+		 // 파일 저장 경로
+		
+		String fileName = null;
+		String dst = null;
+		String filePath = null;
+		
+		try
+		{
+			filePath = servletContext.getRealPath("/upload/");
+
+			List<Part> fileParts = request.getParts().stream()
+					.filter(part -> "petImage".equals(part.getName()) && part.getSize() > 0)
+					.collect(Collectors.toList());
+			for (Part filePart : fileParts)
+			{
+				fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+				dst = filePath + "\\" + fileName;
+
+				try (BufferedInputStream fin = new BufferedInputStream(filePart.getInputStream());
+						BufferedOutputStream fout = new BufferedOutputStream(new FileOutputStream(dst)))
+				{
+					int data;
+					while (true)
+					{
+						data = fin.read();
+						if (data == -1)
+							break;
+						fout.write(data);
+					}
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		System.out.println(fileName);
+		System.out.println(dst);
+		System.out.println(filePath);
+		
+		String name = request.getParameter("name");
+		String mb_no = request.getParameter("mb_no");
+		String birth = request.getParameter("birth");
+		String pettype = request.getParameter("pettype");
+		String breed = request.getParameter("breed");
+		String gender = request.getParameter("gender");
+		String weight = request.getParameter("weight");
+		
+		
+		Double dWeight = Double.parseDouble(weight);
+		
+		pteListDao.insertPet(name, mb_no, birth, pettype, breed, gender, dWeight, dst, fileName, filePath);
+		
+		int mbNum = Integer.parseInt(mb_no);
+		MemberDto dto = memberDao.selectMember2(mbNum);
+		List<PetListDto> pDtos = pteListDao.petList(mbNum);
+		
+		model.addAttribute("member", dto);
+		model.addAttribute("petList", pDtos);
+		
+		return "petList";
+	}
+	
+	// 반려동물 등록 화면
+	@RequestMapping("/petList.do")
+	public String petList(Model model, HttpServletRequest request)
+	{
+
+		String mdId = request.getParameter("id");
+		MemberDto dto = memberDao.selectMember(mdId);
+		int mbNo = dto.getMb_no();
+		List<PetListDto> pDtos = pteListDao.petList(mbNo);
+
+		model.addAttribute("member", dto);
+		model.addAttribute("petList", pDtos);
+
+		return "petList";
 	}
     
 }
