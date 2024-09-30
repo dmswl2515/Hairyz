@@ -11,4 +11,5 @@ public interface IMemberDao
 	public int updateProfile(String id, String nickname, String phone, int zipcode, String addr1, String addr2);
 	public int updatePw(String id, String pw);
 	public int updateState(String id, int state);
+	public MemberDto selectMember2(int mb_no);
 }
