@@ -129,5 +129,10 @@ public class PController {
     public String shoppingMainPage() {
         return "s_main";                 
     }
+    
+    @RequestMapping("/p_details")    
+    public String productDetail() {
+        return "p_details";                 
+    }
 }
 
