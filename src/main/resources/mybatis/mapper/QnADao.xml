@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.study.springboot.dao.IQnADao">
+
+	<select id="selectQnaByPdNum" resultType="com.study.springboot.dto.QDTO">
+        SELECT p.pd_num, q.qna_pnum, q.qna_rstate, q.qna_content, q.qna_name, q.qna_date
+        FROM product p
+        JOIN qna q ON p.pd_num = q.qna_pnum
+        WHERE p.pd_num = #{pdNum}
+    </select>
+	
+</mapper>

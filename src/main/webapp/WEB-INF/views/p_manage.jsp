@@ -186,6 +186,7 @@
 		        </thead>
 		        <tbody>
 		            <c:forEach var="item" items="${products}">
+		            	<input type="hidden" name="pdNum" value="${item.pdNum}" />
 		                <tr>
 		                    <td class="text-center align-middle">${item.pdNum}</td>
 		                    <td>
@@ -203,7 +204,36 @@
 		                    </td>
 		                    <td class="text-center align-middle">${item.pd_amount}개</td>
 		                    <td class="text-center align-middle">
-		                        <input type="button" class="btn btn-outline-warning custom-width mb-2" value="판매 중지"/>
+		                        <form method="post" action="/updateSellingStatus">
+								    <input type="hidden" name="pdNum" value="${item.pdNum}" />
+								    <c:if test="${not empty item}">
+									    <p>pdNum: ${item.pdNum}</p>
+									</c:if>
+								    <input type="hidden" name="sellingStatus" value="${currentStatus == 'Y' ? 'N' : 'Y'}" />
+								    <input type="submit" class="btn btn-outline-warning custom-width mb-2" value="${currentStatus == 'Y' ? '판매 재시작' : '판매 중지'}" />
+								</form>
+
+<script>
+function submitForm() {
+    // 버튼 클릭 시 폼 제출
+    const form = document.getElementById("sellingForm");
+    const button = document.getElementById("toggleSellingButton");
+
+    // 서버에서 판매 상태를 변경한 후 버튼 텍스트 변경
+    button.value = "판매 재시작"; // 버튼 텍스트 변경
+    button.setAttribute("onclick", "restartForm()"); // 클릭 이벤트 핸들러 변경
+    form.submit();
+}
+
+function restartForm() {
+    // 판매 재시작 처리 로직
+    const form = document.getElementById("sellingForm");
+    form.pd_selling.value = "Y"; // 판매 상태를 재시작으로 변경
+    form.submit();
+}
+</script>
+
+
 		                        <br>
 		                        <input type="button" class="btn btn-outline-warning custom-width" 
 		                        value="상품 수정" 

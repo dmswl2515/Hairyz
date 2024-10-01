@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.springboot.dto.PDto;
+import com.study.springboot.dto.QDTO;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.PService;
+import com.study.springboot.service.QnAService;
 
 import jakarta.servlet.ServletContext;
 
@@ -36,7 +41,7 @@ public class PController {
 	private PService pService;
 	
 	@Autowired
-	private ObjectMapper objectMapper;
+	private QnAService qnaService;
     
     @RequestMapping("/p_registration")    
     public String pRegisterForm() {
@@ -56,8 +61,8 @@ public class PController {
     public String handleInformation(@RequestParam("file") MultipartFile file, 
 						    		@RequestParam("file2") MultipartFile file2,
 						            @RequestParam String pdName, 
-						            @RequestParam String pd_category, 
-						            @RequestParam String pd_animal, 
+						            @RequestParam String pdCategory, 
+						            @RequestParam String pdAnimal, 
 						            @RequestParam Integer pd_price, 
 						            @RequestParam Integer pd_amount) throws IOException  {
         
@@ -96,8 +101,8 @@ public class PController {
         PDto product = new PDto();
         product.setPdNum(pd_fnum);
         product.setPdName(pdName);
-        product.setPd_category(pd_category);
-        product.setPd_animal(pd_animal);
+        product.setPdCategory(pdCategory);
+        product.setPdAnimal(pdAnimal);
         product.setPd_price(pd_price);
         product.setPd_amount(pd_amount);
         product.setPd_fee(0); // 기본값 설정
@@ -168,6 +173,16 @@ public class PController {
 
         return "p_manage"; // JSP 이름
     }
+    
+    @PostMapping("/updateSellingStatus")
+    public String updateSellingStatus(@RequestParam("pdNum") Integer pdNum, 
+	            					  @RequestParam("newStatus") Character newStatus) {
+    	
+		System.out.println("pdNum: " + pdNum + ", newStatus: " + newStatus); // 값 확인
+		pService.updateSellingStatus(pdNum, newStatus);
+		
+		return "redirect:/p_manage"; // 업데이트 후 리다이렉트할 페이지
+	}
     
  
     @RequestMapping("/p_modify")    
@@ -242,8 +257,8 @@ public class PController {
 
             // 상품 정보 업데이트
             product.setPdName(pdName);
-            product.setPd_animal(pdAnimal);
-            product.setPd_category(pdCategory);
+            product.setPdAnimal(pdAnimal);
+            product.setPdCategory(pdCategory);
             product.setPd_price(pdPrice);
             product.setPd_amount(pdAmount);
             product.setPd_fee(product.getPd_fee()); // 기존 pd_fee를 설정
@@ -267,30 +282,37 @@ public class PController {
     
     @RequestMapping("/s_main")    
     public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
-            					   @RequestParam(required = false) String pd_animal,
-            					   @RequestParam(required = false) String pd_category,
-    							   Model model){
-    	
-    	// 페이지당 항목 수
+                                   @RequestParam(required = false) String pd_animal,
+                                   @RequestParam(required = false) String pd_category,
+                                   Model model) {
+        
+        // 페이지당 항목 수
         int pageSize = 16; 
         
         // 총 상품 수를 데이터베이스에서 가져옵니다.
-        int totalProducts = (int) pRepository.count(); // 총 상품 수를 세는 메서드 (이 메서드는 필요에 따라 구현해야 합니다)
-        
+        long totalProducts = pRepository.count(); // 총 상품 수를 세는 메서드
+
         // 시작 행 번호 및 종료 행 번호를 계산합니다.
         int startRow = (page - 1) * pageSize; 
-        int endRow = Math.min(startRow + pageSize, totalProducts); 
+        int endRow = Math.min(startRow + pageSize, (int) totalProducts); 
 
         // 데이터베이스에서 현재 페이지에 해당하는 상품을 가져옵니다.
         List<PDto> products = pRepository.findPaginated(startRow, pageSize); // 시작 행 번호와 페이지 크기를 사용합니다.
         
+        // 카테고리 또는 동물 필터링 적용
+        if (pd_category != null && !pd_category.isEmpty()) {
+            products = pRepository.findByPdCategory(pd_category, startRow, pageSize);
+        } else if (pd_animal != null && !pd_animal.isEmpty()) {
+            products = pRepository.findByPdAnimal(pd_animal, startRow, pageSize);
+        }
+
         // 모델에 데이터 추가
         model.addAttribute("ProductItems", products); // 현재 페이지의 상품 리스트
         model.addAttribute("currentPage", page); // 현재 페이지 번호
         model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
         model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
         model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalProducts / pageSize), page + 2)); // 끝 페이지
-        
+
         return "s_main";                 
     }
     
@@ -304,6 +326,10 @@ public class PController {
         if (!product.isEmpty()) {
             model.addAttribute("product", product.get(0));  // 첫 번째 상품 정보만 전달
         }
+        
+        List<QDTO> qnaList = qnaService.getQnaByProductId(pdNum);
+        model.addAttribute("qnaList", qnaList);
+        
             return "p_details";  // p_detail.jsp로 이동                
     }
 }

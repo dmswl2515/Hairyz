@@ -197,7 +197,7 @@
 			        
 				        <input type="submit" class="btn btn-outline-warning mb-2 custom-width" value="수정하기" /></br>
 				        <input type="button" class="btn btn-outline-warning custom-width" value="취소하기"
-				               onclick="window.location.href='p_manage.jsp'"/>
+				               onclick="window.location.href='/p_manage'"/>
 			    </form>
 			</div>
 			

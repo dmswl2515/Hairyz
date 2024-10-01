@@ -34,6 +34,16 @@ public class PService
 	public List<PDto> getProductsByName(String productName) {
 	    return pRepository.findByPdNameContaining(productName);
 	}
+
+	//제품 판매상태 변경
+	public void updateSellingStatus(Integer pdNum, Character newStatus) {
+        PDto product = pRepository.findById(pdNum)
+            .orElseThrow(() -> new RuntimeException("제품을 찾을 수 없습니다"));
+
+        // pd_selling 상태 변경
+        product.setPd_selling(newStatus); // 새로운 상태로 업데이트
+        pRepository.save(product); // 변경 사항 저장
+    }
 	
 	
 }
