@@ -47,7 +47,7 @@ function handleCredentialResponse(response) {
 
 }
 
-<!-- ------------------------------------------------------------------------------------------ -->
+/* ------------------------------------------------------------------------------------------ */
 
 /* Kakao.init('2e8d17510ccb320292db80fcce197c79');
    function loginWithKakao() {
@@ -171,61 +171,38 @@ function fbLogin() {
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">	
 <style>
-body {
-	height: 100vh;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-
-.login-container {
-	text-align: center;
-	width: 100%;
-	max-width: 400px;
-	padding: 20px;
-	align-self: center;
-	border: 1px solid #999;
-	background-color: #fff;
-}
-
-.login-container input {
-	margin-bottom: 15px;
-}
-
-.login-container button {
-	background: #000;
-	color: #fff;
-	border: none;
-	padding: 10px 20px;
-	cursor: pointer;
-	margin-bottom: 10px;
-}
-
-.login-container .oauth-buttons button {
-    margin: 5px 0;
-    width: 100%;
-    height: 50px; 
-}
-
+.login-wrapper { width:100%;max-width:400px;align-self:center;text-align:center; }
+.login-container { width:100%;max-width:400px;padding:20px;border:1px solid #999;border-radius:.25rem; }
+.login-container input { margin-bottom:15px; }
+.find-area { margin-bottom:0;text-align:right; }
+.find-area  a { color:#333; }
+.oauth-buttons button { margin:10px 0 0;width:100%;height:50px;color:#fff;padding:10px 20px; }
 </style>
 </head>
 <body>
 <div class="content">
 	<%@ include file="header.jsp" %>
 </div>
-
-<div class="login-container">
+<div class="container">
+	<div class="py-5 text-center">
+        <h2>로그인</h2>
+     	</div>
+    </div>
+<div class="login-wrapper">
 	<form action="login.do" method="post">
-		<input type="text" class="form-control" name="id" placeholder="아이디" required> 
+		<div class="login-container">
+			<input type="text" class="form-control" name="id" placeholder="아이디" required> 
 			<input type="password" class="form-control" name="pw" placeholder="비밀번호" required>
-		<button type="submit" class="btn">로그인</button>
-		<button type="button" class="btn" onclick="javascript:window.location='join_view.jsp'">회원가입</button>
+			<p class="find-area"><a href="find.do">아이디 / 비밀번호 찾기</a></p>
+		</div>
+		<div class="oauth-buttons">
+			<button type="submit" class="btn btn-dark">로그인</button><br>
+			<button type="button" class="btn btn-warning" onclick="loginWithKakao();">Kakao 로그인</button><br>
+			<button type="button" class="btn btn-danger" onclick="onSignIn();">Google 로그인</button><br>
+			<button type="button" class="btn btn-primary" onclick="fbLogin();">Facebook 로그인</button>
+			<button type="button" class="btn btn-secondary" onclick="javascript:window.location='join.do'">회원가입</button><br>
+		</div>
 	</form>
-	<div class="oauth-buttons">
-		<button type="button" class="btn btn-danger" onclick="onSignIn();">Google 로그인</button><br>
-		<button type="button" class="btn btn-warning" onclick="loginWithKakao();">Kakao 로그인</button><br>
-		<button type="button" class="btn btn-primary" onclick="fbLogin();">Facebook 로그인</button>
-	</div>
 </div>
 
 <%@ include file="footer.jsp" %>
