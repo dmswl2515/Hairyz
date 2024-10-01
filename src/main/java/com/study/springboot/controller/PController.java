@@ -201,8 +201,16 @@ public class PController {
     }
     
     @RequestMapping("/p_details")    
-    public String productDetail() {
-        return "p_details";                 
+    public String productDetail(@RequestParam("pdNum") int pdNum, Model model) {
+    	
+    	// pdNum에 해당하는 상품 정보를 DB에서 가져옴
+        List<PDto> product = pRepository.findByPdNum(pdNum);
+        
+        // 상품 정보가 있을 경우, 모델에 추가하여 JSP에서 사용할 수 있게 함
+        if (!product.isEmpty()) {
+            model.addAttribute("product", product.get(0));  // 첫 번째 상품 정보만 전달
+        }
+            return "p_details";  // p_detail.jsp로 이동                
     }
 }
 

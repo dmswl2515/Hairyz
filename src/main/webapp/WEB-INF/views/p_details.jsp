@@ -197,12 +197,12 @@
 		<div class=container>
 		    <div class="product-container">	
 	              <div class="product-box">
-	           		<img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" style="width:50px; height:50px; margin-right:10px;">
-	              	
+	           		<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
+	             
 	              </div>
 	              <div class="product-text">
-		              <span class="product-name">${item.pdName}</span><br>
-		              <span class="product-price">${item.pd_price}16,200원</span>
+		              <span class="product-name">${product.pdName}</span><br>
+		              <span class="product-price">${product.pd_price}원</span>
 		              <hr class="product-hr">
 		              
 		              <p>배송방법&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;택배</p>
@@ -376,7 +376,7 @@
 			<div class="info-content">
 			    <div id="details-content">
 			        <h3>상세정보</h3>
-			        <p>상세정보 내용이 여기에 표시됩니다.</p>
+			        <img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
 			        <!-- 데이터베이스에서 불러온 내용 표시 -->
 			    </div>
 			<hr class="product-hr">

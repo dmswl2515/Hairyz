@@ -195,7 +195,6 @@
 	.product-box {
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 20px;
             margin: 10px;
             text-align: center;
             width: 170px;
@@ -204,6 +203,7 @@
         .product-img {
             max-width: 100%;
             height: auto;
+            object-fit: contain;
     }
     .product-text {
             margin-left: 14px;
@@ -229,11 +229,15 @@
 		    		<c:forEach var="item" items="${ProductItems}">
 		                <div class="col-md-2 mb-3">
 		                    <div class="product-box">
-		                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" class="product-img">
+		                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
+		                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" class="product-img" style="width:100%; height:100%; object-fit:cover;">
+		                    </a>
 		                    </div>
 		                    
 		                    <div class="product-text">
+		                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
 		                        <h6 class="product-name">${item.pdName}</h6>
+		                    </a>    
 		                        <p class="product-price">${item.pd_price}원</p>
 		                    </div>
 		                </div>
