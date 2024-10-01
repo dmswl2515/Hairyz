@@ -10,14 +10,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.study.springboot.dao.IMemberDao;
+import com.study.springboot.dao.IOrderProductDao;
 import com.study.springboot.dao.IPetListDao;
 import com.study.springboot.dto.MemberDto;
+import com.study.springboot.dto.OrderProductDto;
 import com.study.springboot.dto.PetListDto;
 
 import jakarta.servlet.ServletContext;
@@ -35,6 +40,9 @@ public class MyController {
 	
 	@Autowired
 	IPetListDao pteListDao;
+	
+	@Autowired
+	IOrderProductDao orderProductDao;
 	
 	@Autowired
     private ServletContext servletContext;
@@ -62,7 +70,7 @@ public class MyController {
     	String mdId = (String) session.getAttribute("id");
 //    	String mdId = "test"; //테스트용
 		MemberDto dto = memberDao.selectMember(mdId);
-		System.out.println(dto.getMb_orgname());
+		model.addAttribute("profile_view", dto);
         return "myProfile_view";
     }
     
@@ -260,10 +268,6 @@ public class MyController {
 			e.printStackTrace();
 		}
 		
-		System.out.println(fileName);
-		System.out.println(dst);
-		System.out.println(filePath);
-		
 		String name = request.getParameter("name");
 		String mb_no = request.getParameter("mb_no");
 		String birth = request.getParameter("birth");
@@ -301,6 +305,40 @@ public class MyController {
 		model.addAttribute("petList", pDtos);
 
 		return "petList";
+	}
+	
+	@RequestMapping("/orderLookup.do")
+	public String orderLookup(Model model, HttpServletRequest request)
+	{
+		String mdId = request.getParameter("id");
+		MemberDto dto = memberDao.selectMember(mdId);
+		int mbNo = dto.getMb_no();
+		List<OrderProductDto> dtos = orderProductDao.selectOrderProduct(mbNo);
+		model.addAttribute("member", dto);
+		model.addAttribute("orderList", dtos);
+
+		return "orderLookup";
+	}
+	
+	@PostMapping("/orderState.do")
+	@ResponseBody
+	public ResponseEntity<String> orderState(Model model, HttpServletRequest request)
+	{
+		String od_no = request.getParameter("orderno");
+		String od_state = request.getParameter("state");
+		int num = Integer.parseInt(od_no);
+
+		try
+		{
+			orderProductDao.updateState(num, od_state);
+			return ResponseEntity.ok().body("success");
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		
 	}
     
 }
