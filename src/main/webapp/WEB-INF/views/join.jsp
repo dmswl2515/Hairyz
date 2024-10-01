@@ -11,9 +11,28 @@
 
 <script src="http://code.jquery.com/jquery.js"></script>
 
+<!-- 우편번호 검색 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<style>
+.captcha-image {
+    border: 1px solid #000; /* 윤곽선 추가 */
+    border-radius: .25rem;
+}
+.btn.captcha { height:52px; }
+</style>
+
+<!-- 캡차 새로고침 기능 -->
+<script>
+function refreshCaptcha() {
+	document.getElementById('captchaImg').src = '/captcha/image?' + new Date().getTime();
+}
+</script>
+
 <script>
 var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 var phonePattern = /^010-\d{4}-\d{4}$/;
+var isCaptchaVerified = false; // 캡차 인증 상태를 저장하는 변수
 
 function form_check(event) {
 	event.preventDefault(); // 기본 제출 방지
@@ -40,7 +59,35 @@ function form_check(event) {
 		return;
 	}
 
+	// 캡차 인증 상태 확인
+	if (!isCaptchaVerified) {
+		alert("캡차 인증이 필요합니다.");
+		return;
+	}
+
+	// 모든 조건이 충족되면 AJAX 호출
 	submit_ajax();
+}
+
+function checkCaptcha() {
+    var userCaptcha = $('#captchaInput').val(); // 사용자 입력 캡차 값 가져오기
+    $.ajax({
+        url: '/captcha/verify',
+        type: 'POST',
+        data: { userCaptcha: userCaptcha },
+        success: function(response) {
+            if (response === "캡차 인증이 완료되었습니다!") {
+            	alert(response); 
+				isCaptchaVerified = true; // 캡차 인증 완료 상태로 변경
+            } else {
+                alert(response); // 캡차 인증 실패 시 알림
+				isCaptchaVerified = false; // 캡차 인증 실패 상태로 유지
+            }
+        },
+        error: function() {
+            alert("캡차 확인 중 오류가 발생했습니다.");
+        }
+    });
 }
 
 
@@ -122,7 +169,7 @@ function searchZipcode() {
 						<label for="mb_id">아이디(이메일) <code>*</code></label> 
 						<div class="input-group">
 							<input type="email" id="mb_id" name="mb_id" class="form-control" size="20" placeholder="you@example.com" required>
-							<button type="button" class="btn btn-outline-secondary" onclick="checkDuplicateEmail()">중복확인</button>
+							<button type="button" class="btn btn-outline-secondary ml-1" onclick="checkDuplicateEmail()">중복확인</button>
 						</div>
 						<div class="invalid-feedback">이메일은 필수 항목입니다.</div>
 					</div>
@@ -192,7 +239,7 @@ function searchZipcode() {
 						<label for="mb_zipcode">우편번호 <code></code></label>
 						<div class="input-group">
 							<input type="text" id="mb_zipcode" name="mb_zipcode" class="form-control">
-							<button type="button" class="btn btn-outline-secondary" onclick="searchZipcode()">우편번호 검색</button>
+							<button type="button" class="btn btn-outline-secondary ml-1" onclick="searchZipcode()">우편번호 검색</button>
 						</div>
 					</div>
 					<div class="mb-3">
@@ -204,15 +251,15 @@ function searchZipcode() {
 						<input type="text" id="mb_addr2" name="mb_addr2" class="form-control">
 					</div>
 					<div class="mb-3">
-			            <label for="captcha">자동 가입 방지 <code>*</code></label>
-			            <img title="캡차이미지" src="${pageContext.request.contextPath}/captcha/image" alt="캡차이미지"/>
-						<input id="reload" type="button" onclick="javaScript:getImage()" value="새로고침"/>
-						<input id="soundOn" type="button" onclick="javaScript:audio()" value="음성듣기"/>
-						<div id="ccaudio" style="display:none"></div>
-			            
-			            <input type="text" id="captcha" name="captcha" class="form-control" required />
-			            <div class="invalid-feedback">자동 가입 방지는 필수 항목입니다.</div>
-			        </div>
+					    <label for="captchaInput">캡차 <code>*</code></label><br>
+					    <img id="captchaImg" src="/captcha/image" alt="캡차 이미지" class="captcha-image" />
+					    <button type="button" class="btn btn-outline-secondary captcha" onclick="refreshCaptcha()">새로 고침</button>
+						<div class="input-group mt-2">
+						    <input type="text" id="captchaInput" name="captchaInput" class="form-control" required>
+						    <button type="button" class="btn btn-outline-success ml-1" onclick="checkCaptcha()">캡차 확인</button>
+						    <div class="invalid-feedback">캡차는 필수 항목입니다.</div>
+						</div>
+					</div>
 					<hr class="mb-4">
 					<input type="button" class="btn btn-primary btn-lg btn-block" value="회원가입" onclick="form_check(event)"> 
 					<input type="button" class="btn btn-outline-secondary btn-lg btn-block" value="로그인" onclick="window.location='login.jsp'">

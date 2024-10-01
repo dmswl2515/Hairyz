@@ -30,7 +30,7 @@ public class MbController {
         // JSON 형식으로 응답 준비
         String jsonResponse;
         if (result > 0) {
-            jsonResponse = "{\"code\": \"success\", \"desc\": \"회원가입이 완료되었습니다.\"}";
+            jsonResponse = "{\"code\": \"success\", \"desc\": \"회원가입을 축하합니다! \"}";
         } else {
             jsonResponse = "{\"code\": \"error\", \"desc\": \"회원가입에 실패했습니다.\"}";
         }
