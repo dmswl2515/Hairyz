@@ -25,4 +25,19 @@
 		select * from member where mb_no = #{param1}
 	</select>
 	
+	<!-- 이메일 중복 확인 -->
+	<select id="checkEmailExists" parameterType="String" resultType="int">
+	    SELECT COUNT(*) FROM member WHERE mb_id = #{email}
+	</select>
+	
+	<!-- 회원 가입 -->	
+	<insert id="insertMember" parameterType="com.study.springboot.dto.MemberDto">
+	    insert into member 
+	      (mb_no, mb_id, mb_pw, mb_name, mb_nickname, mb_phone, mb_zipcode, 
+	       mb_addr1, mb_addr2, mb_joindate)
+	    VALUES 
+	      (member_seq.NEXTVAL, #{mb_id}, #{mb_pw}, #{mb_name}, #{mb_nickname}, 
+	       #{mb_phone}, #{mb_zipcode}, #{mb_addr1}, #{mb_addr2}, SYSDATE)
+	</insert>
+	
 </mapper>
