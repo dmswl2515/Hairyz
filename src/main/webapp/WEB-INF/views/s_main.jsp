@@ -197,8 +197,8 @@
             border-radius: 5px;
             margin: 10px;
             text-align: center;
-            width: 170px;
-            height: 200px;
+            width: 250px;
+            height: 300px;
     }
         .product-img {
             max-width: 100%;
@@ -207,16 +207,18 @@
     }
     .product-text {
             margin-left: 14px;
-            width: 170px;
+            width:100%; 
+            height:100%; 
+            object-fit:cover;
             
     }
     .product-name {
-        font-size: 0.8em;
+        font-size: 0.92em;
         overflow-wrap: break-word; /*텍스트 길이 줄바꿈*/
     }
 
     .product-price {
-        font-size: 0.8em; 
+        font-size: 0.9em; 
         color: #ff9800; 
     }
     
@@ -227,7 +229,7 @@
 		    <div class="container">
 		    	<div class="row">
 		    		<c:forEach var="item" items="${ProductItems}">
-		                <div class="col-md-2 mb-3">
+		                <div class="col-md-3 mb-3">
 		                    <div class="product-box">
 		                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
 		                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" class="product-img" style="width:100%; height:100%; object-fit:cover;">
@@ -252,20 +254,20 @@
 	    <!-- 첫 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == 1}">
-	            <button type="button" class="btn btn-outline-light" disabled>&lt;&lt;</button>
+	            <button type="button" class="btn page-button" disabled>&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=1&bType=${bType}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=1&pd_animal=${pd_animal}&pd_category=${pd_category}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
 	    <!-- 이전 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == 1}">
-	            <button type="button" class="btn btn-outline-light" disabled>&lt;</button>
+	            <button type="button" class="btn page-button" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${currentPage - 1}&bType=${bType}'">&lt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${currentPage - 1}&pd_animal=${pd_animal}&pd_category=${pd_category}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -273,10 +275,10 @@
 	    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
 	        <c:choose>
 	            <c:when test="${currentPage == i}">
-	                <button type="button" class="btn btn-outline-light" disabled>${i}</button>
+	                <button type="button" class="btn page-button" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${i}&bType=${bType}'">${i}</button>
+	                <button type="button" class="btn page-button" onclick="location.href='s_main?page=${i}&pd_animal=${pd_animal}&pd_category=${pd_category}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -284,24 +286,27 @@
 	    <!-- 다음 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == totalPages}">
-	            <button type="button" class="btn btn-outline-light" disabled>&gt;</button>
+	            <button type="button" class="btn page-button" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${currentPage + 1}&bType=${bType}'">&gt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${currentPage + 1}&pd_animal=${pd_animal}&pd_category=${pd_category}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
 	    <!-- 끝 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == totalPages}">
-	            <button type="button" class="btn btn-outline-light" disabled>&gt;&gt;</button>
+	            <button type="button" class="btn page-button" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${totalPages}&bType=${bType}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${totalPages}&pd_animal=${pd_animal}&pd_category=${pd_category}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
 		<!-- 페이지네이션 -->
+		
+		<p>현재 페이지: ${currentPage}</p>
+		<p>전체 페이지 수: ${totalPages}</p>
 		
 <style>
 /* 페이지네이션 */
@@ -311,6 +316,18 @@
     align-items: center; /* 수직 가운데 정렬 */
     height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
 }
+
+.page-button {
+		background-color: #ffe082;
+		border: 1px solid #ffc107;
+		color: gray;
+		justify-content: center;
+		cursor: pointer;
+	}
+	
+.page-button:hover {
+        background-color: #ffc107; /* 호버 시 색상 변화 */
+    }
 </style>
        	
 		<!-- Divider -->

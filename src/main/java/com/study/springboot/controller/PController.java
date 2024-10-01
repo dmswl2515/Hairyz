@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -12,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.PService;
@@ -33,6 +34,9 @@ public class PController {
 	
 	@Autowired
 	private PService pService;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
     
     @RequestMapping("/p_registration")    
     public String pRegisterForm() {
@@ -46,6 +50,7 @@ public class PController {
     public PController(ServletContext servletContext) {
         this.uploadDir = servletContext.getRealPath("/upload/");
     }
+    
     
     @PostMapping("/p_registration")    
     public String handleInformation(@RequestParam("file") MultipartFile file, 
@@ -121,15 +126,14 @@ public class PController {
     }
 
     @GetMapping("/p_manage")
-    public String getAllProducts(@RequestParam(value = "page", defaultValue = "1") int currentPage,
-    							 @RequestParam(value = "size", defaultValue = "5") int size, // 한 페이지당 항목 수
+    public String getAllProducts(@RequestParam(defaultValue = "1") int page,
     							 @RequestParam(value = "condition", required = false) String condition,
         						 @RequestParam(value = "keyword", required = false) String keyword,
         						 Model model) {
     	
     	
     	
-    	List<PDto> productList;
+    	List<PDto> productList = new ArrayList<>();
 
         if ("productNumber".equals(condition) && keyword != null && !keyword.isEmpty()) {
             try {
@@ -147,18 +151,20 @@ public class PController {
         }
         
         // 페이지네이션 설정
+        int pageSize = 5; // 페이지당 항목 수
         int totalProducts = productList.size(); // 전체 상품 수
-        int totalPages = (int) Math.ceil((double) totalProducts / size); // 총 페이지 수
-        int startPage = Math.max(1, currentPage - 2); // 시작 페이지
-        int endPage = Math.min(totalPages, currentPage + 2); // 끝 페이지
-
-        model.addAttribute("products", productList);
-        model.addAttribute("condition", condition); 
+        int startRow = (page - 1) * pageSize; // 시작 인덱스
+        int endRow = Math.min(startRow + pageSize, totalProducts);
+        
+        List<PDto> paginatedProducts = productList.subList(startRow, endRow);
+        
+        model.addAttribute("products", paginatedProducts);
+        model.addAttribute("condition", condition);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
+        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
+        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalProducts / pageSize), page + 2)); // 끝 페이지
 
         return "p_manage"; // JSP 이름
     }
@@ -258,10 +264,33 @@ public class PController {
     }
     
     
+    
     @RequestMapping("/s_main")    
-    public String shoppingMainPage(Model model) {
-    	 List<PDto> productItems = pService.getAllProducts(); // 상품 목록 가져오기
-         model.addAttribute("ProductItems", productItems);
+    public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
+            					   @RequestParam(required = false) String pd_animal,
+            					   @RequestParam(required = false) String pd_category,
+    							   Model model){
+    	
+    	// 페이지당 항목 수
+        int pageSize = 16; 
+        
+        // 총 상품 수를 데이터베이스에서 가져옵니다.
+        int totalProducts = (int) pRepository.count(); // 총 상품 수를 세는 메서드 (이 메서드는 필요에 따라 구현해야 합니다)
+        
+        // 시작 행 번호 및 종료 행 번호를 계산합니다.
+        int startRow = (page - 1) * pageSize; 
+        int endRow = Math.min(startRow + pageSize, totalProducts); 
+
+        // 데이터베이스에서 현재 페이지에 해당하는 상품을 가져옵니다.
+        List<PDto> products = pRepository.findPaginated(startRow, pageSize); // 시작 행 번호와 페이지 크기를 사용합니다.
+        
+        // 모델에 데이터 추가
+        model.addAttribute("ProductItems", products); // 현재 페이지의 상품 리스트
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
+        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
+        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalProducts / pageSize), page + 2)); // 끝 페이지
+        
         return "s_main";                 
     }
     

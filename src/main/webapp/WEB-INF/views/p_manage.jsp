@@ -217,60 +217,60 @@
 	        <input type="button" class="btn btn-outline-warning custom-width" value="등록하기"  onclick="window.location.href='p_registration';"/>
        	</div>
        	</div>
-       	
+		
        	<!-- 페이지네이션 -->
-       	<div class="director">
-		    <!-- 첫 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == 1}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&lt;&lt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
-		        </c:otherwise>
-		    </c:choose>
-		
-		    <!-- 이전 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == 1}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&lt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
-		        </c:otherwise>
-		    </c:choose>
-		
-		    <!-- 개별 페이지 -->
-		    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
-		        <c:choose>
-		            <c:when test="${currentPage == i}">
-		                <button type="button" class="btn btn-outline-warning" disabled>${i}</button>
-		            </c:when>
-		            <c:otherwise>
-		                <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
-		            </c:otherwise>
-		        </c:choose>
-		    </c:forEach>
-		
-		    <!-- 다음 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == totalPages}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&gt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
-		        </c:otherwise>
-		    </c:choose>
-		
-		    <!-- 끝 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == totalPages}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&gt;&gt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
-		        </c:otherwise>
-		    </c:choose>
+		<div class="director">
+	    <!-- 첫 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == 1}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 이전 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == 1}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 개별 페이지 -->
+	    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
+	        <c:choose>
+	            <c:when test="${currentPage == i}">
+	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
+	            </c:when>
+	            <c:otherwise>
+	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
+	            </c:otherwise>
+	        </c:choose>
+	    </c:forEach>
+	
+	    <!-- 다음 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == totalPages}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 끝 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == totalPages}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
+	        </c:otherwise>
+	    </c:choose>
 		</div>
 		<!-- 페이지네이션 -->
 		
@@ -282,6 +282,18 @@
     align-items: center; /* 수직 가운데 정렬 */
     height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
 }
+
+.page-button {
+		background-color: #ffe082;
+		border: 1px solid #ffc107;
+		color: gray;
+		justify-content: center;
+		cursor: pointer;
+	}
+	
+.page-button:hover {
+        background-color: #ffc107; /* 호버 시 색상 변화 */
+    }
 </style>
        	
 		<!-- Divider -->
