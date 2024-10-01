@@ -23,7 +23,7 @@ public class PDto
     @SequenceGenerator(name = "product_seq", sequenceName = "product_seq", allocationSize = 1) // 시퀀스 이름
     private Integer pd_no; // 상품 번호 (PK)
 
-    @Column(unique = true, name="pd_num")
+    @Column(name="pd_num")
     private Integer pdNum; // 상품 등록번호
     
     @Column(name = "pd_name")

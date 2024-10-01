@@ -191,9 +191,13 @@
 		                    <td>
 		                        <div class="product-container">    
 		                            <div class="product-box">
+		                            <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
 		                                 <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" style="width:100%; height:100%; object-fit:cover;">
-		                            </div> 
-		                            ${item.pdName}
+		                            </a>
+		                            </div>
+		                            <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;"> 
+		                            	${item.pdName}
+		                            </a>
 		                            
 		                        </div>     
 		                    </td>

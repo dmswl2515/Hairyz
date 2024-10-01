@@ -375,8 +375,7 @@
 			
 			<div class="info-content">
 			    <div id="details-content">
-			        <h3>상세정보</h3>
-			        <img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
+			        <img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname2}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
 			        <!-- 데이터베이스에서 불러온 내용 표시 -->
 			    </div>
 			<hr class="product-hr">

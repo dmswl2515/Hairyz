@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.springboot.dto.PDto;
 import com.study.springboot.repository.PRepository;
@@ -70,7 +70,7 @@ public class PController {
         // 첫 번째 파일 정보 처리
         String originalFilename1 = file.getOriginalFilename();
         String changedFilename1 = System.currentTimeMillis() + "_" + originalFilename1; // 현재 시간 기반의 랜덤 파일 이름
-        String filePath1 = "upload/" + changedFilename1;
+        String filePath1 = uploadDir + changedFilename1;
 
         // 첫번 째 파일 저장
         Path path1 = Paths.get(filePath1);
@@ -80,7 +80,7 @@ public class PController {
         // 두 번째 파일 정보 처리
         String originalFilename2 = file2.getOriginalFilename();
         String changedFilename2 = System.currentTimeMillis() + "_" + originalFilename2; // 현재 시간 기반의 랜덤 파일 이름
-        String filePath2 = "upload/" + changedFilename2;
+        String filePath2 = uploadDir + changedFilename2;
 
         // 두 번째 파일 저장
         Path path2 = Paths.get(filePath2);
@@ -166,30 +166,95 @@ public class PController {
  
     @RequestMapping("/p_modify")    
     public String pModifyForm(@RequestParam("pdNum") Integer pdNum, Model model) {
+        
         List<PDto> products = pRepository.findByPdNum(pdNum);
         
         if (!products.isEmpty()) {
             model.addAttribute("product", products.get(0)); // 첫 번째 상품을 모델에 추가
-            return "p_modify"; // 수정 페이지 이름
-        } else {
-            return "redirect:/error"; 
-        }               
+        }
+         return "p_modify"; // 수정 페이지 이름  
     }
     
+    
+    
     @PostMapping("/p_update")
-    public String updateProduct(@ModelAttribute PDto product, 
-    							@RequestParam("file") MultipartFile file,
-					    		@RequestParam("file2") MultipartFile file2,
-    							Model model) {
-    	if (product.getPdNum() != null) {
-            // 상품 정보를 업데이트하는 로직 추가
-            pRepository.save(product); // pdNum이 있는 경우 업데이트
+    public String updateProduct(@RequestParam("pdNum") Integer pdNum,
+					            @RequestParam("file") MultipartFile file,
+					            @RequestParam("file2") MultipartFile file2,
+					            @RequestParam("pdName") String pdName,
+					            @RequestParam("pd_animal") String pdAnimal,
+					            @RequestParam("pd_category") String pdCategory,
+					            @RequestParam("pd_price") Integer pdPrice,
+					            @RequestParam("pd_amount") Integer pdAmount,
+					            RedirectAttributes redirectAttributes) throws IOException {
+    	
+    	// 기존 상품을 데이터베이스에서 찾기
+    	List<PDto> products = pRepository.findByPdNum(pdNum);
+    	
+    	if (!products.isEmpty()) {
+            PDto product = products.get(0); // 첫 번째 제품 정보 가져오기
+
+            // 기존 파일 이름 저장
+            String oldFileName1 = product.getPd_chng_fname(); // 기존 파일 이름
+            String oldFileName2 = product.getPd_chng_fname2(); // 기존 파일 이름
+
+            // 파일이 새로 업로드 되면 저장
+            if (!file.isEmpty()) {
+                // 새로운 파일 정보 처리
+                String originalFilename1 = file.getOriginalFilename();
+                String changedFilename1 = System.currentTimeMillis() + "_" + originalFilename1; // 현재 시간 기반의 랜덤 파일 이름
+                String filePath1 = uploadDir + changedFilename1;
+
+                // 파일 저장
+                Path path1 = Paths.get(filePath1);
+                Files.createDirectories(path1.getParent());
+                Files.write(path1, file.getBytes());
+
+                product.setPd_chng_fname(changedFilename1); // 새 파일 이름 설정
+	    	} else {
+	            // 두 번째 파일이 선택되지 않은 경우 기존 파일 이름 유지
+	            product.setPd_chng_fname2(oldFileName1);
+	        }
+
+            if (!file2.isEmpty()) {
+                // 두 번째 파일 정보 처리
+                String originalFilename2 = file2.getOriginalFilename();
+                String changedFilename2 = System.currentTimeMillis() + "_" + originalFilename2; // 현재 시간 기반의 랜덤 파일 이름
+                String filePath2 = uploadDir + changedFilename2;
+
+                // 파일 저장
+                Path path2 = Paths.get(filePath2);
+                Files.createDirectories(path2.getParent());
+                Files.write(path2, file2.getBytes());
+
+                product.setPd_chng_fname2(changedFilename2); // 새 파일 이름 설정
+            } else {
+                // 두 번째 파일이 선택되지 않은 경우 기존 파일 이름 유지
+                product.setPd_chng_fname2(oldFileName2);
+            }
+            
+
+            // 상품 정보 업데이트
+            product.setPdName(pdName);
+            product.setPd_animal(pdAnimal);
+            product.setPd_category(pdCategory);
+            product.setPd_price(pdPrice);
+            product.setPd_amount(pdAmount);
+            product.setPd_fee(product.getPd_fee()); // 기존 pd_fee를 설정
+            product.setPd_selling(product.getPd_selling()); // 기존 pd_selling을 설정
+            product.setPdRdate(product.getPdRdate()); // 기존 pd_rdate를 설정
+            
+
+            // 제품 정보 저장
+            pRepository.save(product);
+            
+            // 성공 메시지 추가
+            redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다.");
         } else {
-            // 에러 처리: pdNum이 null이면 수정할 수 없음
-            model.addAttribute("error", "상품 번호가 누락되었습니다.");
-            return "p_update"; // 에러가 발생한 경우 수정 페이지로 돌아감
+            // 실패 메시지 추가
+            redirectAttributes.addFlashAttribute("error", "해당 상품을 찾을 수 없습니다.");
         }
-        return "redirect:/p_manage";
+    	return "redirect:/p_manage";
     }
     
     
