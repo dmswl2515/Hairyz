@@ -62,7 +62,7 @@ public class MyController {
     	String mdId = (String) session.getAttribute("id");
 //    	String mdId = "test"; //테스트용
 		MemberDto dto = memberDao.selectMember(mdId);
-		model.addAttribute("profile_view", dto);
+		System.out.println(dto.getMb_orgname());
         return "myProfile_view";
     }
     
@@ -87,9 +87,7 @@ public class MyController {
     	String addr1 = request.getParameter("addr1");
     	String addr2 = request.getParameter("addr2");
     	
-    	int iZipcode = Integer.parseInt(zipcode);
-    	
-    	memberDao.updateProfile(id, nickName, phone, iZipcode, addr1, addr2);
+    	memberDao.updateProfile(id, nickName, phone, zipcode, addr1, addr2);
     	
     	MemberDto dto = memberDao.selectMember(id);
     	model.addAttribute("profile_view", dto);

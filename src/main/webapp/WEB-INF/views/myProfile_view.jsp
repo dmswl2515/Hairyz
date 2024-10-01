@@ -75,6 +75,11 @@ hr {
 	background: #000000;
 }
 
+.box img {
+	width: 100%;
+	height: auto;
+}
+
 .profile {
 	width: 100%;
 	height: 100%;
@@ -205,7 +210,14 @@ hr {
 	
 	            <!-- 프로필 사진 -->
 	            <div class="box">
-	                <img class="profile" src="/images/logo.png">
+					<c:choose>
+						<c:when test="${not empty profile_view.mb_imgpath}">
+							<img src="${pageContext.request.contextPath}/upload/${profile_view.mb_orgname}" alt="프로필 사진">
+						</c:when>
+						<c:otherwise>
+							<img src="images/logo.png" alt="기본 프로필 사진">
+						</c:otherwise>
+					</c:choose>
 				</div>
 	
 	            <!-- 이메일, 이름, 닉네임 출력 -->
