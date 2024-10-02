@@ -1,7 +1,11 @@
+<%@ page import="com.study.springboot.dto.QDto" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.DayOfWeek" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 
 <%
     // 현재 날짜와 시간 가져오기
@@ -20,6 +24,7 @@
         message = "오늘출발 마감되었습니다(평일 12:00시 까지)";
     }
 %>
+
 
 <!DOCTYPE html>
 <html>
@@ -202,7 +207,9 @@
 	              </div>
 	              <div class="product-text">
 		              <span class="product-name">${product.pdName}</span><br>
-		              <span class="product-price">${product.pd_price}원</span>
+		              <span class="product-price">
+		              	<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
+		              </span>
 		              <hr class="product-hr">
 		              
 		              <p>배송방법&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;택배</p>
@@ -229,11 +236,11 @@
 					  <hr class="product-hr">
 					  	<div style="display: flex; align-items: center;">
 	                        <span style="margin-right: 240px;">총 상품 금액</span>
-	                        <span id="total-price">16,200원</span>
+	                        <span id="total-price">${product.pd_price}원</span>
                     	</div>
 <script>
 	$(document).ready(function() {
-	    let pricePerItem = 16200; // 개별 상품 가격
+	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
 	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
 	
 	    function updateTotalPrice() {
@@ -375,13 +382,12 @@
 			
 			<div class="info-content">
 			    <div id="details-content">
-			        <h3>상세정보</h3>
-			        <img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
+			        <img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname2}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
 			        <!-- 데이터베이스에서 불러온 내용 표시 -->
 			    </div>
 			<hr class="product-hr">
 			    <div id="reviews-content">
-			        <h3>구매평</h3>
+			        <h3><strong>구매평</strong></h3>
 			        <p>상품을 구매하신 분들이 작성한 리뷰입니다.</p>
 			    </div>
 				    <table class="mb-2 my-custom-table" style="width: 100%;">
@@ -433,7 +439,7 @@
 			    
 			<hr class="product-hr">
 			    <div id="qna-content" class="">
-			        <h3>Q&A</h3>
+			        <h3><strong>Q&A</strong></h3>
 			        <p>구매하시려는 상품에 대해 궁금한 점이 있으면 문의 주세요.</p>
 					<div class="container d-flex justify-content-end">
 				        <input type="button" class="btn btn-warning custom-width mb-3" value="Q&A 작성"  onclick=""/>
@@ -448,59 +454,47 @@
 					    </tr>
 					  </thead>
 				      <tbody>
-				        <c:forEach var="item" items="${boardPage.content}">
-				            <tr>
-				                <td class="text-center align-middle">${item.pd_num}미답변</td>
-				                <td>
-				                   <div class="product-container">	
-					                    <c:forEach begin="1" end="${item.pd_name}">안녕하세요 혹시 사료 재입고 예정있을까요?</c:forEach>
-					                        <c:if test="${item.isnew}">
-					                            <span class="badge badge-secondary">New</span>
-					                    </c:if>
-					               </div>     
-				                </td>
-				                <td class="text-center align-middle">${item.pd_amount}김*지</td>
-				                <td class="text-center align-middle">${item.pd_amount}2024.09.22</td>
-				            </tr>
-				        </c:forEach>
-				        <c:forEach var="item" items="${boardPage.content}">
-				            <tr>
-				                <td class="text-center align-middle">${item.pd_num}미답변</td>
-				                <td>
-				                   <div class="product-container">	
-					                    <c:forEach begin="1" end="${item.pd_name}">안녕하세요 혹시 사료 재입고 예정있을까요?</c:forEach>
-					                        <c:if test="${item.isnew}">
-					                            <span class="badge badge-secondary">New</span>
-					                    </c:if>
-					               </div>     
-				                </td>
-				                <td class="text-center align-middle">${item.pd_amount}김*지</td>
-				                <td class="text-center align-middle">${item.pd_amount}2024.09.22</td>
-				            </tr>
-				        </c:forEach>
-				        <c:forEach var="item" items="${boardPage.content}">
-				            <tr>
-				                <td class="text-center align-middle">${item.pd_num}미답변</td>
-				                <td>
-				                   <div class="product-container">	
-					                    <c:forEach begin="1" end="${item.pd_name}">안녕하세요 혹시 사료 재입고 예정있을까요?</c:forEach>
-					                        <c:if test="${item.isnew}">
-					                            <span class="badge badge-secondary">New</span>
-					                    </c:if>
-					               </div>     
-				                </td>
-				                <td class="text-center align-middle">${item.pd_amount}김*지</td>
-				                <td class="text-center align-middle">${item.pd_amount}2024.09.22</td>
-				            </tr>
-				        </c:forEach>
+				      	<c:if test="${not empty qnaList}">
+					        <c:forEach var="qDTO" items="${qnaList}">
+					            <tr>
+					                <td class="text-center align-middle">
+						                <c:choose>
+									        <c:when test="${qDTO.qna_rstate == 'N'}">
+									            미답변
+									        </c:when>
+									        <c:when test="${qDTO.qna_rstate == 'Y'}">
+									            답변완료
+									        </c:when>
+									    </c:choose>    
+					                <td>
+					                   <div class="product-container">	
+						                    ${qDTO.qna_content}&nbsp;&nbsp;
+				                            <c:if test="${qDTO.isNew()}">
+											    <span class="badge badge-secondary">New</span>
+											</c:if>
+											<c:if test="${!qDTO.isNew()}">
+											</c:if>
+						               </div>     
+					                </td>
+					                <td class="text-center align-middle">${qDTO.qna_name}</td>
+					                <td class="text-center align-middle">
+					                	<fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />					                </td>
+					            </tr>
+					        </c:forEach>
+				        </c:if>
+
+						<c:if test="${empty qnaList}">
+						    <tr>
+						        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
+						    </tr>
+						</c:if>
 				      </tbody>
 					</table> 		       
 			    </div>
 			</div>
        	</div>
        	
-       	<!-- 페이지네이션 -->
-
+       
 <script>
 	document.querySelectorAll('.tab-button').forEach(button => {
 	    button.addEventListener('click', function() {

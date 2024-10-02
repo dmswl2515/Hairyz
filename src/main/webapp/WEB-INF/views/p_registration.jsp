@@ -157,7 +157,7 @@
 			                <option value="food">사료</option>
 			                <option value="refreshment">간식</option>
 			                <option value="product">용품</option>
-			                <option value="etc">기타</option>
+			                <option value="etc">리빙</option>
 			            </select><br>
 			        </div>
 			        

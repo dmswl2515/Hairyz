@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<% 
+    String pdAnimal = (String) request.getParameter("pd_animal");
+    String pdCategory = (String) request.getParameter("pd_category");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -154,16 +160,16 @@
       	
 		<div class="container">
 		    <div class="text-center my-4"> 
-		        <button class="category-style" onclick="selectCategory(this)">#전체</button> 
-		        <button class="category-style" onclick="selectCategory(this)">#강아지</button>
-		        <button class="category-style" onclick="selectCategory(this)">#고양이</button>
+		        <button class="category-style" value="all" onclick="selectAnimal('all'); updateURL();">#전체</button> 
+		        <button class="category-style" value="dog" onclick="selectAnimal('dog'); updateURL();">#강아지</button>
+		        <button class="category-style" value="cat" onclick="selectAnimal('cat'); updateURL();">#고양이</button>
 		    </div>
 		    
 		   	<div class="text-center my-4"> 
-			    <button class="circle-button" onclick="selectCircle(this)">사료</button> 
-			    <button class="circle-button" onclick="selectCircle(this)">간식</button>
-			    <button class="circle-button" onclick="selectCircle(this)">용품</button>
-			    <button class="circle-button" onclick="selectCircle(this)">기타</button>
+			    <button class="circle-button" value="food" onclick="selectCategory('food'); updateURL();">사료</button> 
+			    <button class="circle-button" value="refreshment" onclick="selectCategory('refreshment'); updateURL();">간식</button>
+			    <button class="circle-button" value="product" onclick="selectCategory('product'); updateURL();">용품</button>
+			    <button class="circle-button" value="etc" onclick="selectCategory('etc'); updateURL();">리빙</button>
 			</div>
 
 <script>
@@ -188,6 +194,38 @@
 	    // 클릭한 버튼에 'selected' 클래스 추가
 	    button.classList.add('selected');
 	}
+	
+	let selectedAnimal = 'all'; // 기본값
+    let selectedCategory = 'food'; // 기본값
+
+    function selectAnimal(animal) {
+        selectedAnimal = animal; // 선택한 동물 업데이트
+        // 선택된 버튼 하이라이트
+        const animalButtons = document.querySelectorAll('.category-style');
+        animalButtons.forEach(btn => {
+            btn.classList.remove('selected');
+            if (btn.value === animal) {
+                btn.classList.add('selected');
+            }
+        });
+    }
+
+    function selectCategory(category) {
+        selectedCategory = category; // 선택한 카테고리 업데이트
+        // 선택된 버튼 하이라이트
+        const categoryButtons = document.querySelectorAll('.circle-button');
+        categoryButtons.forEach(btn => {
+            btn.classList.remove('selected');
+            if (btn.value === category) {
+                btn.classList.add('selected');
+            }
+        });
+    }
+
+    function updateURL() {
+        const url = `s_main?pd_animal=${selectedAnimal}&pd_category=${selectedCategory}`;
+        location.href = url; // 생성된 URL로 리다이렉트
+    }
 </script>
 
 <style>
@@ -197,8 +235,8 @@
             border-radius: 5px;
             margin: 10px;
             text-align: center;
-            width: 170px;
-            height: 200px;
+            width: 250px;
+            height: 300px;
     }
         .product-img {
             max-width: 100%;
@@ -207,16 +245,18 @@
     }
     .product-text {
             margin-left: 14px;
-            width: 170px;
+            width:100%; 
+            height:100%; 
+            object-fit:cover;
             
     }
     .product-name {
-        font-size: 0.8em;
+        font-size: 0.92em;
         overflow-wrap: break-word; /*텍스트 길이 줄바꿈*/
     }
 
     .product-price {
-        font-size: 0.8em; 
+        font-size: 0.9em; 
         color: #ff9800; 
     }
     
@@ -227,7 +267,7 @@
 		    <div class="container">
 		    	<div class="row">
 		    		<c:forEach var="item" items="${ProductItems}">
-		                <div class="col-md-2 mb-3">
+		                <div class="col-md-3 mb-3">
 		                    <div class="product-box">
 		                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
 		                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" class="product-img" style="width:100%; height:100%; object-fit:cover;">
@@ -238,7 +278,9 @@
 		                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
 		                        <h6 class="product-name">${item.pdName}</h6>
 		                    </a>    
-		                        <p class="product-price">${item.pd_price}원</p>
+		                        <p class="product-price">
+		                        	<fmt:formatNumber value="${item.pd_price}" pattern="#,##0원" />
+		                        </p>
 		                    </div>
 		                </div>
 	            </c:forEach>
@@ -252,20 +294,20 @@
 	    <!-- 첫 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == 1}">
-	            <button type="button" class="btn btn-outline-light" disabled>&lt;&lt;</button>
+	            <button type="button" class="btn page-button" disabled>&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=1&bType=${bType}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=1&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
 	    <!-- 이전 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == 1}">
-	            <button type="button" class="btn btn-outline-light" disabled>&lt;</button>
+	            <button type="button" class="btn page-button" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${currentPage - 1}&bType=${bType}'">&lt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${currentPage - 1}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -273,10 +315,10 @@
 	    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
 	        <c:choose>
 	            <c:when test="${currentPage == i}">
-	                <button type="button" class="btn btn-outline-light" disabled>${i}</button>
+	                <button type="button" class="btn page-button" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${i}&bType=${bType}'">${i}</button>
+	                <button type="button" class="btn page-button" onclick="location.href='s_main?page=${i}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -284,24 +326,25 @@
 	    <!-- 다음 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == totalPages}">
-	            <button type="button" class="btn btn-outline-light" disabled>&gt;</button>
+	            <button type="button" class="btn page-button" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${currentPage + 1}&bType=${bType}'">&gt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${currentPage + 1}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
 	    <!-- 끝 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == totalPages}">
-	            <button type="button" class="btn btn-outline-light" disabled>&gt;&gt;</button>
+	            <button type="button" class="btn page-button" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn btn-outline-light" onclick="location.href='list?page=${totalPages}&bType=${bType}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${totalPages}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
 		<!-- 페이지네이션 -->
+		
 		
 <style>
 /* 페이지네이션 */
@@ -311,6 +354,18 @@
     align-items: center; /* 수직 가운데 정렬 */
     height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
 }
+
+.page-button {
+		background-color: #ffe082;
+		border: 1px solid #ffc107;
+		color: gray;
+		justify-content: center;
+		cursor: pointer;
+	}
+	
+.page-button:hover {
+        background-color: #ffc107; /* 호버 시 색상 변화 */
+    }
 </style>
        	
 		<!-- Divider -->

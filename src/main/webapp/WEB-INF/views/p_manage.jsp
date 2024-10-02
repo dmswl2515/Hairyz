@@ -186,20 +186,54 @@
 		        </thead>
 		        <tbody>
 		            <c:forEach var="item" items="${products}">
+		            	<input type="hidden" name="pdNum" value="${item.pdNum}" />
 		                <tr>
 		                    <td class="text-center align-middle">${item.pdNum}</td>
 		                    <td>
 		                        <div class="product-container">    
 		                            <div class="product-box">
+		                            <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
 		                                 <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" style="width:100%; height:100%; object-fit:cover;">
-		                            </div> 
-		                            ${item.pdName}
+		                            </a>
+		                            </div>
+		                            <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;"> 
+		                            	${item.pdName}
+		                            </a>
 		                            
 		                        </div>     
 		                    </td>
 		                    <td class="text-center align-middle">${item.pd_amount}개</td>
 		                    <td class="text-center align-middle">
-		                        <input type="button" class="btn btn-outline-warning custom-width mb-2" value="판매 중지"/>
+		                        <form method="post" action="/updateSellingStatus">
+								    <input type="hidden" name="pdNum" value="${item.pdNum}" />
+								    <c:if test="${not empty item}">
+									    <p>pdNum: ${item.pdNum}</p>
+									</c:if>
+								    <input type="hidden" name="sellingStatus" value="${currentStatus == 'Y' ? 'N' : 'Y'}" />
+								    <input type="submit" class="btn btn-outline-warning custom-width mb-2" value="${currentStatus == 'Y' ? '판매 재시작' : '판매 중지'}" />
+								</form>
+
+<script>
+function submitForm() {
+    // 버튼 클릭 시 폼 제출
+    const form = document.getElementById("sellingForm");
+    const button = document.getElementById("toggleSellingButton");
+
+    // 서버에서 판매 상태를 변경한 후 버튼 텍스트 변경
+    button.value = "판매 재시작"; // 버튼 텍스트 변경
+    button.setAttribute("onclick", "restartForm()"); // 클릭 이벤트 핸들러 변경
+    form.submit();
+}
+
+function restartForm() {
+    // 판매 재시작 처리 로직
+    const form = document.getElementById("sellingForm");
+    form.pd_selling.value = "Y"; // 판매 상태를 재시작으로 변경
+    form.submit();
+}
+</script>
+
+
 		                        <br>
 		                        <input type="button" class="btn btn-outline-warning custom-width" 
 		                        value="상품 수정" 
@@ -213,60 +247,60 @@
 	        <input type="button" class="btn btn-outline-warning custom-width" value="등록하기"  onclick="window.location.href='p_registration';"/>
        	</div>
        	</div>
-       	
+		
        	<!-- 페이지네이션 -->
-       	<div class="director">
-		    <!-- 첫 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == 1}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&lt;&lt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
-		        </c:otherwise>
-		    </c:choose>
-		
-		    <!-- 이전 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == 1}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&lt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
-		        </c:otherwise>
-		    </c:choose>
-		
-		    <!-- 개별 페이지 -->
-		    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
-		        <c:choose>
-		            <c:when test="${currentPage == i}">
-		                <button type="button" class="btn btn-outline-warning" disabled>${i}</button>
-		            </c:when>
-		            <c:otherwise>
-		                <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
-		            </c:otherwise>
-		        </c:choose>
-		    </c:forEach>
-		
-		    <!-- 다음 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == totalPages}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&gt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
-		        </c:otherwise>
-		    </c:choose>
-		
-		    <!-- 끝 페이지 -->
-		    <c:choose>
-		        <c:when test="${currentPage == totalPages}">
-		            <button type="button" class="btn btn-outline-warning" disabled>&gt;&gt;</button>
-		        </c:when>
-		        <c:otherwise>
-		            <button type="button" class="btn btn-outline-warning" onclick="location.href='p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
-		        </c:otherwise>
-		    </c:choose>
+		<div class="director">
+	    <!-- 첫 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == 1}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 이전 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == 1}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 개별 페이지 -->
+	    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
+	        <c:choose>
+	            <c:when test="${currentPage == i}">
+	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
+	            </c:when>
+	            <c:otherwise>
+	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
+	            </c:otherwise>
+	        </c:choose>
+	    </c:forEach>
+	
+	    <!-- 다음 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == totalPages}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 끝 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == totalPages}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
+	        </c:otherwise>
+	    </c:choose>
 		</div>
 		<!-- 페이지네이션 -->
 		
@@ -278,6 +312,18 @@
     align-items: center; /* 수직 가운데 정렬 */
     height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
 }
+
+.page-button {
+		background-color: #ffe082;
+		border: 1px solid #ffc107;
+		color: gray;
+		justify-content: center;
+		cursor: pointer;
+	}
+	
+.page-button:hover {
+        background-color: #ffc107; /* 호버 시 색상 변화 */
+    }
 </style>
        	
 		<!-- Divider -->

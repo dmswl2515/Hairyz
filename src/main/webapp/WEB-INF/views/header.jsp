@@ -23,7 +23,7 @@
 	    }
 	
 	    /* hr 두께 설정 */
-	    hr {
+	    footer hr {
 	        border: 1px solid #d8d8d8;
 	        width: 100%;
 	        margin-top: 100px
@@ -59,7 +59,7 @@
 				if (id == null)
 				{
 				%>
-                 	<a href="#" class="btn btn-outline-warning">로그인</a>
+                 	<a href="login.do" class="btn btn-outline-warning">로그인</a>
                  <%}else{%>
                  	<a href="#" class="btn btn-outline-warning">마이페이지</a>
                  	<a href="#" class="btn btn-outline-warning">장바구니</a>

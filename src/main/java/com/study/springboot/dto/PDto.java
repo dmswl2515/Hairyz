@@ -23,15 +23,17 @@ public class PDto
     @SequenceGenerator(name = "product_seq", sequenceName = "product_seq", allocationSize = 1) // 시퀀스 이름
     private Integer pd_no; // 상품 번호 (PK)
 
-    @Column(unique = true, name="pd_num")
+    @Column(name="pd_num")
     private Integer pdNum; // 상품 등록번호
     
     @Column(name = "pd_name")
     private String pdName; // 상품명
-
-    private String pd_category; // 카테고리 (사료/간식/용품/기타)
-
-    private String pd_animal; // 반려동물 종 (개/고양이)
+    
+    @Column(name = "pd_category")
+    private String pdCategory; // 카테고리 (사료/간식/용품/리빙)
+    
+    @Column(name = "pd_animal")
+    private String pdAnimal; // 반려동물 종 (개/고양이)
 
     private Integer pd_price; // 상품 금액
 
@@ -76,7 +78,7 @@ public class PDto
 		super();
 	}
 
-	public PDto(Integer pd_no, Integer pdNum, String pdName, String pd_category, String pd_animal, Integer pd_price,
+	public PDto(Integer pd_no, Integer pdNum, String pdName, String pdCategory, String pdAnimal, Integer pd_price,
 			Integer pd_amount, Integer pd_fee, Character pd_selling, Date pdRdate, Integer pd_fnum,
 			String pd_ori_fname, String pd_chng_fname, Date pd_fdate, String pd_fpath, String pd_fsize,
 			String pd_ori_fname2, String pd_chng_fname2, Date pd_fdate2, String pd_fpath2, String pd_fsize2)
@@ -85,8 +87,8 @@ public class PDto
 		this.pd_no = pd_no;
 		this.pdNum = pdNum;
 		this.pdName = pdName;
-		this.pd_category = pd_category;
-		this.pd_animal = pd_animal;
+		this.pdCategory = pdCategory;
+		this.pdAnimal = pdAnimal;
 		this.pd_price = pd_price;
 		this.pd_amount = pd_amount;
 		this.pd_fee = pd_fee;
@@ -135,24 +137,24 @@ public class PDto
 		this.pdName = pdName;
 	}
 
-	public String getPd_category()
+	public String getPdCategory()
 	{
-		return pd_category;
+		return pdCategory;
 	}
 
-	public void setPd_category(String pd_category)
+	public void setPdCategory(String pdCategory)
 	{
-		this.pd_category = pd_category;
+		this.pdCategory = pdCategory;
 	}
 
-	public String getPd_animal()
+	public String getPdAnimal()
 	{
-		return pd_animal;
+		return pdAnimal;
 	}
 
-	public void setPd_animal(String pd_animal)
+	public void setPdAnimal(String pdAnimal)
 	{
-		this.pd_animal = pd_animal;
+		this.pdAnimal = pdAnimal;
 	}
 
 	public Integer getPd_price()

@@ -4,24 +4,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.springboot.dto.PDto;
+import com.study.springboot.dto.QDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.PService;
+import com.study.springboot.service.QnAService;
 
 import jakarta.servlet.ServletContext;
 
@@ -33,6 +39,9 @@ public class PController {
 	
 	@Autowired
 	private PService pService;
+	
+	@Autowired
+	private QnAService qnaService;
     
     @RequestMapping("/p_registration")    
     public String pRegisterForm() {
@@ -47,12 +56,13 @@ public class PController {
         this.uploadDir = servletContext.getRealPath("/upload/");
     }
     
+    
     @PostMapping("/p_registration")    
     public String handleInformation(@RequestParam("file") MultipartFile file, 
 						    		@RequestParam("file2") MultipartFile file2,
 						            @RequestParam String pdName, 
-						            @RequestParam String pd_category, 
-						            @RequestParam String pd_animal, 
+						            @RequestParam String pdCategory, 
+						            @RequestParam String pdAnimal, 
 						            @RequestParam Integer pd_price, 
 						            @RequestParam Integer pd_amount) throws IOException  {
         
@@ -70,7 +80,7 @@ public class PController {
         // 첫 번째 파일 정보 처리
         String originalFilename1 = file.getOriginalFilename();
         String changedFilename1 = System.currentTimeMillis() + "_" + originalFilename1; // 현재 시간 기반의 랜덤 파일 이름
-        String filePath1 = "upload/" + changedFilename1;
+        String filePath1 = uploadDir + changedFilename1;
 
         // 첫번 째 파일 저장
         Path path1 = Paths.get(filePath1);
@@ -80,7 +90,7 @@ public class PController {
         // 두 번째 파일 정보 처리
         String originalFilename2 = file2.getOriginalFilename();
         String changedFilename2 = System.currentTimeMillis() + "_" + originalFilename2; // 현재 시간 기반의 랜덤 파일 이름
-        String filePath2 = "upload/" + changedFilename2;
+        String filePath2 = uploadDir + changedFilename2;
 
         // 두 번째 파일 저장
         Path path2 = Paths.get(filePath2);
@@ -91,8 +101,8 @@ public class PController {
         PDto product = new PDto();
         product.setPdNum(pd_fnum);
         product.setPdName(pdName);
-        product.setPd_category(pd_category);
-        product.setPd_animal(pd_animal);
+        product.setPdCategory(pdCategory);
+        product.setPdAnimal(pdAnimal);
         product.setPd_price(pd_price);
         product.setPd_amount(pd_amount);
         product.setPd_fee(0); // 기본값 설정
@@ -121,15 +131,14 @@ public class PController {
     }
 
     @GetMapping("/p_manage")
-    public String getAllProducts(@RequestParam(value = "page", defaultValue = "1") int currentPage,
-    							 @RequestParam(value = "size", defaultValue = "5") int size, // 한 페이지당 항목 수
+    public String getAllProducts(@RequestParam(defaultValue = "1") int page,
     							 @RequestParam(value = "condition", required = false) String condition,
         						 @RequestParam(value = "keyword", required = false) String keyword,
         						 Model model) {
     	
     	
     	
-    	List<PDto> productList;
+    	List<PDto> productList = new ArrayList<>();
 
         if ("productNumber".equals(condition) && keyword != null && !keyword.isEmpty()) {
             try {
@@ -147,56 +156,163 @@ public class PController {
         }
         
         // 페이지네이션 설정
+        int pageSize = 5; // 페이지당 항목 수
         int totalProducts = productList.size(); // 전체 상품 수
-        int totalPages = (int) Math.ceil((double) totalProducts / size); // 총 페이지 수
-        int startPage = Math.max(1, currentPage - 2); // 시작 페이지
-        int endPage = Math.min(totalPages, currentPage + 2); // 끝 페이지
-
-        model.addAttribute("products", productList);
-        model.addAttribute("condition", condition); 
+        int startRow = (page - 1) * pageSize; // 시작 인덱스
+        int endRow = Math.min(startRow + pageSize, totalProducts);
+        
+        List<PDto> paginatedProducts = productList.subList(startRow, endRow);
+        
+        model.addAttribute("products", paginatedProducts);
+        model.addAttribute("condition", condition);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
+        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
+        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalProducts / pageSize), page + 2)); // 끝 페이지
 
         return "p_manage"; // JSP 이름
     }
     
+    @PostMapping("/updateSellingStatus")
+    public String updateSellingStatus(@RequestParam("pdNum") Integer pdNum, 
+	            					  @RequestParam("newStatus") Character newStatus) {
+    	
+		System.out.println("pdNum: " + pdNum + ", newStatus: " + newStatus); // 값 확인
+		pService.updateSellingStatus(pdNum, newStatus);
+		
+		return "redirect:/p_manage"; // 업데이트 후 리다이렉트할 페이지
+	}
+    
  
     @RequestMapping("/p_modify")    
     public String pModifyForm(@RequestParam("pdNum") Integer pdNum, Model model) {
+        
         List<PDto> products = pRepository.findByPdNum(pdNum);
         
         if (!products.isEmpty()) {
             model.addAttribute("product", products.get(0)); // 첫 번째 상품을 모델에 추가
-            return "p_modify"; // 수정 페이지 이름
-        } else {
-            return "redirect:/error"; 
-        }               
+        }
+         return "p_modify"; // 수정 페이지 이름  
     }
     
+    
+    
     @PostMapping("/p_update")
-    public String updateProduct(@ModelAttribute PDto product, 
-    							@RequestParam("file") MultipartFile file,
-					    		@RequestParam("file2") MultipartFile file2,
-    							Model model) {
-    	if (product.getPdNum() != null) {
-            // 상품 정보를 업데이트하는 로직 추가
-            pRepository.save(product); // pdNum이 있는 경우 업데이트
+    public String updateProduct(@RequestParam("pdNum") Integer pdNum,
+					            @RequestParam("file") MultipartFile file,
+					            @RequestParam("file2") MultipartFile file2,
+					            @RequestParam("pdName") String pdName,
+					            @RequestParam("pd_animal") String pdAnimal,
+					            @RequestParam("pd_category") String pdCategory,
+					            @RequestParam("pd_price") Integer pdPrice,
+					            @RequestParam("pd_amount") Integer pdAmount,
+					            RedirectAttributes redirectAttributes) throws IOException {
+    	
+    	// 기존 상품을 데이터베이스에서 찾기
+    	List<PDto> products = pRepository.findByPdNum(pdNum);
+    	
+    	if (!products.isEmpty()) {
+            PDto product = products.get(0); // 첫 번째 제품 정보 가져오기
+
+            // 기존 파일 이름 저장
+            String oldFileName1 = product.getPd_chng_fname(); // 기존 파일 이름
+            String oldFileName2 = product.getPd_chng_fname2(); // 기존 파일 이름
+
+            // 파일이 새로 업로드 되면 저장
+            if (!file.isEmpty()) {
+                // 새로운 파일 정보 처리
+                String originalFilename1 = file.getOriginalFilename();
+                String changedFilename1 = System.currentTimeMillis() + "_" + originalFilename1; // 현재 시간 기반의 랜덤 파일 이름
+                String filePath1 = uploadDir + changedFilename1;
+
+                // 파일 저장
+                Path path1 = Paths.get(filePath1);
+                Files.createDirectories(path1.getParent());
+                Files.write(path1, file.getBytes());
+
+                product.setPd_chng_fname(changedFilename1); // 새 파일 이름 설정
+	    	} else {
+	            // 두 번째 파일이 선택되지 않은 경우 기존 파일 이름 유지
+	            product.setPd_chng_fname2(oldFileName1);
+	        }
+
+            if (!file2.isEmpty()) {
+                // 두 번째 파일 정보 처리
+                String originalFilename2 = file2.getOriginalFilename();
+                String changedFilename2 = System.currentTimeMillis() + "_" + originalFilename2; // 현재 시간 기반의 랜덤 파일 이름
+                String filePath2 = uploadDir + changedFilename2;
+
+                // 파일 저장
+                Path path2 = Paths.get(filePath2);
+                Files.createDirectories(path2.getParent());
+                Files.write(path2, file2.getBytes());
+
+                product.setPd_chng_fname2(changedFilename2); // 새 파일 이름 설정
+            } else {
+                // 두 번째 파일이 선택되지 않은 경우 기존 파일 이름 유지
+                product.setPd_chng_fname2(oldFileName2);
+            }
+            
+
+            // 상품 정보 업데이트
+            product.setPdName(pdName);
+            product.setPdAnimal(pdAnimal);
+            product.setPdCategory(pdCategory);
+            product.setPd_price(pdPrice);
+            product.setPd_amount(pdAmount);
+            product.setPd_fee(product.getPd_fee()); // 기존 pd_fee를 설정
+            product.setPd_selling(product.getPd_selling()); // 기존 pd_selling을 설정
+            product.setPdRdate(product.getPdRdate()); // 기존 pd_rdate를 설정
+            
+
+            // 제품 정보 저장
+            pRepository.save(product);
+            
+            // 성공 메시지 추가
+            redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다.");
         } else {
-            // 에러 처리: pdNum이 null이면 수정할 수 없음
-            model.addAttribute("error", "상품 번호가 누락되었습니다.");
-            return "p_update"; // 에러가 발생한 경우 수정 페이지로 돌아감
+            // 실패 메시지 추가
+            redirectAttributes.addFlashAttribute("error", "해당 상품을 찾을 수 없습니다.");
         }
-        return "redirect:/p_manage";
+    	return "redirect:/p_manage";
     }
+    
     
     
     @RequestMapping("/s_main")    
-    public String shoppingMainPage(Model model) {
-    	 List<PDto> productItems = pService.getAllProducts(); // 상품 목록 가져오기
-         model.addAttribute("ProductItems", productItems);
+    public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
+                                   @RequestParam(required = false) String pd_animal,
+                                   @RequestParam(required = false) String pd_category,
+                                   Model model) {
+        
+        // 페이지당 항목 수
+        int pageSize = 16; 
+        
+        // 총 상품 수를 데이터베이스에서 가져옵니다.
+        long totalProducts = pRepository.count(); // 총 상품 수를 세는 메서드
+
+        // 시작 행 번호 및 종료 행 번호를 계산합니다.
+        int startRow = (page - 1) * pageSize; 
+        int endRow = Math.min(startRow + pageSize, (int) totalProducts); 
+
+        // 데이터베이스에서 현재 페이지에 해당하는 상품을 가져옵니다.
+        List<PDto> products = pRepository.findPaginated(startRow, pageSize); // 시작 행 번호와 페이지 크기를 사용합니다.
+        
+        // 카테고리 또는 동물 필터링 적용
+        if (pd_category != null && !pd_category.isEmpty()) {
+            products = pRepository.findByPdCategory(pd_category, startRow, pageSize);
+        } else if (pd_animal != null && !pd_animal.isEmpty()) {
+            products = pRepository.findByPdAnimal(pd_animal, startRow, pageSize);
+        }
+
+        // 모델에 데이터 추가
+        model.addAttribute("ProductItems", products); // 현재 페이지의 상품 리스트
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
+        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
+        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalProducts / pageSize), page + 2)); // 끝 페이지
+
         return "s_main";                 
     }
     
@@ -210,6 +326,10 @@ public class PController {
         if (!product.isEmpty()) {
             model.addAttribute("product", product.get(0));  // 첫 번째 상품 정보만 전달
         }
+        
+        List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
+        model.addAttribute("qnaList", qnaList);
+        
             return "p_details";  // p_detail.jsp로 이동                
     }
 }
