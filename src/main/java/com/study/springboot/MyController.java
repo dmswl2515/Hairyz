@@ -74,8 +74,8 @@ public class MyController {
     @RequestMapping("/myProfile_view.do")
     public String myProfileView(HttpServletRequest request, Model model, HttpSession session) {
     	
-//    	String mdId = (String) session.getAttribute("id");
-    	String mdId = "test"; //테스트용
+    	String mdId = (String) session.getAttribute("id");
+//    	String mdId = "test"; //테스트용
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("profile_view", dto);
         return "myProfile_view";
@@ -513,6 +513,19 @@ public class MyController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		
+	}
+	
+	@RequestMapping("/returnExchange.do")
+	public String returnExchange(Model model, HttpServletRequest request)
+	{
+		String mdId = request.getParameter("id");
+		MemberDto dto = memberDao.selectMember(mdId);
+		int mbNo = dto.getMb_no();
+		List<OrderProductDto> dtos = orderProductDao.selectReturnExchange(mbNo);
+		model.addAttribute("member", dto);
+		model.addAttribute("returnExchange", dtos);
+
+		return "returnExchange";
 	}
 
 	// uuid 생성할 메서드 선언

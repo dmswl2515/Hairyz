@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>반려동물 프로필 목록</title>
+    <title>주문 조회</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- jQuery 라이브러리 추가 -->
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				</li>
 				<li><a href="petList.do?id=${ member.mb_id }">반려동물 프로필</a></li>
 				<li><a href="orderLookup.do?id=${ member.mb_id }"><b>주문 조회</b></a></li>
-				<li><a href="#">취소/교환/반품</a></li>
+				<li><a href="returnExchange.do?id=${ member.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 

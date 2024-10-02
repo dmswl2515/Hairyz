@@ -193,7 +193,7 @@ hr {
 				</li>
 				<li><a href="petList.do?id=${ profile_view.mb_id }">반려동물 프로필</a></li>
 				<li><a href="orderLookup.do?id=${ profile_view.mb_id }">주문 조회</a></li>
-				<li><a href="#">취소/교환/반품</a></li>
+				<li><a href="returnExchange.do?id=${ profile_view.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 

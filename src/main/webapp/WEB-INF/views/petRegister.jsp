@@ -222,8 +222,8 @@ input[type="radio"].btn-check {
 					</ul>
 				</li>
 				<li><a href="petList.do?id=${ petRegister.mb_id }"><b>반려동물 프로필</b></a></li>
-				<li><a href="#">주문 조회</a></li>
-				<li><a href="#">취소/교환/반품</a></li>
+				<li><a href="orderLookup.do?id=${ petRegister.mb_id }">주문 조회</a></li>
+				<li><a href="returnExchange.do?id=${ petRegister.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
