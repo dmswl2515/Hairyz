@@ -195,7 +195,7 @@ function updateStatusBadge(orderno, state) {
 			                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="updateOrderState(${order.orderno}, 3)">취소</button>
 										    <button type="button" class="btn btn-sm btn-outline-primary" onclick="updateOrderState(${order.orderno}, 4)">교환</button>
 										    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="updateOrderState(${order.orderno}, 5)">반품</button>
-			                                <button type="button" class="btn btn-sm btn-outline-info">구매평 작성</button>
+											<button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#reviewModal">구매평 작성</button>
 			                            </td>
 			                        </tr>
 			                    </c:forEach>
@@ -210,6 +210,9 @@ function updateStatusBadge(orderno, state) {
             <hr>
         </div>
     </div>
+    
+    <!-- 모달 포함 -->
+    <%@ include file="reviewModal.jsp" %>
     
     
     <!-- FOOTER -->
