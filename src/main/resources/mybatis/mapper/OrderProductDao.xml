@@ -35,4 +35,8 @@
 		update orders set od_state = #{param2} where od_no = #{param1}
 	</update>
 	
+	<insert id="insertProductRevie">
+		insert into productreview (pr_reviewId, pr_productId, pr_MbNum, pr_MbNnme, pr_rating, pr_reviewText, pr_imgPath, pr_orgName, pr_modName) values (productreview_seq.nextval, #{param1}, #{param2}, #{param3}, #{param4}, #{param5}, #{param6}, #{param7}, #{param8})
+	</insert>
+	
 </mapper>

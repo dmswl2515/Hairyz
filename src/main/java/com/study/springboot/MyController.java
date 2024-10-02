@@ -2,29 +2,39 @@ package com.study.springboot;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dao.IOrderProductDao;
 import com.study.springboot.dao.IPetListDao;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrderProductDto;
+import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PetListDto;
 
+import ch.qos.logback.core.util.FileUtil;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -340,4 +350,118 @@ public class MyController {
 		}
 		
 	}
+	
+	@PostMapping("/productRevie.do")
+	@ResponseBody
+	public ResponseEntity<String> productRevie(Model model, HttpServletRequest request)
+	{
+		
+		 // 파일 저장 경로
+		
+		String originalName = null;
+		String saveFileName = null;
+		File serverPatheFullName = null;
+		
+		// 뷰로 전달할 정보를 저장하기 위한 Map타입의 변수
+
+		try
+		{
+			// 서버의 물리적경로 가져오기
+			String path = ResourceUtils.getFile(servletContext.getRealPath("/upload/")).toPath().toString();
+
+			/*
+			 * 파일업로드 위한 MultipartHttpServletRequest객체 생성 객체 생성과 동시에 파일업로드 완료됨. 나머지 폼값은
+			 * Multipart가 통째로 받아서 처리한다.
+			 */
+			MultipartHttpServletRequest mhsr = (MultipartHttpServletRequest) request;
+
+			// 업로드폼의 file속성 필드의 이름을 모두 읽음
+			Iterator<String> itr = mhsr.getFileNames();
+
+			MultipartFile mfile = null;
+			String fileName = "";
+
+			// 폼값받기 : 제목
+			String title = mhsr.getParameter("image");
+
+			// 업로드폼의 file속성의 필드의 갯수만큼 반복
+			while (itr.hasNext())
+			{
+
+				// userfile1, userfile2....출력됨
+				fileName = (String) itr.next();
+				// System.out.println(fileName);
+
+				// 서버로 업로드된 임시파일명 가져옴
+				mfile = mhsr.getFile(fileName);
+				// System.out.println(mfile);//CommonsMultipartFile@1366c0b 형태임
+
+				// 한글깨짐방지 처리 후 업로드된 파일명을 가져온다.
+				originalName =
+						// mfile.getOriginalFilename();
+						new String(mfile.getOriginalFilename().getBytes(), "UTF-8"); // Linux
+
+				// 파일명이 공백이라면 while문의 처음으로 돌아간다.
+				if ("".equals(originalName))
+				{
+					continue;
+				}
+
+				saveFileName = getUuid() + "." + originalName;
+
+				// 설정한 경로에 파일저장
+				serverPatheFullName = new File(path + File.separator + serverPatheFullName);
+
+				// 업로드한 파일을 지정한 파일에 저장한다.
+				mfile.transferTo(serverPatheFullName);
+
+			}
+		} catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		} catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		String memberNo = request.getParameter("memberNo");
+		String orderNo = request.getParameter("orderNo");
+		String rating = request.getParameter("rating");
+		String reviewText = request.getParameter("reviewText");
+		
+		int mbNum = Integer.parseInt(memberNo);
+		int odNo = Integer.parseInt(orderNo);
+		int star = Integer.parseInt(rating);
+		String path = serverPatheFullName.getPath();
+		MemberDto mDto = memberDao.selectMember2(mbNum);
+		String mbNnme = mDto.getMb_name();
+		
+		
+		try {
+			orderProductDao.insertProductRevie(odNo, mbNum, mbNnme, star, reviewText, path, originalName, saveFileName);
+			return ResponseEntity.ok().body("success");
+		}catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		
+	}
+
+	// uuid 생성할 메서드 선언
+	/*
+	 * UUID(Universally unique identifier), 범용 고유 식별자. UUID.randomUUID().toString()
+	 * 으로 생성하면 3d6f4151-5663-4f43-ab16-cb8e38a4ddc6 와 같이 4개의 하이픈과 32개의 문자로 이루어진 문자열을
+	 * 반환한다.
+	 */
+	public static String getUuid(){
+		String uuid = UUID.randomUUID().toString();
+		//System.out.println(uuid);		
+		uuid = uuid.replaceAll("-", "");
+		//System.out.println("생성된UUID:"+ uuid);
+		return uuid;
+	}
+	
 }
