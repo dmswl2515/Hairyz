@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.study.springboot.dto.OrderProductDto;
-import com.study.springboot.dto.OrdersDto;
 
 @Mapper
 public interface IOrderProductDao

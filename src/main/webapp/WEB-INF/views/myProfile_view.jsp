@@ -75,11 +75,6 @@ hr {
 	background: #000000;
 }
 
-.box img {
-	width: 100%;
-	height: auto;
-}
-
 .profile {
 	width: 100%;
 	height: 100%;
@@ -212,10 +207,10 @@ hr {
 	            <div class="box">
 					<c:choose>
 						<c:when test="${not empty profile_view.mb_imgpath}">
-							<img src="${pageContext.request.contextPath}/upload/${profile_view.mb_orgname}" alt="프로필 사진">
+							<img class="profile" src="${pageContext.request.contextPath}/upload/${profile_view.mb_orgname}" alt="프로필 사진">
 						</c:when>
 						<c:otherwise>
-							<img src="images/logo.png" alt="기본 프로필 사진">
+							<img class="profile" src="images/logo.png" alt="기본 프로필 사진">
 						</c:otherwise>
 					</c:choose>
 				</div>

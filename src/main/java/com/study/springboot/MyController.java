@@ -74,8 +74,8 @@ public class MyController {
     @RequestMapping("/myProfile_view.do")
     public String myProfileView(HttpServletRequest request, Model model, HttpSession session) {
     	
-    	String mdId = (String) session.getAttribute("id");
-//    	String mdId = "test"; //테스트용
+//    	String mdId = (String) session.getAttribute("id");
+    	String mdId = "test"; //테스트용
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("profile_view", dto);
         return "myProfile_view";
@@ -95,6 +95,74 @@ public class MyController {
     @RequestMapping("/updateProfile.do")
     public String updateProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws ServletException, IOException {
     	
+    	String originalName = null;
+		String saveFileName = null;
+		File serverPatheFullName = null;
+		
+		try
+		{
+			// 서버의 물리적경로 가져오기
+			String path = ResourceUtils.getFile(servletContext.getRealPath("/upload/")).toPath().toString();
+
+			/*
+			 * 파일업로드 위한 MultipartHttpServletRequest객체 생성 객체 생성과 동시에 파일업로드 완료됨. 나머지 폼값은
+			 * Multipart가 통째로 받아서 처리한다.
+			 */
+			MultipartHttpServletRequest mhsr = (MultipartHttpServletRequest) request;
+
+			// 업로드폼의 file속성 필드의 이름을 모두 읽음
+			Iterator<String> itr = mhsr.getFileNames();
+
+			MultipartFile mfile = null;
+			String fileName = "";
+
+			// 폼값받기 : 제목
+			String title = mhsr.getParameter("memberImage");
+
+			// 업로드폼의 file속성의 필드의 갯수만큼 반복
+			while (itr.hasNext())
+			{
+
+				// userfile1, userfile2....출력됨
+				fileName = (String) itr.next();
+				// System.out.println(fileName);
+
+				// 서버로 업로드된 임시파일명 가져옴
+				mfile = mhsr.getFile(fileName);
+				// System.out.println(mfile);//CommonsMultipartFile@1366c0b 형태임
+
+				// 한글깨짐방지 처리 후 업로드된 파일명을 가져온다.
+				originalName =
+						// mfile.getOriginalFilename();
+						new String(mfile.getOriginalFilename().getBytes(), "UTF-8"); // Linux
+
+				// 파일명이 공백이라면 while문의 처음으로 돌아간다.
+				if ("".equals(originalName))
+				{
+					continue;
+				}
+
+				saveFileName = getUuid() + "." + originalName;
+
+				// 설정한 경로에 파일저장
+				serverPatheFullName = new File(path + File.separator + originalName);
+
+				// 업로드한 파일을 지정한 파일에 저장한다.
+				mfile.transferTo(serverPatheFullName);
+
+			}
+		} catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		} catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		String path = serverPatheFullName.getPath();
     	String id = request.getParameter("id");
     	String nickName = request.getParameter("nickName");
     	String phone = request.getParameter("phone");
@@ -102,7 +170,7 @@ public class MyController {
     	String addr1 = request.getParameter("addr1");
     	String addr2 = request.getParameter("addr2");
     	
-    	memberDao.updateProfile(id, nickName, phone, zipcode, addr1, addr2);
+    	memberDao.updateProfile(id, nickName, phone, zipcode, addr1, addr2, originalName, saveFileName, path);
     	
     	MemberDto dto = memberDao.selectMember(id);
     	model.addAttribute("profile_view", dto);
@@ -407,7 +475,7 @@ public class MyController {
 				saveFileName = getUuid() + "." + originalName;
 
 				// 설정한 경로에 파일저장
-				serverPatheFullName = new File(path + File.separator + serverPatheFullName);
+				serverPatheFullName = new File(path + File.separator + originalName);
 
 				// 업로드한 파일을 지정한 파일에 저장한다.
 				mfile.transferTo(serverPatheFullName);

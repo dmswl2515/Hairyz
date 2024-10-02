@@ -9,7 +9,9 @@
     <title>회원정보 수정</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+<!-- 우편번호 검색 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<style>
 /* 기본 레이아웃 설정 */
 body {
 	display: flex;
@@ -140,6 +142,28 @@ hr {
 	text-decoration: underline;
 }
 </style>
+<script>
+//우편번호 검색 기능
+function searchZipcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 선택한 주소의 우편번호와 주소를 입력
+            document.getElementById('zipcode').value = data.zonecode; // 우편번호
+            document.getElementById('addr1').value = data.roadAddress; // 도로명 주소
+            document.getElementById('addr2').focus(); // 상세주소 입력으로 포커스 이동
+        }
+    }).open();
+}
+
+function previewImage(event) {
+	var reader = new FileReader();
+	reader.onload = function() {
+		var output = document.getElementById('preview-image');
+		output.src = reader.result; // 업로드한 파일의 URL을 img 태그에 설정
+	};
+	reader.readAsDataURL(event.target.files[0]); // 선택된 파일을 읽음
+}
+</script>
 </head>
 <body>
 	<!-- 로그 및 로그인 -->
@@ -203,13 +227,30 @@ hr {
 	        <div class="custom-container">
 	            <h1 class="myPage-title">회원정보 수정</h1>
 	
-	            <form action="updateProfile.do" method="post" name="reg_frm" class="was-validated">
+	            <form action="updateProfile.do" method="post" name="reg_frm" class="was-validated" enctype="multipart/form-data">
 		            <!-- 프로필 사진 -->
 		            <div class="box">
-		                <img class="profile" src="/images/logo.png">
-					</div>
-					<div class="btn-container text-center mt-3">
-						<button type="button" class="btn btn-warning" onclick="#">사진추가</button>
+				        <!-- 이미지 미리보기 영역 -->
+				        <c:choose>
+					        <c:when test="${not empty editProfile.mb_orgname}">
+					            <img id="preview-image" class="profile" src="${pageContext.request.contextPath}/upload/${editProfile.mb_orgname}" alt="반려동물 사진">
+					        </c:when>
+					        <c:otherwise>
+					            <img id="preview-image" class="profile" src="images/logo.png" alt="기본 반려동물 사진">
+					        </c:otherwise>
+					    </c:choose>
+				    </div>
+				
+				    <!-- 파일 업로드 버튼 -->
+				    <div class="btn-container text-center mt-3">
+					    <!-- 실제 파일 선택 input은 숨김 -->
+					    <input type="file" class="form-control-file" name="memberImage" id="memberImage" multiple="true" onchange="previewImage(event)" style="display: none;">
+					    
+					    <!-- 사용자 정의 버튼 (사진 추가) -->
+					    <label for="memberImage" class="btn btn-warning">사진 추가</label>
+					    
+					    <!-- 미리보기 이미지 업로드 후 파일 이름 숨김 -->
+					    <span id="file-name" style="display: none;"></span>
 					</div>
 					<br>
 					<div class="form-group">
@@ -231,7 +272,7 @@ hr {
 					    <div class="input-group mb-3">
 					        <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="우편번호" size="6" value="${editProfile.mb_zipcode}" required>
 					        <div class="input-group-append">
-					            <button type="button" class="btn btn-outline-secondary" onclick="#">우편번호 검색</button>
+					            <button type="button" class="btn btn-outline-secondary" onclick="searchZipcode()">우편번호 검색</button>
 					        </div>
 					    </div>
 					</div>
