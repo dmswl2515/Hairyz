@@ -34,6 +34,79 @@ var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 var phonePattern = /^010-\d{4}-\d{4}$/;
 var isCaptchaVerified = false; // 캡차 인증 상태를 저장하는 변수
 
+
+//이메일 중복확인 기능
+function checkDuplicateEmail() {
+	var email = $('#mb_id').val();
+	if (!emailPattern.test(email)) {
+		alert("유효한 이메일 주소를 입력해주세요.");
+		$('#mb_id').focus();
+		return;
+	}
+
+	$.ajax({
+	    url: '/checkDuplicateEmail.do', // 절대 경로로 수정
+	    type: 'POST',
+	    data: { mb_id: email },
+	    success: function(response) {
+	        if (response === 'exists') {
+	            alert("이미 사용중인 이메일입니다.");
+	            $('#mb_id').focus();
+	        } else {
+	            alert("사용 가능한 이메일입니다.");
+	        }
+	    },
+	    error: function(xhr, status, error) {
+         alert("이메일 중복 확인 중 오류가 발생했습니다: " + error);
+         console.log("Error details: ", xhr.responseText); // 오류 내용 콘솔에 출력
+     }
+	});
+}
+
+//우편번호 검색 기능
+function searchZipcode() {
+ new daum.Postcode({
+     oncomplete: function(data) {
+         // 선택한 주소의 우편번호와 주소를 입력
+         document.getElementById('mb_zipcode').value = data.zonecode; // 우편번호
+         document.getElementById('mb_addr1').value = data.roadAddress; // 도로명 주소
+         document.getElementById('mb_addr2').focus(); // 상세주소 입력으로 포커스 이동
+     }
+ }).open();
+}
+
+function checkCaptcha() {
+    var userCaptcha = $('#captchaInput').val(); // 사용자 입력 캡차 값 가져오기
+    $.ajax({
+        url: '/captcha/verify',
+        type: 'POST',
+        data: { userCaptcha: userCaptcha },
+        success: function(response) {
+            if (response === "캡차 인증이 완료되었습니다!") {
+            	alert(response); 
+				isCaptchaVerified = true; // 캡차 인증 완료 상태로 변경
+            } else {
+                alert(response); // 캡차 인증 실패 시 알림
+				isCaptchaVerified = false; // 캡차 인증 실패 상태로 유지
+            }
+        },
+        error: function() {
+            alert("캡차 확인 중 오류가 발생했습니다.");
+        }
+    });
+}
+
+var isSnsMember = false; // 일반 회원은 기본적으로 false
+var snsEmail = ''; // SNS 로그인 시 받은 이메일
+
+//만약 SNS 로그인 후 회원가입 페이지로 이동한 경우
+function setSnsMember(snsLoginEmail) {
+    isSnsMember = true;
+    snsEmail = snsLoginEmail;
+    $('#mb_id').val(snsLoginEmail);  // SNS에서 받아온 이메일로 입력 필드 설정
+    $('#mb_id').prop('readonly', true);  // 이메일 필드를 수정 불가로 설정
+}
+
 function form_check(event) {
 	event.preventDefault(); // 기본 제출 방지
 	event.stopPropagation(); // 이벤트 전파 방지
@@ -69,30 +142,14 @@ function form_check(event) {
 	submit_ajax();
 }
 
-function checkCaptcha() {
-    var userCaptcha = $('#captchaInput').val(); // 사용자 입력 캡차 값 가져오기
-    $.ajax({
-        url: '/captcha/verify',
-        type: 'POST',
-        data: { userCaptcha: userCaptcha },
-        success: function(response) {
-            if (response === "캡차 인증이 완료되었습니다!") {
-            	alert(response); 
-				isCaptchaVerified = true; // 캡차 인증 완료 상태로 변경
-            } else {
-                alert(response); // 캡차 인증 실패 시 알림
-				isCaptchaVerified = false; // 캡차 인증 실패 상태로 유지
-            }
-        },
-        error: function() {
-            alert("캡차 확인 중 오류가 발생했습니다.");
-        }
-    });
-}
-
 
 function submit_ajax() {
 	var queryString = $("#reg_frm").serialize();
+	
+	if (isSnsMember) {
+        queryString += "&mb_sns=Y";
+    }
+	
 	$.ajax({
 		url: '/joinOk.do',
 		type: 'POST',
@@ -111,45 +168,6 @@ function submit_ajax() {
 	});
 }
 
-// 이메일 중복확인 기능
-function checkDuplicateEmail() {
-	var email = $('#mb_id').val();
-	if (!emailPattern.test(email)) {
-		alert("유효한 이메일 주소를 입력해주세요.");
-		$('#mb_id').focus();
-		return;
-	}
-
-	$.ajax({
-	    url: '/checkDuplicateEmail.do', // 절대 경로로 수정
-	    type: 'POST',
-	    data: { mb_id: email },
-	    success: function(response) {
-	        if (response === 'exists') {
-	            alert("이미 사용중인 이메일입니다.");
-	            $('#mb_id').focus();
-	        } else {
-	            alert("사용 가능한 이메일입니다.");
-	        }
-	    },
-	    error: function(xhr, status, error) {
-            alert("이메일 중복 확인 중 오류가 발생했습니다: " + error);
-            console.log("Error details: ", xhr.responseText); // 오류 내용 콘솔에 출력
-        }
-	});
-}
-
-//우편번호 검색 기능
-function searchZipcode() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            // 선택한 주소의 우편번호와 주소를 입력
-            document.getElementById('mb_zipcode').value = data.zonecode; // 우편번호
-            document.getElementById('mb_addr1').value = data.roadAddress; // 도로명 주소
-            document.getElementById('mb_addr2').focus(); // 상세주소 입력으로 포커스 이동
-        }
-    }).open();
-}
 </script>
 </head>
 <body>
