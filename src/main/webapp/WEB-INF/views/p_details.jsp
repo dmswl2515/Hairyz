@@ -1,9 +1,11 @@
+<%@ page import="com.study.springboot.dto.QDto" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.DayOfWeek" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 
 <%
     // 현재 날짜와 시간 가져오기
@@ -22,6 +24,7 @@
         message = "오늘출발 마감되었습니다(평일 12:00시 까지)";
     }
 %>
+
 
 <!DOCTYPE html>
 <html>
@@ -454,20 +457,28 @@
 				      	<c:if test="${not empty qnaList}">
 					        <c:forEach var="qDTO" items="${qnaList}">
 					            <tr>
-					                <td class="text-center align-middle">${qDTO.qna_rstate}</td>
+					                <td class="text-center align-middle">
+						                <c:choose>
+									        <c:when test="${qDTO.qna_rstate == 'N'}">
+									            미답변
+									        </c:when>
+									        <c:when test="${qDTO.qna_rstate == 'Y'}">
+									            답변완료
+									        </c:when>
+									    </c:choose>    
 					                <td>
 					                   <div class="product-container">	
-						                    ${qDTO.qna_content}
-				                            <c:if test="${qDTO.isNew}">
-										        <p>${qDTO.qna_name}</p>
-										    </c:if>
-										    <c:if test="${!qDTO.isNew}">
-										        <p>${qDTO.qna_name}</p>
-										    </c:if>
+						                    ${qDTO.qna_content}&nbsp;&nbsp;
+				                            <c:if test="${qDTO.isNew()}">
+											    <span class="badge badge-secondary">New</span>
+											</c:if>
+											<c:if test="${!qDTO.isNew()}">
+											</c:if>
 						               </div>     
 					                </td>
 					                <td class="text-center align-middle">${qDTO.qna_name}</td>
-					                <td class="text-center align-middle">${qDTO.qna_date}</td>
+					                <td class="text-center align-middle">
+					                	<fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />					                </td>
 					            </tr>
 					        </c:forEach>
 				        </c:if>

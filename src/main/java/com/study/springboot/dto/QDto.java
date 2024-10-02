@@ -3,7 +3,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class QDTO
+public class QDto
 {	
 	private int qna_no;
     private int qna_pnum;
@@ -15,16 +15,10 @@ public class QDTO
     private String qna_rstate;
     
     // isNew 필드 정의
-    private boolean isNew; // 
-
-    // getter 메서드
+    private boolean isNew;
+    
     public boolean isNew() {
-        return isNew;
-    }
-
-    // setter 메서드
-    public void setNew(boolean isNew) {
-        this.isNew = isNew;
+        return qna_date != null && (System.currentTimeMillis() - qna_date.getTime()) < (3 * 24 * 60 * 60 * 1000);
     }
 
 }

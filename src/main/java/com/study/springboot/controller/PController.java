@@ -24,7 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.springboot.dto.PDto;
-import com.study.springboot.dto.QDTO;
+import com.study.springboot.dto.QDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.PService;
 import com.study.springboot.service.QnAService;
@@ -327,7 +327,7 @@ public class PController {
             model.addAttribute("product", product.get(0));  // 첫 번째 상품 정보만 전달
         }
         
-        List<QDTO> qnaList = qnaService.getQnaByProductId(pdNum);
+        List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
         
             return "p_details";  // p_detail.jsp로 이동                

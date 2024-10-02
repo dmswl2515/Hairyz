@@ -5,11 +5,11 @@
 	
 <mapper namespace="com.study.springboot.dao.IQnADao">
 
-	<select id="selectQnaByPdNum" resultType="com.study.springboot.dto.QDTO">
-        SELECT p.pd_num, q.qna_pnum, q.qna_rstate, q.qna_content, q.qna_name, q.qna_date
-        FROM product p
-        JOIN qna q ON p.pd_num = q.qna_pnum
-        WHERE p.pd_num = #{pdNum}
+	<select id="selectQnaByPdNum" resultType="com.study.springboot.dto.QDto">
+        SELECT p.pd_num, q.qna_pnum, q.qna_rstate, q.qna_content, q.qna_name, q.qna_date, q.qna_hide, q.qna_qstate
+	    FROM product p
+	    JOIN qna q ON p.pd_num = q.qna_pnum
+	    WHERE p.pd_num = #{pdNum}
     </select>
 	
 </mapper>
