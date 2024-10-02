@@ -29,6 +29,7 @@ public interface PRepository extends JpaRepository<PDto, Integer>
     List<PDto> findByPdCategory(@Param("pd_category") String pdCategory, @Param("startRow") int startRow, @Param("endRow") int endRow);
     
     
+    
 }
 
 

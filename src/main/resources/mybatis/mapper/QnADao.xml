@@ -6,10 +6,35 @@
 <mapper namespace="com.study.springboot.dao.IQnADao">
 
 	<select id="selectQnaByPdNum" resultType="com.study.springboot.dto.QDto">
-        SELECT p.pd_num, q.qna_pnum, q.qna_rstate, q.qna_content, q.qna_name, q.qna_date, q.qna_hide, q.qna_qstate
+        SELECT p.pd_num, q.qna_no, q.qna_pnum, q.qna_rstate, q.qna_content, q.qna_name, q.qna_date, q.qna_hide, q.qna_qstate
 	    FROM product p
 	    JOIN qna q ON p.pd_num = q.qna_pnum
 	    WHERE p.pd_num = #{pdNum}
     </select>
+    
+    <resultMap id="qnaReplyResultMap" type="com.study.springboot.dto.QnaReplyDto">
+	    <id property="qrNo" column="qr_no" />
+	    <result property="qnaNo" column="qna_no" />
+	    <result property="qrId" column="qr_id" />
+	    <result property="qrContent" column="qr_content" />
+	    <result property="qrDate" column="qr_date" />
+	</resultMap>
+    
+    <select id="getQnaWithReplies" resultMap="qnaReplyResultMap">
+	    SELECT 
+	        q.qna_no, 
+	        q.qna_content, 
+	        q.qna_qstate, 
+	        q.qna_rstate,
+	        r.qr_no,
+	        r.qr_content,
+	        r.qr_id,
+	        r.qr_date
+	    FROM 
+	        QNA q
+	    INNER JOIN QNAREPLY r ON q.qna_no = r.qna_no
+	    WHERE 
+	        q.qna_no = #{qna_no}
+	</select>
 	
 </mapper>

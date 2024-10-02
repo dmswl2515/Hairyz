@@ -463,37 +463,112 @@
 									            미답변
 									        </c:when>
 									        <c:when test="${qDTO.qna_rstate == 'Y'}">
-									            답변완료
+									            답변 완료
 									        </c:when>
-									    </c:choose>    
-					                <td>
-					                   <div class="product-container">	
-						                    ${qDTO.qna_content}&nbsp;&nbsp;
-				                            <c:if test="${qDTO.isNew()}">
-											    <span class="badge badge-secondary">New</span>
-											</c:if>
-											<c:if test="${!qDTO.isNew()}">
-											</c:if>
-						               </div>     
-					                </td>
-					                <td class="text-center align-middle">${qDTO.qna_name}</td>
-					                <td class="text-center align-middle">
-					                	<fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />					                </td>
-					            </tr>
-					        </c:forEach>
-				        </c:if>
+									    </c:choose>
+									</td>        
+					                <td onclick="handleClick('${qDTO.qna_qstate}', '${qDTO.qna_content}', '${qDTO.qna_no}')" style="cursor: pointer;">
+			                            <div class="product-container">    
+			                                <c:choose>
+			                                    <c:when test="${qDTO.qna_qstate == '비공개'}">
+			                                        비밀글입니다
+			                                    </c:when>
+			                                    <c:when test="${qDTO.qna_qstate == '공개'}">
+			                                        ${qDTO.qna_content}
+			                                    </c:when>
+			                                </c:choose>&nbsp;&nbsp;
+			                                <div style="margin-top: 1px;">
+			                                    <c:if test="${qDTO.qna_qstate == '비공개'}">
+			                                        <i class="fas fa-lock"></i>&nbsp;&nbsp;
+			                                    </c:if>
+			                                    <c:if test="${qDTO.qna_qstate == '공개'}">
+			                                    </c:if>
+			                                    <c:if test="${qDTO.isNew()}">
+			                                        <span class="badge badge-secondary">New</span>
+			                                    </c:if>
+			                                </div>
+			                            </div>     
+			                        </td>
+			                        <td class="text-center align-middle">${qDTO.qna_name}</td>
+			                        <td class="text-center align-middle">
+			                            <fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />        
+			                        </td>
+			                    </tr>
+			                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
+			                    <c:choose>
+								    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
+								        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+								            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
+								            <td colspan="3">${qDTO.qna_content}</td>    
+								        </tr>
+								        <c:if test="${currentQnaRep != null && currentQnaRep.qnaNo == qDTO.qna_no}">
+									        <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
+									            <td colspan="1" class="text-center align-middle"></td>
+									            <td colspan="1" style="font-size: 14px;">
+									            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
+									            		${currentQnaRep.qrContent}
+									           	</td>
+									            <td colspan="1">
+									            	<c:choose>
+												        <c:when test="${currentQnaRep.qrId == 'admin'}">
+												            관리자
+												        </c:when>
+												        <c:otherwise>
+												            ${currentQnaRep.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
+												        </c:otherwise>
+												    </c:choose>
+									            </td>									            
+								            	<td class="text-center align-middle">
+						                            <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
+						                        </td>
+								            									                
+									        </tr>
+								        </c:if>		
+								    </c:when>
+								    <c:when test="${qDTO.qna_qstate == '공개'}">
+								        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+								            <td colspan="1" class="text-center align-middle"></td>
+								            <td colspan="3">${qDTO.qna_content}</td>    
+								        </tr>
+								    </c:when>
+								</c:choose>
+			                </c:forEach>
+			            </c:if>
 
 						<c:if test="${empty qnaList}">
 						    <tr>
 						        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
 						    </tr>
 						</c:if>
+						
 				      </tbody>
 					</table> 		       
 			    </div>
 			</div>
        	</div>
        	
+ <script>
+ function handleClick(qnaQState, qnaContent, qnaNo) {
+	    if (qnaQState === '비공개') {
+	        alert("비밀글입니다");
+	    } else {
+	        toggleContent(qnaNo); // 공개글의 경우 toggleContent 호출
+	    }
+	}
+
+	function toggleContent(qnaNo) {
+	    var contentDiv = document.getElementById("content-" + qnaNo);
+	    var detailsRow = document.getElementById("details-" + qnaNo);
+	    
+	    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
+	        contentDiv.style.display = "table-row"; // 내용을 보이게 함
+	        detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
+	    } else {
+	        contentDiv.style.display = "none"; // 내용을 숨김
+	        detailsRow.style.display = "none";
+	    }
+	}
+</script>      	
        
 <script>
 	document.querySelectorAll('.tab-button').forEach(button => {

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.QDto;
+import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.PService;
 import com.study.springboot.service.QnAService;
@@ -178,8 +179,15 @@ public class PController {
     public String updateSellingStatus(@RequestParam("pdNum") Integer pdNum, 
 	            					  @RequestParam("newStatus") Character newStatus) {
     	
-		System.out.println("pdNum: " + pdNum + ", newStatus: " + newStatus); // 값 확인
-		pService.updateSellingStatus(pdNum, newStatus);
+    	List<PDto> products = pRepository.findByPdNum(pdNum);
+        if (products.isEmpty()) {
+            throw new RuntimeException("제품을 찾을 수 없습니다: pdNum=" + pdNum);
+        }
+
+        // 제품 상태 업데이트
+        PDto product = products.get(0); // 첫 번째 제품 가져오기
+        product.setPd_selling(newStatus);
+        pRepository.save(product);
 		
 		return "redirect:/p_manage"; // 업데이트 후 리다이렉트할 페이지
 	}
@@ -317,7 +325,9 @@ public class PController {
     }
     
     @RequestMapping("/p_details")    
-    public String productDetail(@RequestParam("pdNum") int pdNum, Model model) {
+    public String productDetail(@RequestParam("pdNum") int pdNum, 
+							 	@RequestParam(value = "qna_no", required = false, defaultValue = "0") int qna_no,
+    							Model model) {
     	
     	// pdNum에 해당하는 상품 정보를 DB에서 가져옴
         List<PDto> product = pRepository.findByPdNum(pdNum);
@@ -329,6 +339,16 @@ public class PController {
         
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
+        
+        if (qna_no > 0) {
+            List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qna_no);
+            model.addAttribute("qnaRepList", qnaRepList);
+            model.addAttribute("currentQnaRep", qnaRepList.isEmpty() ? null : qnaRepList.get(0)); // 첫 번째 답변만 추가
+            System.out.println("qna_no: " + qna_no);
+            System.out.println("qnaRepList: " + qnaRepList);
+        } else {
+            System.out.println("qna_no는 0입니다. Q&A 답변을 가져올 수 없습니다.");
+        }
         
             return "p_details";  // p_detail.jsp로 이동                
     }
