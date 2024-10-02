@@ -37,4 +37,13 @@
 	        q.qna_no = #{qna_no}
 	</select>
 	
+	<select id="findMemberById" resultType="com.study.springboot.dto.MemberDto">
+        SELECT * FROM members WHERE mb_id = #{mb_id}
+    </select>
+	
+	<insert id="insertQnA" parameterType="com.study.springboot.dto.QDto">
+        INSERT INTO qna (qna_pnum, qna_name, qna_date, qna_content, qna_qstate, qna_hide, qna_rstate)
+        VALUES (#{qna_pnum}, #{qna_name}, NOW(), #{qna_content}, #{qna_qstate}, #{qna_hide}, #{qna_rstate})
+    </insert>
+	
 </mapper>

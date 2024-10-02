@@ -325,7 +325,8 @@ public class PController {
     }
     
     @RequestMapping("/p_details")    
-    public String productDetail(@RequestParam("pdNum") int pdNum, 
+    public String productDetail(@RequestParam(defaultValue = "1") int page,
+								@RequestParam("pdNum") int pdNum, 
 							 	@RequestParam(value = "qna_no", required = false, defaultValue = "0") int qna_no,
     							Model model) {
     	
@@ -340,8 +341,8 @@ public class PController {
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
         
+        List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qna_no);
         if (qna_no > 0) {
-            List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qna_no);
             model.addAttribute("qnaRepList", qnaRepList);
             model.addAttribute("currentQnaRep", qnaRepList.isEmpty() ? null : qnaRepList.get(0)); // 첫 번째 답변만 추가
             System.out.println("qna_no: " + qna_no);
@@ -350,7 +351,21 @@ public class PController {
             System.out.println("qna_no는 0입니다. Q&A 답변을 가져올 수 없습니다.");
         }
         
-            return "p_details";  // p_detail.jsp로 이동                
+	        // 페이지네이션 설정
+	        int pageSize = 1; // 페이지당 항목 수
+	        int totalQnAs = qnaRepList.size(); // 전체 상품 수
+	        int startRow = (page - 1) * pageSize; // 시작 인덱스
+	        int endRow = Math.min(startRow + pageSize, totalQnAs);
+	        
+	        List<QnaReplyDto> paginatedQnAs = qnaRepList.subList(startRow, endRow);
+	        
+	        model.addAttribute("products", paginatedQnAs);
+	        model.addAttribute("currentPage", page); // 현재 페이지 번호
+	        model.addAttribute("totalPages", (int) Math.ceil((double) totalQnAs / pageSize)); // 전체 페이지 수
+	        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
+	        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalQnAs / pageSize), page + 2)); // 끝 페이지
+        
+            return "p_details";              
     }
 }
 
