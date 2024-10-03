@@ -35,4 +35,36 @@
 		update orders set od_state = #{param2} where od_no = #{param1}
 	</update>
 	
+	<insert id="insertProductRevie">
+		insert into productreview (pr_reviewId, pr_productId, pr_MbNum, pr_MbNnme, pr_rating, pr_reviewText, pr_imgPath, pr_orgName, pr_modName) values (productreview_seq.nextval, #{param1}, #{param2}, #{param3}, #{param4}, #{param5}, #{param6}, #{param7}, #{param8})
+	</insert>
+	
+	<select id="selectReturnExchange" resultType="com.study.springboot.dto.OrderProductDto">
+		SELECT o.od_no AS orderno, 
+               o.od_date AS orderdate,
+               o.od_amount AS orderamount,
+               o.od_mname AS membername,
+               o.od_mphone AS memberphone,
+               o.od_memail AS memberemail,
+               o.od_recipient AS recipientname,
+               o.od_rphone AS recipientphone,
+               o.od_rzcode AS recipientzipCode,
+               o.od_raddress AS recipientaddress,
+               o.od_raddress2 AS recipientaddress2,
+               o.od_memo AS memo,
+               o.od_method AS method,
+               o.od_payment AS payment,
+               o.od_state AS state,
+               p.pd_name AS productname,
+               p.pd_price AS productprice,
+               p.pd_ori_fname AS originalfilename,
+               p.pd_chng_fname AS changedfilename,
+               p.pd_fpath AS filePath
+        FROM orders o
+        JOIN product p ON o.od_num = p.pd_num
+        WHERE o.od_mno = #{param1} 
+        AND (o.od_state = 3 OR o.od_state = 4 OR o.od_state = 5) 
+        ORDER BY od_date DESC
+	</select>
+	
 </mapper>

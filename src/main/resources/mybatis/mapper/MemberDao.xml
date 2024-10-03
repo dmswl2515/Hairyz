@@ -10,7 +10,7 @@
 	</select>
 	
 	<update id="updateProfile">
-		update member set mb_nickname = #{param2}, mb_phone = #{param3}, mb_zipcode = #{param4}, mb_addr1 = #{param5}, mb_addr2 = #{param6} where mb_id = #{param1}
+		update member set mb_nickname = #{param2}, mb_phone = #{param3}, mb_zipcode = #{param4}, mb_addr1 = #{param5}, mb_addr2 = #{param6}, mb_orgname = #{param7}, mb_modname = #{param8}, mb_imgpath = #{param9} where mb_id = #{param1}
 	</update>
 	
 	<update id="updatePw">

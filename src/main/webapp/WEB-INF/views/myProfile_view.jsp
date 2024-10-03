@@ -75,11 +75,6 @@ hr {
 	background: #000000;
 }
 
-.box img {
-	width: 100%;
-	height: auto;
-}
-
 .profile {
 	width: 100%;
 	height: 100%;
@@ -198,7 +193,7 @@ hr {
 				</li>
 				<li><a href="petList.do?id=${ profile_view.mb_id }">반려동물 프로필</a></li>
 				<li><a href="orderLookup.do?id=${ profile_view.mb_id }">주문 조회</a></li>
-				<li><a href="#">취소/교환/반품</a></li>
+				<li><a href="returnExchange.do?id=${ profile_view.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
@@ -212,10 +207,10 @@ hr {
 	            <div class="box">
 					<c:choose>
 						<c:when test="${not empty profile_view.mb_imgpath}">
-							<img src="${pageContext.request.contextPath}/upload/${profile_view.mb_orgname}" alt="프로필 사진">
+							<img class="profile" src="${pageContext.request.contextPath}/upload/${profile_view.mb_orgname}" alt="프로필 사진">
 						</c:when>
 						<c:otherwise>
-							<img src="images/logo.png" alt="기본 프로필 사진">
+							<img class="profile" src="images/logo.png" alt="기본 프로필 사진">
 						</c:otherwise>
 					</c:choose>
 				</div>
