@@ -365,7 +365,7 @@ public class PController {
 	        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
 	        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalQnAs / pageSize), page + 2)); // 끝 페이지
         
-            return "p_details";              
+            return "s_details";              
     }
 }
 
