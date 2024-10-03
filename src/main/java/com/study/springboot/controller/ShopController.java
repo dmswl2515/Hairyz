@@ -104,5 +104,11 @@ public class ShopController {
         
             return "s_details";              
     }
+    
+    @RequestMapping("/s_purchase")    
+    public String productPhrchase(Model model) {
+    	
+            return "s_purchase";              
+    }
 }
 
