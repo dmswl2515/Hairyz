@@ -246,7 +246,7 @@ function submit_ajax() {
 			<div class="invalid-feedback">아이디를 입력해주세요.</div>
 			<input type="password" class="form-control mt_15" id="ow" name="pw" placeholder="비밀번호" required>
 			<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
-			<p class="find-area mt_15"><a href="find.do">아이디 / 비밀번호 찾기</a></p>
+			<p class="find-area mt_15"><a href="findInfo.do">아이디 / 비밀번호 찾기</a></p>
 		</div>
 		<div class="oauth-buttons">
 			<button type="button" class="btn btn-dark" onclick="form_check(event)">로그인</button><br>

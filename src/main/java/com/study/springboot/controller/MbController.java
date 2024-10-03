@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,9 @@ public class MbController {
 
     @Autowired
     private IMemberDao memberDao;
+    
+    @Autowired
+    private JavaMailSender mailSender;
 
     @RequestMapping("/join.do")
     public String join(Model model) {
@@ -112,7 +117,34 @@ public class MbController {
         }
         return ResponseEntity.ok(response);
     }
+    
+    @RequestMapping("/findInfo.do")
+    public String find(Model model) {
+        return "find_info"; // join.jsp를 반환
+    }
+    
+    @PostMapping("/findId")
+    public String findId(@RequestParam("phone") String phone, Model model) {
+        // 1. 입력한 전화번호를 기반으로 이메일 아이디를 찾는다
+        String emailId = memberService.findIdByPhone(phone);
 
+        if (emailId != null) {
+            // 2. 이메일 아이디를 해당 이메일로 전송한다
+            sendEmailWithId(emailId);
+            model.addAttribute("message", "아이디가 등록된 이메일로 전송되었습니다.");
+        } else {
+            model.addAttribute("message", "해당 전화번호와 일치하는 아이디가 없습니다.");
+        }
+        return "result"; // 결과 페이지로 이동
+    }
 
+    private void sendEmailWithId(String emailId) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(emailId); // 수신자 이메일 주소
+        message.setSubject("아이디 찾기 결과"); // 이메일 제목
+        message.setText("귀하의 아이디는: " + emailId); // 이메일 내용
+
+        mailSender.send(message); // 이메일 전송
+    }
 
 }

@@ -45,4 +45,10 @@
 	    SELECT * FROM member WHERE mb_id = #{id}
 	</select>
 	
+	<select id="findEmailByPhone" parameterType="String" resultType="String">
+	    SELECT mb_id 
+	      FROM member 
+	     WHERE mb_phone = #{phone}
+	</select>
+	
 </mapper>

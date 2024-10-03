@@ -34,4 +34,8 @@ public class MemberService {
         }
     }
 
+	public String findIdByPhone(String phone) {
+		return memberDao.findEmailByPhone(phone);
+	}
+
 }
