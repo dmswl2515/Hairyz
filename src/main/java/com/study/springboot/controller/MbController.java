@@ -1,11 +1,14 @@
 package com.study.springboot.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -71,6 +74,7 @@ public class MbController {
         return exists ? "exists" : "available"; // 중복 여부에 따라 응답
     }
 
+
     @RequestMapping("/login.do")
     public String login() {
         return "login"; // login.jsp 반환
@@ -90,6 +94,23 @@ public class MbController {
         	jsonResponse = "{\"code\": \"error\", \"desc\": \"아이디 또는 비밀번호가 잘못되었습니다.\"}";
         }
         return jsonResponse;
+    }
+    
+    @PostMapping("/checkSnsLoginEmail.do")
+    public ResponseEntity<Map<String, String>> checkSnsLoginEmail(@RequestBody Map<String, String> params, HttpSession session) {
+        String email = params.get("email");
+        MemberDto dto = memberDao.findById(email);
+        Map<String, String> response = new HashMap<>();
+        if (dto != null) {
+            // SNS 계정으로 로그인된 경우 세션에 아이디 저장
+            session.setAttribute("userId", dto.getMb_id()); 
+            response.put("code", "exists");
+            response.put("desc", "SNS 계정으로 로그인 되었습니다.");
+        } else {
+            response.put("code", "not_found");
+            response.put("desc", "SNS 계정과 연동된 이메일이 없습니다. 추가 정보 입력이 필요합니다.");
+        }
+        return ResponseEntity.ok(response);
     }
 
 

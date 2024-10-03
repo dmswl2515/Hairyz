@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,9 +34,10 @@ function refreshCaptcha() {
 var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 var phonePattern = /^010-\d{4}-\d{4}$/;
 var isCaptchaVerified = false; // 캡차 인증 상태를 저장하는 변수
+var isSnsMember = '${param.snsEmail}' !== '' ? true : false; // SNS 회원가입 여부 체크
 
 
-//이메일 중복확인 기능
+//이메일 중복확인 기능(일반 회원 가입시)
 function checkDuplicateEmail() {
 	var email = $('#mb_id').val();
 	if (!emailPattern.test(email)) {
@@ -96,16 +98,6 @@ function checkCaptcha() {
     });
 }
 
-var isSnsMember = false; // 일반 회원은 기본적으로 false
-var snsEmail = ''; // SNS 로그인 시 받은 이메일
-
-//만약 SNS 로그인 후 회원가입 페이지로 이동한 경우
-function setSnsMember(snsLoginEmail) {
-    isSnsMember = true;
-    snsEmail = snsLoginEmail;
-    $('#mb_id').val(snsLoginEmail);  // SNS에서 받아온 이메일로 입력 필드 설정
-    $('#mb_id').prop('readonly', true);  // 이메일 필드를 수정 불가로 설정
-}
 
 function form_check(event) {
 	event.preventDefault(); // 기본 제출 방지
@@ -186,8 +178,12 @@ function submit_ajax() {
 				<div class="mb-3">
 					<label for="mb_id">아이디(이메일) <code>*</code></label> 
 					<div class="input-group">
-						<input type="email" id="mb_id" name="mb_id" class="form-control" size="20" placeholder="you@example.com" required>
-						<button type="button" class="btn btn-outline-secondary ml-1" onclick="checkDuplicateEmail()">중복확인</button>
+						<!-- 이메일 입력 필드: SNS 로그인 시 읽기 전용, 일반 회원가입 시 수정 가능 -->
+						<input type="email" id="mb_id" name="mb_id" class="form-control" size="20"
+						       value="${param.snsEmail}" ${param.snsEmail != null ? 'readonly' : ''}  placeholder="you@example.com"  required>
+						<c:if test="${param.snsEmail == null}">
+					        <button type="button" class="btn btn-outline-secondary ml-1" onclick="checkDuplicateEmail()">중복확인</button>
+					    </c:if>
 					</div>
 					<div class="invalid-feedback">이메일은 필수 항목입니다.</div>
 				</div>

@@ -11,7 +11,7 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.js"></script>
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
-
+<script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" type="text/javascript" async defer></script>
 <script>
 function onSignIn() {
 	google.accounts.id
@@ -29,28 +29,14 @@ function handleCredentialResponse(response) {
 	console.log("Image URL: " + profile.picture);
 	console.log("Email: " + profile.email);
 	
-	// 서버로 데이터 전송
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "checkAndRegisterUser.do", true);
-	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState === 4 && xhr.status === 200) {
-			var jsonResponse = JSON.parse(xhr.responseText);
-			// 로그인 처리
-			window.location.href = "select_login_view.do";
-		}
-	};
-	xhr.send(JSON.stringify({
-		id: profile.sub,
-		nickname: profile.name,
-		email: profile.email
-	}));
+	// 이메일로 회원 여부 확인
+    snsLogin(profile.email); // snsLogin 함수 호출
 
 }
 
 /* ------------------------------------------------------------------------------------------ */
 
-/* Kakao.init('2e8d17510ccb320292db80fcce197c79');
+/* Kakao.init('3fe60097c9ec0969b537421877e8ae54');
    function loginWithKakao() {
      // 로그인 창을 띄웁니다.
      Kakao.Auth.login({
@@ -65,7 +51,7 @@ function handleCredentialResponse(response) {
      });
    }; */
    
-   Kakao.init('2e8d17510ccb320292db80fcce197c79');
+   Kakao.init('3fe60097c9ec0969b537421877e8ae54');
    function loginWithKakao() {
        Kakao.Auth.login({
            success: function(authObj) {
@@ -74,25 +60,18 @@ function handleCredentialResponse(response) {
                    success: function(res) {
                        var id = res.id;
                        var nickname = res.properties.nickname;
-                       var email = res.kakao_account.email;
+                       var email = res.kakao_account.email || ''; // 이메일이 없을 경우 빈 문자열로 설정
+               			console.log('Id: ' + id);
+               			console.log('Nickname: ' + nickname);
+               			console.log('Email: ' + email);
+               			
+               			if (!email) {
+                            alert("이메일이 제공되지 않아 Kakao 로그인을 진행할 수 없습니다.");
+                            return;
+                        }
 
-                       // 서버로 데이터 전송
-                       var xhr = new XMLHttpRequest();
-                       xhr.open("POST", "checkAndRegisterUser.do", true);
-                       xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                       xhr.onreadystatechange = function() {
-                           if (xhr.readyState === 4 && xhr.status === 200) {
-                               var jsonResponse = JSON.parse(xhr.responseText);
-                               if (jsonResponse.exists) {
-                                   // 로그인 처리
-                                   window.location.href = "select_login_view.do";
-                               } else {
-                                   // 자동 회원 등록 후 로그인 처리
-                                   window.location.href = "select_login_view.do";
-                               }
-                           }
-                       };
-                       xhr.send(JSON.stringify({ id: id, nickname: nickname, email: email }));
+                    	// 이메일로 회원 여부 확인
+                       snsLogin(email); // snsLogin 함수 호출
                    },
                    fail: function(error) {
                        console.log(error);
@@ -105,7 +84,25 @@ function handleCredentialResponse(response) {
        });
    }
 
-  /* ------------------------------------------------------------------------------------------ */
+	/* ------------------------------------------------------------------------------------------ */
+
+	function initNaverLogin() {
+	  naverLogin = new naver.LoginWithNaverId({
+	    clientId: "YbQ2xy32RJJryAeB2oB8",
+	    callbackUrl: "http://localhost:8081/login.do",
+	    isPopup: true,
+	    onLogin: function() {
+	      naverLogin.getLoginStatus(function(response) {
+	        if (response.status) {
+	          var email = response.email;
+	          snsLogin(email); // SNS 로그인 처리
+	        }
+	      });
+	    }
+	  });
+	}
+
+/* ------------------------------------------------------------------------------------------ */
    
   // Facebook
    window.fbAsyncInit = function() {
@@ -144,22 +141,9 @@ function getFBUserInfo() {
 		console.log('ID: ' + response.id);
 		console.log('Name: ' + response.name);
 		console.log('Email: ' + response.email);
-
-		// 서버로 데이터 전송
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "checkDuplicateEmail.do", true);
-		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState === 4 && xhr.status === 200) {
-				// 서버에서 성공적으로 처리되면 로그인 페이지로 이동
-				window.location.href = "login.do";
-			}
-		};
-		xhr.send(JSON.stringify({
-			id: response.id,
-			nickname: response.name,
-			email: response.email
-		}));
+		
+		// 여기에서 snsLogin을 호출하여 이메일로 회원 여부 확인
+        snsLogin(response.email); // snsLogin 함수 호출
 	});
 }
 
@@ -171,6 +155,30 @@ function fbLogin() {
 		scope: 'public_profile, email'
 	});
 }
+
+function snsLogin(snsEmail) {
+    $.ajax({
+        url: '/checkSnsLoginEmail.do',
+        type: 'POST',
+        contentType: 'application/json', // Content-Type 설정
+        data: JSON.stringify({ email: snsEmail }), // JSON.stringify 사용
+        success: function(response) {
+            if (response.code === 'exists') {
+                alert(response.desc);
+                // 기존 회원이므로 바로 로그인 처리
+                window.location.href = '/main_view.do';  // 로그인 후 메인 페이지로 이동
+            } else if (response.code === 'not_found') {
+                alert(response.desc);
+                // 새 회원이므로 회원가입 페이지로 이동
+                window.location.href = '/join.do?snsEmail=' + encodeURIComponent(snsEmail);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("SNS 로그인 이메일 확인 중 오류가 발생했습니다: " + error);
+        }
+    });
+}
+
 
 /* ------------------------------------------------------------------------------------------ */
 // 일반회원 로그인
@@ -207,6 +215,7 @@ function submit_ajax() {
 		}
 	});
 }
+
 </script>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">	
@@ -241,9 +250,10 @@ function submit_ajax() {
 		</div>
 		<div class="oauth-buttons">
 			<button type="button" class="btn btn-dark" onclick="form_check(event)">로그인</button><br>
-			<button type="button" class="btn btn-warning" onclick="loginWithKakao();">Kakao 로그인</button><br>
 			<button type="button" class="btn btn-danger" onclick="onSignIn();">Google 로그인</button><br>
 			<button type="button" class="btn btn-primary" onclick="fbLogin();">Facebook 로그인</button>
+			<button type="button" class="btn btn-warning" onclick="loginWithKakao();">Kakao 로그인</button><br>
+			<button type="button" class="btn btn-success" id="naverLoginButton">Naver 로그인</button><br>
 			<button type="button" class="btn btn-secondary" onclick="javascript:window.location='join.do'">회원가입</button><br>
 		</div>
 	</form>

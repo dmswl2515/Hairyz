@@ -22,6 +22,6 @@ public interface IMemberDao
     int insertMember(Map<String, String> paramMap);
     
     // 로그인, SNS로그인
-	//public MemberDto findById(String id);
+	public MemberDto findById(String id);
 	
 }
