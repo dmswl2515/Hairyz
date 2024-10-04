@@ -144,11 +144,6 @@ footer {
 	margin-right: 20px;
 }
 
-.pet-image img {
-	width: 100%;
-	height: auto;
-}
-
 .no-pet-message {
 	display: flex;
 	justify-content: center;
@@ -234,7 +229,7 @@ footer {
 	                        <div class="pet-image">
 							    <c:choose>
 							        <c:when test="${not empty pet.pl_imgPath}">
-							            <img src="${pageContext.request.contextPath}/upload/${pet.pl_orgName}" alt="반려동물 사진">
+							            <img class="profile" src="${pageContext.request.contextPath}/upload/${pet.pl_orgName}" alt="반려동물 사진">
 							        </c:when>
 							        <c:otherwise>
 							            <img src="images/logo.png" alt="기본 반려동물 사진">

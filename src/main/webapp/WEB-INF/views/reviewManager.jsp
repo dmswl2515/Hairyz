@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>판매 관리</title>
+    <title>구매평 관리</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- jQuery 라이브러리 추가 -->
@@ -34,6 +34,14 @@ body {
 	border: 1px solid #d8d8d8;
 	width: 100%;
 	margin-top: 100px
+}
+
+.ellipsis {
+    white-space: nowrap;   /* 텍스트를 한 줄로 표시 */
+    overflow: hidden;      /* 넘치는 텍스트 숨김 */
+    text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
+    max-width: 200px;      /* 원하는 최대 너비 설정 */
+    display: inline-block; /* 요소의 너비를 제한하려면 inline-block 사용 */
 }
 
 </style>
@@ -66,58 +74,41 @@ function updateOrderState(orderno, state) {
 		<!-- 세로 메뉴 -->
 		<!-- 추가 예정 -->
 
-		<!-- 판매관리 -->
+		<!-- 구매평 관리 -->
 	    <div class="content">
 	    	<div class="custom-container">
 			    <h2 class="text-center my-4">판매 관리</h2>
 			    <table class="table table-hover table-striped table-bordered text-center align-middle">
 			        <thead class="thead-dark">
 			            <tr>
-			                <th>상품정보</th>
-			                <th>주문일자</th>
-			                <th>주문고객</th>
-			                <th>주문번호</th>
-			                <th>주문금액</th>
-			                <th>주문상태</th>
+			                <th>번호</th>
+			                <th>날짜</th>
+			                <th>작성자</th>
+			                <th>내용</th>
+			                <th>답변 상태</th>
 			            </tr>
 			        </thead>
 			        <tbody>
 			            <c:choose>
 			                <c:when test="${empty salesManage}">
 			                    <tr>
-			                        <td colspan="6" class="text-center text-muted py-4">주문 내용이 없습니다.</td>
+			                        <td colspan="6" class="text-center text-muted py-4">등록된 구매 평이 없습니다.</td>
 			                    </tr>
 			                </c:when>
 			                <c:otherwise>
-			                    <c:forEach var="sm" items="${salesManage}">
-			                        <tr>
-			                            <td><img src="${pageContext.request.contextPath}/upload/${sm.originalfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;">&nbsp;${re.orderdate}</td>
-			                            <td>${sm.orderdate}</td>
-			                            <td>${sm.membername}</td>
-			                            <td>${sm.orderno}</td>
-			                            <td>${sm.productprice}원</td>
+			                    <c:forEach var="sm" items="${salesManage}" varStatus="status">
+			                        <tr style="cursor: pointer;" onclick="window.location.href='#'">
+			                            <td>${totalCount - status.index}</td>
+			                            <td>${sm.pr_reviewDate}</td>
+			                            <td>${sm.pr_MbNnme}</td>
+			                            <td class="ellipsis">${sm.pr_reviewText}</td>
 			                            <td>
 				                            <c:choose>
-											    <c:when test="${sm.state == 1}">
-											        <span class="badge badge-success">결제완료</span>
-											        <button type="button" class="btn btn-sm btn-outline-warning" style="background-color: #ffc107; color: black;" onclick="updateOrderState(${sm.orderno}, 2)">배송시작</button>
-											        <button type="button" class="btn btn-sm btn-outline-warning" style="background-color: #ffc107; color: black;" onclick="updateOrderState(${sm.orderno}, 3)">주문취소</button>
+											    <c:when test="${sm.pr_hasReply == Y}">
+											        <span class="badge badge-success">답변 완료</span>
 											    </c:when>
-											    <c:when test="${sm.state == 2}">
-											        <span class="badge badge-success">배송중</span>
-											        <button type="button" class="btn btn-sm btn-outline-warning" style="background-color: #ffc107; color: black;" onclick="updateOrderState(${sm.orderno}, 6)">배송완료</button>
-											    </c:when>
-											    <c:when test="${sm.state == 3}">
-											        <span class="badge badge-danger">취소</span>
-											    </c:when>
-											    <c:when test="${sm.state == 4}">
-											        <span class="badge badge-warning">교환</span>
-											    </c:when>
-											    <c:when test="${sm.state == 5}">
-											        <span class="badge badge-secondary">반품</span>
-											    </c:when>
-											    <c:when test="${sm.state == 6}">
-											        <span class="badge badge-success">배송완료</span>
+											    <c:when test="${sm.pr_hasReply == N}">
+											        <span class="badge badge-warning">미답변</span>
 											    </c:when>
 											</c:choose>
 										</td>
