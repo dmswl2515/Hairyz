@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,6 +34,70 @@ function refreshCaptcha() {
 var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 var phonePattern = /^010-\d{4}-\d{4}$/;
 var isCaptchaVerified = false; // 캡차 인증 상태를 저장하는 변수
+var isSnsMember = '${param.snsEmail}' !== '' ? true : false; // SNS 회원가입 여부 체크
+
+
+//이메일 중복확인 기능(일반 회원 가입시)
+function checkDuplicateEmail() {
+	var email = $('#mb_id').val();
+	if (!emailPattern.test(email)) {
+		alert("유효한 이메일 주소를 입력해주세요.");
+		$('#mb_id').focus();
+		return;
+	}
+
+	$.ajax({
+	    url: '/checkDuplicateEmail.do', // 절대 경로로 수정
+	    type: 'POST',
+	    data: { mb_id: email },
+	    success: function(response) {
+	        if (response === 'exists') {
+	            alert("이미 사용중인 이메일입니다.");
+	            $('#mb_id').focus();
+	        } else {
+	            alert("사용 가능한 이메일입니다.");
+	        }
+	    },
+	    error: function(xhr, status, error) {
+         alert("이메일 중복 확인 중 오류가 발생했습니다: " + error);
+         console.log("Error details: ", xhr.responseText); // 오류 내용 콘솔에 출력
+     }
+	});
+}
+
+//우편번호 검색 기능
+function searchZipcode() {
+ new daum.Postcode({
+     oncomplete: function(data) {
+         // 선택한 주소의 우편번호와 주소를 입력
+         document.getElementById('mb_zipcode').value = data.zonecode; // 우편번호
+         document.getElementById('mb_addr1').value = data.roadAddress; // 도로명 주소
+         document.getElementById('mb_addr2').focus(); // 상세주소 입력으로 포커스 이동
+     }
+ }).open();
+}
+
+function checkCaptcha() {
+    var userCaptcha = $('#captchaInput').val(); // 사용자 입력 캡차 값 가져오기
+    $.ajax({
+        url: '/captcha/verify',
+        type: 'POST',
+        data: { userCaptcha: userCaptcha },
+        success: function(response) {
+            if (response === "캡차 인증이 완료되었습니다!") {
+            	alert(response); 
+				isCaptchaVerified = true; // 캡차 인증 완료 상태로 변경
+            } else {
+                alert(response); // 캡차 인증 실패 시 알림
+				isCaptchaVerified = false; // 캡차 인증 실패 상태로 유지
+            }
+        },
+        error: function() {
+            alert("캡차 확인 중 오류가 발생했습니다.");
+        }
+    });
+}
+
 
 function form_check(event) {
 	event.preventDefault(); // 기본 제출 방지
@@ -69,30 +134,14 @@ function form_check(event) {
 	submit_ajax();
 }
 
-function checkCaptcha() {
-    var userCaptcha = $('#captchaInput').val(); // 사용자 입력 캡차 값 가져오기
-    $.ajax({
-        url: '/captcha/verify',
-        type: 'POST',
-        data: { userCaptcha: userCaptcha },
-        success: function(response) {
-            if (response === "캡차 인증이 완료되었습니다!") {
-            	alert(response); 
-				isCaptchaVerified = true; // 캡차 인증 완료 상태로 변경
-            } else {
-                alert(response); // 캡차 인증 실패 시 알림
-				isCaptchaVerified = false; // 캡차 인증 실패 상태로 유지
-            }
-        },
-        error: function() {
-            alert("캡차 확인 중 오류가 발생했습니다.");
-        }
-    });
-}
-
 
 function submit_ajax() {
 	var queryString = $("#reg_frm").serialize();
+	
+	if (isSnsMember) {
+        queryString += "&mb_sns=Y";
+    }
+	
 	$.ajax({
 		url: '/joinOk.do',
 		type: 'POST',
@@ -111,45 +160,6 @@ function submit_ajax() {
 	});
 }
 
-// 이메일 중복확인 기능
-function checkDuplicateEmail() {
-	var email = $('#mb_id').val();
-	if (!emailPattern.test(email)) {
-		alert("유효한 이메일 주소를 입력해주세요.");
-		$('#mb_id').focus();
-		return;
-	}
-
-	$.ajax({
-	    url: '/checkDuplicateEmail.do', // 절대 경로로 수정
-	    type: 'POST',
-	    data: { mb_id: email },
-	    success: function(response) {
-	        if (response === 'exists') {
-	            alert("이미 사용중인 이메일입니다.");
-	            $('#mb_id').focus();
-	        } else {
-	            alert("사용 가능한 이메일입니다.");
-	        }
-	    },
-	    error: function(xhr, status, error) {
-            alert("이메일 중복 확인 중 오류가 발생했습니다: " + error);
-            console.log("Error details: ", xhr.responseText); // 오류 내용 콘솔에 출력
-        }
-	});
-}
-
-//우편번호 검색 기능
-function searchZipcode() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            // 선택한 주소의 우편번호와 주소를 입력
-            document.getElementById('mb_zipcode').value = data.zonecode; // 우편번호
-            document.getElementById('mb_addr1').value = data.roadAddress; // 도로명 주소
-            document.getElementById('mb_addr2').focus(); // 상세주소 입력으로 포커스 이동
-        }
-    }).open();
-}
 </script>
 </head>
 <body>
@@ -168,8 +178,12 @@ function searchZipcode() {
 				<div class="mb-3">
 					<label for="mb_id">아이디(이메일) <code>*</code></label> 
 					<div class="input-group">
-						<input type="email" id="mb_id" name="mb_id" class="form-control" size="20" placeholder="you@example.com" required>
-						<button type="button" class="btn btn-outline-secondary ml-1" onclick="checkDuplicateEmail()">중복확인</button>
+						<!-- 이메일 입력 필드: SNS 로그인 시 읽기 전용, 일반 회원가입 시 수정 가능 -->
+						<input type="email" id="mb_id" name="mb_id" class="form-control" size="20"
+						       value="${param.snsEmail}" ${param.snsEmail != null ? 'readonly' : ''}  placeholder="you@example.com"  required>
+						<c:if test="${param.snsEmail == null}">
+					        <button type="button" class="btn btn-outline-secondary ml-1" onclick="checkDuplicateEmail()">중복확인</button>
+					    </c:if>
 					</div>
 					<div class="invalid-feedback">이메일은 필수 항목입니다.</div>
 				</div>

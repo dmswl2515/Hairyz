@@ -55,7 +55,7 @@
 			<div class="col-3 text-right">
 				<%
 				//아이디 취득 후 id가 Null인지 확인
-				String id = (String)session.getAttribute("id");
+				String id = (String)session.getAttribute("userId");
 				if (id == null)
 				{
 				%>

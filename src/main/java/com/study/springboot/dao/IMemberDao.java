@@ -20,4 +20,10 @@ public interface IMemberDao
     
     // 회원가입 처리
     int insertMember(Map<String, String> paramMap);
+    
+    // 로그인, SNS로그인
+	public MemberDto findById(String id);
+	
+	public String findEmailByPhone(String phone);
+	
 }

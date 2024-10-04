@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.study.springboot.dao.IMemberDao;
+import com.study.springboot.dto.MemberDto;
 
 @Service
 public class MemberService {
@@ -21,4 +22,20 @@ public class MemberService {
         int count = memberDao.checkEmailExists(email);
         return count > 0; // 0보다 크면 이메일이 존재함
     }
+
+    public boolean validateLogin(String id, String pw) {
+        //MemberDto member = memberDao.findById(id);
+        MemberDto dto = memberDao.selectMember(id);
+        
+        if (dto != null && dto.getMb_pw().equals(pw)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+	public String findIdByPhone(String phone) {
+		return memberDao.findEmailByPhone(phone);
+	}
+
 }
