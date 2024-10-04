@@ -110,5 +110,11 @@ public class ShopController {
     	
             return "s_purchase";              
     }
+    
+    @RequestMapping("/s_cart")    
+    public String shoppingCart(Model model) {
+    	
+            return "s_cart";              
+    }
 }
 
