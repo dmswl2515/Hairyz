@@ -17,8 +17,10 @@
 	</div>
 
 <style>
+	
 	   .table {
       border-color: #ffc107; /* 테이블 테두리 색상 */
+      border-collapse: collapse;
   }
 
   .table th{
@@ -44,25 +46,75 @@
 	.my-custom-table td, .my-custom-table th {
 	    line-height: 2; /* 이 테이블에만 적용 */
 	}
+	
+	img {
+		margin-left:10px;
+		margin-top:10px;
+		width:100px; 
+		height:100px; 
+		object-fit:cover;
+	}
+	
+	.removeBtn {
+		margin-top:10px;
+		margin-right:10px;
+		width: 200px; 
+		color: black;
+		background-color: #ffe282;
+	}
+	
+	.tableDeco {
+		border-top: 3px solid #ffc107;
+		border-bottom: 3px solid #ffc107;
+	}
+	
+	.orderBtn {
+	    font-size: 1.2em;
+	    font-weight: bold;
+	    font-color: gray;
+		width: 300px;
+		height: 50px; 
+		color: black;
+		background-color: #ffe282;
+	}
+	
+	.centered-container {
+	    margin-top: 20px;
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: center;
+	    align-items: center;
+	}
+	
+	.gray-link {
+	    color: gray;                
+	    text-decoration: underline; /* 밑줄 추가 */
+	}
+	
+	.gray-link:hover {
+	    color: black;               /* 마우스 오버 시 글씨 색상을 검은색으로 변경 */
+	    text-decoration: underline; /* 밑줄 유지 */
+	}
+	
 </style>
 
 
 
 	<div class=container>
-		<h3 class="text-center mb-4"><strong>장바구니</strong></h3>
+		<h3 class="text-center mt-5 mb-3"><strong>장바구니</strong></h3>
 		<div class=container1>
 		 	<table class="table table-bordered mb-2">
 			  <thead>
 			    <tr class="table-warning text-center">
-			      <th class="text-center align-middle">
-	                  <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+			      <th class="text-center align-middle" >
+	                  <div class="d-flex justify-content-center align-items-center" style="height: 100%; margin-left:10px;">
 	                      <input class="form-check-input" type="checkbox" id="selectAll">
 	                  </div>
             	  </th>
 			      <th scope="col">상품정보</th>
 			      <th scope="col">수량</th>
 			      <th scope="col">주문금액</th>
-			      <th scope="col">배송비</th> 
+			      <th scope="col" style="background-color:#ffe282;">배송비</th> 
 			    </tr>
 			  </thead>
 				<tbody>
@@ -71,24 +123,36 @@
 				        <tr>
 				            <!-- 체크박스 열 -->
 				            <td class="text-center align-middle">
-				                <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-				                    <input class="form-check-input" type="checkbox" id="selectAll">
+				                <div class="d-flex justify-content-center align-items-center" style="height: 100%; margin-left:10px;">
+				                    <input class="form-check-input selectEach" type="checkbox">
 				                </div>
+<script>
+  // 'selectAll' 체크박스 이벤트 리스너 추가
+  document.getElementById('selectAll').addEventListener('change', function() {
+    // 모든 개별 체크박스를 선택하거나 해제
+    const isChecked = this.checked;
+    const checkboxes = document.querySelectorAll('.selectEach');
+    
+    checkboxes.forEach(function(checkbox) {
+      checkbox.checked = isChecked;
+    });
+  });
+</script>
 				            </td>
 				            <!-- 상품 정보 열 -->
 				            <td>
-				                <div class="product-box">
+				                <div>
 				                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
-				                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" style="width:100px; height:100px; object-fit:cover;">
+				                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}">
 				                    </a>
 				                    <p>${item.pdName}</p>
 				                </div>
 				            </td>
 				            <!-- 수량 -->
 				            <div>
-				            	<td class="text-center align-middle">${item.pd_amount}개
-				            </div>
-				            <div class="btn-group" role="group" aria-label="Default button group">
+				            	<td class="text-center align-middle" id="total-price">${item.pd_amount}개
+				            </div><br>
+				            <div class="btn-group mt-2" role="group" aria-label="Default button group">
 	                            <button type="button" id="decrease" class="btn btn-outline-secondary">-</button>
 	                            <input type="text" id="quantity-input" style="width: 40px; text-align: center;" value="1" />
 	                            <button type="button" id="increase" class="btn btn-outline-secondary">+</button>
@@ -97,15 +161,105 @@
 				            <!-- 주문 금액 -->
 				            <td class="text-center align-middle">${item.pd_price}원</td>
 				            <!-- 배송비 -->
-				            <td class="text-center align-middle">
+				            <td class="text-center align-middle" style="background-color:#ffe282;">
 				                <span>무료</span>        
 				            </td>
 				        </tr>
 				    </c:forEach>
 				</tbody>
 			</table>
+			<div>
+				<button id="remove-selected" class="btn btn-outline-warning removeBtn">
+					선택상품 삭제
+				</button>
+	   	   		<button id="remove-soldout" class="btn btn-outline-warning removeBtn">
+	   	   			품절상품 삭제
+	   	   		</button>
+       	   	</div>
+
+		 	<table class="table table-bordered mt-5 mb-2 tableDeco" style="border-left: none; border-right: none;">
+		  	    <thead>
+		    	  <tr class="table-warning text-center">
+		     		  <th class="text-center align-middle" style="background-color:white; border-left: none; border-right: none;">
+		                  <div class="d-flex justify-content-center align-items-center">
+		                      <span>총 주문상품 ${item.pd_amount}개</span>
+		                  </div>
+	            	  </th>
+			      </tr>
+			    </thead>
+				<tbody>
+				   <tr>  
+		              <td class="text-center align-middle" style="height:250px; border-left: none; border-right: none;">
+	                     <div style="display: block; margin-bottom: 15px; font-size: 1.7em;">
+						     <span>${item.pd_price}원</span>
+						     <span style="margin-left: 100px;"> + </span>
+						     <span style="margin-right: 100px; margin-left: 10px;">0원</span>
+						     <span style="font-weight: bold;"> = </span>
+						     <span style="margin-left: 10px; font-weight: bold;">${item.pd_price}원</span>
+						 </div>
+						 <div style="display: block; color:grey;">
+						    <span>상품금액</span>
+						    <span style="margin-right: 100px; margin-left: 100px;">배송비</span>
+						    <span>총 주문금액</span>
+						 </div>
+		              </td>
+				   </tr>
+				</tbody>
+			</table>
+			<div class="centered-container">
+       	   		<button id="purchaseBtn" class="btn btn-outline-warning orderBtn mb-3">
+					주문하기
+				</button>
+				<a href="s_main" class="gray-link">계속 쇼핑하기</a>
+       	   	</div>
 		</div>
 	</div>
+	
+<script>
+	$(document).ready(function() {
+	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
+	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
+	
+	    function updateTotalPrice() {
+	        let totalPrice = pricePerItem * quantity;
+	        $('#total-price').text(totalPrice.toLocaleString() + '원');
+	    }
+	
+	    $('#increase').on('click', function() {
+	        quantity++;
+	        $('#quantity-input').val(quantity);
+	        updateTotalPrice();
+	    });
+	
+	    $('#decrease').on('click', function() {
+	        if (quantity > 1) {
+	            quantity--;
+	            $('#quantity-input').val(quantity);
+	            updateTotalPrice();
+	        }
+	    });
+	    
+	    $('#quantity-input').on('focus', function() {
+	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
+        });
+	
+	    $('#quantity-input').on('input', function() {
+	        // 사용자가 입력한 값을 받아오기
+	        let inputValue = $(this).val();
+	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
+	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
+	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
+	        } else {
+	            quantity = 1; // 기본값 1 설정
+	        }
+	        $(this).val(quantity); // 입력란의 값을 업데이트
+	        updateTotalPrice(); // 총 가격 업데이트
+	    });
+	
+	    // 초기 총 가격 업데이트
+	    updateTotalPrice();
+	});
+</script>
 
 					
 <%@ include file="footer.jsp" %>

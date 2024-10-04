@@ -144,9 +144,8 @@
 	.product-box {
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 20px;
             margin-top: 80px;
-            margin-left: 50px;
+            margin-left: 48px;
             margin-right: 50px;
             text-align: center;
             width: 550px;
@@ -166,6 +165,7 @@
     	line-height: 2;
         font-size: 1.5em;
         overflow-wrap: break-word; /*텍스트 길이 줄바꿈*/
+        font-weight: bold;
     }
 
     .product-price {
@@ -202,7 +202,7 @@
 		<div class=container>
 		    <div class="product-container">	
 	              <div class="product-box">
-	           		<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
+	           		<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px; object-fit:cover;">
 	             
 	              </div>
 	              <div class="product-text">
@@ -304,7 +304,6 @@
     .info-tabs {
         display: flex;
         justify-content: space-around;
-        margin: 20px 0;
         max-width: 1000px; /* 최대 너비 설정 */
     	margin: 20px auto;
     }
