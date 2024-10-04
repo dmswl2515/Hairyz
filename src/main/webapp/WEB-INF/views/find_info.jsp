@@ -9,7 +9,46 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="http://code.jquery.com/jquery.js"></script>
 <script>
+//이메일 마스킹 함수
+function maskEmail(email) {
+    const parts = email.split('@'); // '@'를 기준으로 이메일을 나누기
+    const username = parts[0]; // 이메일의 사용자 이름 부분
+    const domain = parts[1]; // 이메일의 도메인 부분
 
+    // 사용자 이름의 첫 4자리와 마지막 2자리 제외하고 '*'로 마스킹
+    const maskedUsername = username.substring(0, 4) + '*****' + username.substring(username.length - 2);
+    
+    return maskedUsername + '@' + domain; // 마스킹된 이메일 반환
+}
+$(document).ready(function() {
+	//아이디 찾기
+	$('#findIdForm').on('submit', function(e) {
+	    e.preventDefault();
+	    console.log("아이디 찾기 버튼이 클릭되었습니다.");
+	    $.post('/findId', { phone: $('input[name="phone"]').val() })
+	        .done(function(data) {
+	        	const maskedEmail = maskEmail(data); // 이메일 마스킹 함수 호출
+	            alert(maskedEmail + "로 아이디가 전송되었습니다.");
+	        })
+	        .fail(function() {
+	            alert("해당 전화번호로 가입된 회원이 없습니다.");
+	        });
+	});
+	
+	// 비밀번호 찾기
+	$('#findPwForm').on('submit', function(e) {
+	    e.preventDefault();
+	    const email = $('input[name="id"]').val();
+	    $.post('/findPw', { id: email })
+	        .done(function() {
+	            const maskedEmail = maskEmail(email);
+	            alert(maskedEmail + "로 비밀번호가 전송되었습니다.");
+	        })
+	        .fail(function() {
+	            alert("해당 아이디로 가입된 회원이 없습니다.");
+	        });
+	});
+});
 </script>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">	
@@ -19,7 +58,7 @@
 .find-wrapper { width:100%;max-width:400px;padding:20px; }
 .find-area { margin-bottom:0;text-align:right; }
 .find-wrapper button { margin:10px 0 0;width:100%;height:50px;color:#fff;padding:10px 20px; }
-.invalid-feedback { marin-top:0;margin-bottom:.25rem;text-align:left; }
+.invalid-feedback { margin-top:0;margin-bottom:.25rem;text-align:left; }
 </style>
 </head>
 <body>
@@ -30,7 +69,7 @@
 	<div class="py-3 text-center">
         <h3>아이디 찾기</h3>
  	</div>
-	<form id="findIdForm" method="post" action="/findId">
+	<form id="findIdForm">
 		<div class="find-wrapper">
 		    <input type="text" id="phone" name="phone" class="form-control" placeholder="전화번호 입력 ex) 010-1234-5678" required />
 		    <button type="submit" class="btn btn-secondary">아이디 찾기</button>
@@ -41,9 +80,9 @@
 	<div class="py-3 text-center">
         <h3>비밀번호 찾기</h3>
  	</div>
-	<form id="findPwForm" method="post" action="/findPw">
+	<form id="findPwForm">
 		<div class="find-wrapper">
-		    <input type="text" id="phone" name="phone" class="form-control" placeholder="아이디 입력 ex) hairyz@example.com" required />
+		    <input type="text" id="id" name="id" class="form-control" placeholder="아이디 입력 ex) hairyz@example.com" required />
 		    <button type="submit" class="btn btn-secondary">비밀번호 찾기</button>
 		</div>
 	</form>

@@ -45,10 +45,17 @@
 	    SELECT * FROM member WHERE mb_id = #{id}
 	</select>
 	
+	<!-- 아이디 찾기(전화번호로) -->
 	<select id="findEmailByPhone" parameterType="String" resultType="String">
 	    SELECT mb_id 
 	      FROM member 
 	     WHERE mb_phone = #{phone}
 	</select>
+	
+	<!-- 비밀번호 찾기 -->
+	<select id="findPwById" parameterType="String" resultType="String">
+	    SELECT mb_pw FROM member WHERE mb_id = #{id}
+	</select>
+	
 	
 </mapper>

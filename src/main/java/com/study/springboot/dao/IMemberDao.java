@@ -24,6 +24,8 @@ public interface IMemberDao
     // 로그인, SNS로그인
 	public MemberDto findById(String id);
 	
+	// 아이디/비밀번호 찾기
 	public String findEmailByPhone(String phone);
+	public String findPwById(String id);
 	
 }

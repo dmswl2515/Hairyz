@@ -18,6 +18,10 @@ eclipse.wtp.facet {
 	facet name: 'jst.web', version: '5.0'
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-parameters']
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -57,3 +61,5 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
