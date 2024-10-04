@@ -31,11 +31,6 @@ footer {
 	width: 100%;
 }
 
-/* hr 두께 설정 */
-hr {
-	
-}
-
 .custom-container {
 	max-width: 1000px;
 	margin: 0 auto;

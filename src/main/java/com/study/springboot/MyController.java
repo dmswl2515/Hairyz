@@ -30,6 +30,7 @@ import com.study.springboot.dao.IOrderProductDao;
 import com.study.springboot.dao.IPetListDao;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrderProductDto;
+import com.study.springboot.dto.PageDto;
 import com.study.springboot.dto.PetListDto;
 
 import jakarta.servlet.ServletContext;
@@ -59,11 +60,6 @@ public class MyController {
         return "redirect:main_view.do";
     }
  
-    @RequestMapping("/test1")    // localhost:8081/test1
-    public String test1() {
-        return "test1";          // 실제 호출 될 /WEB-INF/views/test1.jsp       
-    }
-    
     @RequestMapping("/main_view.do")
     public String main() {
     	
@@ -74,8 +70,7 @@ public class MyController {
     @RequestMapping("/myProfile_view.do")
     public String myProfileView(HttpServletRequest request, Model model, HttpSession session) {
     	
-    	String mdId = (String) session.getAttribute("id");
-//    	String mdId = "test"; //테스트용
+    	String mdId = (String) session.getAttribute("userId");
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("profile_view", dto);
         return "myProfile_view";
@@ -382,6 +377,7 @@ public class MyController {
 		return "petList";
 	}
 	
+	// 주문조회
 	@RequestMapping("/orderLookup.do")
 	public String orderLookup(Model model, HttpServletRequest request)
 	{
@@ -395,6 +391,7 @@ public class MyController {
 		return "orderLookup";
 	}
 	
+	// 주문조회 상태 갱신처리
 	@PostMapping("/orderState.do")
 	@ResponseBody
 	public ResponseEntity<String> orderState(Model model, HttpServletRequest request)
@@ -416,6 +413,7 @@ public class MyController {
 		
 	}
 	
+	// 구매평 등록
 	@PostMapping("/productRevie.do")
 	@ResponseBody
 	public ResponseEntity<String> productRevie(Model model, HttpServletRequest request)
@@ -515,6 +513,7 @@ public class MyController {
 		
 	}
 	
+	//취소/반품/교환
 	@RequestMapping("/returnExchange.do")
 	public String returnExchange(Model model, HttpServletRequest request)
 	{
@@ -526,6 +525,42 @@ public class MyController {
 		model.addAttribute("returnExchange", dtos);
 
 		return "returnExchange";
+	}
+	
+	// 관리자 - 판매관리
+	@RequestMapping("/salesManagement.do")
+	public String salesManagement(Model model, HttpServletRequest request)
+	{
+		
+		// 한 페이지에 보여줄 항목 수
+	    int pageSize = 10;
+
+	    // 현재 페이지 - request에서 page 파라미터를 가져옴
+	    String pageParam = request.getParameter("page");
+	    int currentPage = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
+	    if(currentPage < 1) {
+	    	currentPage = 1;
+	    }
+
+	    // 총 항목 수 계산
+	    PageDto pDto = orderProductDao.orderTotal();
+	    int totalCount = pDto.getTotal();
+	    // 총 페이지 수 계산
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+	    // MyBatis 쿼리에 필요한 offset 계산
+	    int startRow = (currentPage - 1) * pageSize + 1; // 시작 행
+	    int endRow = startRow + pageSize - 1; // 끝 행
+	    
+	    // 데이터 가져오기
+	    List<OrderProductDto> salesManage = orderProductDao.selectPageSalesM(startRow, endRow);
+
+	    // JSP에 값 전달
+	    model.addAttribute("salesManage", salesManage);
+	    model.addAttribute("currentPage", currentPage);
+	    model.addAttribute("totalPages", totalPages);
+
+	    return "salesManagement";
 	}
 
 	// uuid 생성할 메서드 선언

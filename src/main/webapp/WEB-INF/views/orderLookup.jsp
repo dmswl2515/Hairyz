@@ -291,85 +291,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/* //등록 버튼 클릭 이벤트
-document.getElementById('submitReview').addEventListener('click', function() {
-    const rating = document.querySelector('#rating .star.selected') ? document.querySelector('#rating .star.selected').dataset.value : 0; // 별점
-    const reviewText = document.getElementById('reviewText').value; // 리뷰 내용
-    const uploadImageInput = document.getElementById('uploadImage'); // 파일 입력
-    const file = uploadImageInput.files[0]; // 선택한 파일
-
-    // FormData 객체 생성
-    const formData = new FormData();
-    formData.append('rating', rating);
-    formData.append('reviewText', reviewText);
-    
-    if (file) {
-        formData.append('image', file); // 이미지 파일 추가
-    }
-
-    // AJAX 요청
-    $.ajax({
-        url: 'PRODUCTREVIEW.do',
-        type: 'POST',
-        data: formData,
-        contentType: false, // 파일 전송을 위한 설정
-        processData: false, // jQuery가 데이터를 처리하지 않도록 설정
-        success: function(response) {
-            // 성공적으로 리뷰가 등록된 경우
-            console.log('리뷰가 등록되었습니다.', response);
-            // 모달 닫기
-            $('#reviewModal').modal('hide');
-            // 추가 작업 (예: 페이지 새로 고침 또는 알림 표시)
-            location.reload(); // 페이지 새로 고침 (선택 사항)
-        },
-        error: function(xhr, status, error) {
-            console.error('리뷰 등록 실패:', error);
-            alert('리뷰 등록에 실패했습니다.'); // 에러 메시지
-        }
-    });
-}); */
-
-/* //등록 버튼 클릭 이벤트
-document.getElementById('submitReview').addEventListener('click', function() {
-    const rating = document.querySelector('#rating .star.selected') ? 
-        document.querySelector('#rating .star.selected').dataset.value : 0; // 별점
-    const reviewText = document.getElementById('reviewText').value; // 리뷰 내용
-    const uploadImageInput = document.getElementById('uploadImage'); // 파일 입력
-    const file = uploadImageInput.files[0]; // 선택한 파일
-
-    // data-* 속성에서 값 가져오기
-    const memberNo = this.getAttribute('data-member-no');
-    const orderNo = this.getAttribute('data-order-no');
-
-    // FormData 객체 생성
-    const formData = new FormData();
-    formData.append('memberNo', memberNo); // member.mb_no 추가
-    formData.append('orderNo', orderNo); // order.orderno 추가
-    formData.append('rating', rating);
-    formData.append('reviewText', reviewText);
-    
-    if (file) {
-        formData.append('image', file); // 이미지 파일 추가
-    }
-
-    // AJAX 요청
-    $.ajax({
-        url: 'productRevie.do',
-        type: 'POST',
-        data: formData,
-        contentType: false, // 파일 전송을 위한 설정
-        processData: false, // jQuery가 데이터를 처리하지 않도록 설정
-        success: function(response) {
-            console.log('리뷰가 등록되었습니다.', response);
-            $('#reviewModal').modal('hide');
-            location.reload(); // 페이지 새로 고침 (선택 사항)
-        },
-        error: function(xhr, status, error) {
-            console.error('리뷰 등록 실패:', error);
-            alert('리뷰 등록에 실패했습니다.'); // 에러 메시지
-        }
-    });
-}); */
 
 document.addEventListener('DOMContentLoaded', function() {
     // 등록 버튼 클릭 이벤트
@@ -419,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('등록 버튼이 존재하지 않습니다.');
     }
 });
-
 
 </script>
 </head>
@@ -472,7 +392,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			                            <td><img src="${pageContext.request.contextPath}/upload/${order.originalfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;"></td>
 			                            <td>${order.productname}</td>
 			                            <td>${order.orderamount}</td>
-			                            <%-- <td><span class="badge badge-success">${order.state}</span></td> --%>
 			                            <td>
 				                            <c:choose>
 											    <c:when test="${order.state == 1}">

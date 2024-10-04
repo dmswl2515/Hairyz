@@ -80,7 +80,7 @@
 					%>
                     	<a href="login.do" class="btn btn-outline-warning">로그인</a>
                     <%}else{%>
-                    	<a href="#" class="btn btn-outline-warning">마이페이지</a>
+                    	<a href="myProfile_view.do" class="btn btn-outline-warning">마이페이지</a>
                     	<a href="#" class="btn btn-outline-warning">장바구니</a>
                     <%} %>
                 </div>

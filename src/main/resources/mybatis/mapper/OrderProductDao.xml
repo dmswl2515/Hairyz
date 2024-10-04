@@ -67,4 +67,61 @@
         ORDER BY od_date DESC
 	</select>
 	
+	<select id="orderTotal" resultType="com.study.springboot.dto.PageDto">
+		SELECT COUNT(*) as total FROM orders
+	</select>
+	
+	<select id="selectPageSalesM" resultType="com.study.springboot.dto.OrderProductDto">
+		SELECT *
+		FROM (
+			SELECT oon AS orderno,
+			ood AS orderdate,
+			ooam AS orderamount,
+			oomn AS membername,
+			ooph AS memberphone,
+			oome AS memberemail,
+			oort AS recipientname,
+			oorp AS recipientphone,
+			oorc AS recipientzipCode,
+			oor AS recipientaddress,
+			oor2 AS recipientaddress2,
+			oomm AS memo,
+			oom AS method,
+			oop AS payment,
+			oos AS state,
+			ppn AS productname,
+			ppp AS productprice,
+			ppof AS originalfilename,
+			ppc AS changedfilename,
+			ppf AS filePath,
+			ROWNUM AS rnum
+		FROM (
+			SELECT o.od_no as oon,
+				o.od_date as ood,
+				o.od_amount as ooam,
+				o.od_mname as oomn,
+				o.od_mphone as ooph,
+				o.od_memail as oome,
+				o.od_recipient as oort,
+				o.od_rphone as oorp,
+				o.od_rzcode as oorc,
+				o.od_raddress as oor,
+				o.od_raddress2 as oor2,
+				o.od_memo as oomm,
+				o.od_method as oom,
+				o.od_payment as oop,
+				o.od_state as oos,
+				p.pd_name as ppn,
+				p.pd_price as ppp,
+				p.pd_ori_fname as ppof,
+				p.pd_chng_fname as ppc,
+				p.pd_fpath as ppf
+			FROM orders o
+			JOIN product p ON o.od_num = p.pd_num
+			ORDER BY o.od_date DESC
+			)
+		)
+		WHERE rnum BETWEEN #{param1} AND #{param2}
+	</select>
+	
 </mapper>
