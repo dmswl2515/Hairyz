@@ -226,7 +226,7 @@ function submit_ajax() {
 .find-area { margin-bottom:0;text-align:right; }
 .find-area  a { color:#333; }
 .oauth-buttons button { margin:10px 0 0;width:100%;height:50px;color:#fff;padding:10px 20px; }
-.invalid-feedback { marin-top:0;margin-bottom:.25rem;text-align:left; }
+.invalid-feedback { margin-top:0;margin-bottom:.25rem;text-align:left; }
 </style>
 </head>
 <body>
@@ -244,7 +244,7 @@ function submit_ajax() {
 			<input type="text" class="form-control" id="id" name="id" placeholder="아이디" required 
 							 		value="${sessionScope.userId != null ? sessionScope.userId : ''}"> 
 			<div class="invalid-feedback">아이디를 입력해주세요.</div>
-			<input type="password" class="form-control mt_15" id="ow" name="pw" placeholder="비밀번호" required>
+			<input type="password" class="form-control mt_15" id="pw" name="pw" placeholder="비밀번호" required>
 			<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
 			<p class="find-area mt_15"><a href="findInfo.do">아이디 / 비밀번호 찾기</a></p>
 		</div>
