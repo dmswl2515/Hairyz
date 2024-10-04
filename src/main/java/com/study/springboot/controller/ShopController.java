@@ -8,14 +8,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.study.springboot.dao.IMemberDao;
+import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.QnAService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class ShopController {
+	
+	@Autowired
+    private IMemberDao memberDao;
 	
 	@Autowired
 	private PRepository pRepository;
@@ -29,8 +36,9 @@ public class ShopController {
     public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
                                    @RequestParam(required = false) String pd_animal,
                                    @RequestParam(required = false) String pd_category,
+                                   @RequestParam(required = false) String id,
                                    Model model) {
-        
+    	
         // 페이지당 항목 수
         int pageSize = 16; 
         

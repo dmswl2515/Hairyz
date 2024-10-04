@@ -95,7 +95,7 @@
                         <a class="nav-link" href="#">커뮤니티</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">쇼핑</a>
+                        <a class="nav-link" href="s_main">쇼핑</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">동물병원</a>
