@@ -1,6 +1,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<% 
+    String productNum = request.getParameter("productNum");
+    String productName = request.getParameter("productName");
+    String productPrice = request.getParameter("productPrice");
+    String productImage = request.getParameter("productImage");
+    String productQuantity = request.getParameter("productQuantity");
+    int totalPrice = Integer.parseInt(productPrice) * Integer.parseInt(productQuantity);
+%>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -167,16 +178,16 @@
 
 	<div class=container>
 		<h3 class="text-center mt-5"><strong>결제하기</strong></h3>
+		<form method="POST" action="submitOrder.jsp">
 		<div class=container1>
 		    <div class="left">
 		        <div class="box" style="height:170px;">
-		        	<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}">
+		        	 <img src="<%= productImage %>" alt="<%= productName %>">
 		        	<div class="box-text">
-			        	<span class=product-name>${product.pdName}스윗츄 가수분해 덴탈</span>
-			           	<span style="font-size: 13px;">수량 : 1</span>
+			        	<span class=product-name><%= productName %></span>
+			           	<span style="font-size: 13px;">수량 : <%= productQuantity %></span>
 			            <span style="font-size: 16px; font-weight: bold;">
-			              	<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
-			              	18,900원
+			              	<fmt:formatNumber value="<%= totalPrice %>" pattern="#,##0원" />
 			            </span>
 			        </div>
 		        </div>
@@ -465,9 +476,9 @@ function toggleEdit2() {
 		    	<div class="box2">
 		    		<span class="textbold" style="display: inline-block; width: 100%;">결제하기</span>
 		    	</div>
-		    </div>
-		    
-		</div>
+		    </div>		    
+	   </div>
+	   </form>
 	</div>
 
 					

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.study.springboot.dao.ICartDao">
+    <select id="getCartByMemberId" resultType="com.study.springboot.dto.CartDto">
+        SELECT sb.sbag_no AS sbagNo,
+               sb.mb_id AS mbId,
+               sb.pd_num AS pdNum,
+               sb.sbag_amount AS sbagAmount,
+               sb.sbag_price AS sbagPrice,
+               p.pd_chng_fname AS pdChngFname,
+               p.pd_name AS pdName,
+               p.pd_price AS pdPrice
+        FROM shopbag sb
+        JOIN product p ON sb.pd_num = p.pd_num
+        WHERE sb.mb_id = #{mbId}
+    </select>
+</mapper>

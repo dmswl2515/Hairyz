@@ -1,4 +1,5 @@
 <%@ page import="com.study.springboot.dto.QDto" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.DayOfWeek" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
@@ -35,7 +36,7 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
+<link rel="icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">
 </head>
 <body>
 <style>
@@ -108,7 +109,7 @@
 	<div class="content">
 		<%@ include file="header.jsp" %>
 	</div>
-		    
+	    
 		<div class=container>
 		    <div class="product-container">	
 	              <div class="product-box">
@@ -150,8 +151,8 @@
                     	</div>
 	              	   <hr class="product-hr">
 	              	   		<div>
-    							<button id="buy-now" class="btn btn-warning" style="width: 200px; margin-left: 10px;">구매하기</button>
-		              	   		<button id="add-to-cart" class="btn btn-outline-warning" style="width: 200px; color: black;">장바구니</button>
+    							<button onclick="goToPurchase()" id="buy-now" class="btn btn-warning" style="width: 200px; margin-left: 10px;">구매하기</button>
+		              	   		<button onclick="goToCart()" id="add-to-cart" class="btn btn-outline-warning" style="width: 200px; color: black;">장바구니</button>
 		              	   	</div>
 	              </div>
               </div> 
@@ -200,13 +201,13 @@
 	    // 초기 총 가격 업데이트
 	    updateTotalPrice();
 	});
-</script>	              
+</script>
 
 <script>
     // 장바구니에 담기 버튼 클릭 이벤트
-    $('#add-to-cart').on('click', function() {
+    function goToCart() {
         alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
-    });
+    }
 </script>
 
 
@@ -277,9 +278,7 @@
 	.my-custom-table td, .my-custom-table th {
 	    line-height: 2; /* 이 테이블에만 적용 */
 	}
-	
-	
-    
+ 
 </style>
 		
        	<div class=container>
@@ -661,12 +660,12 @@ function submitQnA() {
 		
 <style>
 /* 페이지네이션 */
-.director {
-    display: flex; /* Flexbox 레이아웃 사용 */
-    justify-content: center; /* 수평 가운데 정렬 */
-    align-items: center; /* 수직 가운데 정렬 */
-    height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
-}
+	.director {
+	    display: flex; /* Flexbox 레이아웃 사용 */
+	    justify-content: center; /* 수평 가운데 정렬 */
+	    align-items: center; /* 수직 가운데 정렬 */
+	    height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
+	}
 
 .page-button {
 		background-color: #ffe082;

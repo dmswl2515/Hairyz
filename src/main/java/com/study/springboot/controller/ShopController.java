@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.study.springboot.dao.IMemberDao;
-import com.study.springboot.dto.MemberDto;
+import com.study.springboot.dto.CartDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
+import com.study.springboot.service.CartService;
 import com.study.springboot.service.QnAService;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +30,10 @@ public class ShopController {
 	
 	@Autowired
 	private QnAService qnaService;
+	
+	@Autowired
+	private CartService cartService;
+	
     
     
     
@@ -81,6 +86,7 @@ public class ShopController {
         // 상품 정보가 있을 경우, 모델에 추가하여 JSP에서 사용할 수 있게 함
         if (!product.isEmpty()) {
             model.addAttribute("product", product.get(0));  // 첫 번째 상품 정보만 전달
+            
         }
         
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
@@ -113,6 +119,11 @@ public class ShopController {
             return "s_details";              
     }
     
+    @RequestMapping("/clickBuyBtn")
+    public String clickBuyButton() {
+        return "redirect:/s_purchase";
+    }
+    
     @RequestMapping("/s_purchase")    
     public String productPhrchase(Model model) {
     	
@@ -120,7 +131,20 @@ public class ShopController {
     }
     
     @RequestMapping("/s_cart")    
-    public String shoppingCart(Model model) {
+    public String shoppingCart(HttpSession session, Model model) {
+    		
+    		String memberId = (String) session.getAttribute("userId");
+    		System.out.println("Member ID: " + memberId);
+    		
+    		if (memberId != null) {
+                // 회원의 장바구니 내역 가져오기
+                List<CartDto> cartList = cartService.getCartByMemberId(memberId);
+                model.addAttribute("products", cartList);
+                
+                System.out.println("Cart List: " + cartList);
+            } else {
+                System.out.println("Member ID is null");
+            }
     	
             return "s_cart";              
     }
