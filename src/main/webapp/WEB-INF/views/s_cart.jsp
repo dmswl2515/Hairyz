@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
@@ -148,33 +149,34 @@
 				            </td>
 				            <!-- 상품 정보 열 -->
 				            <td>
-				                <div>
+				                <div style="display: flex; align-items: center;">
 				                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
 				                        <img src="${pageContext.request.contextPath}/upload/${item.pdChngFname}" alt="${item.pdName}">
 				                    </a>
-				                    <p>${item.pdName}</p>
+				                    <p style="margin-left: 15px; margin-top: 15px;">${item.pdName}</p>
 				                </div>
 				            </td>
 				            <!-- 수량 -->
 				            <td class="text-center align-middle">
 					            <div>
-					                <span id="total-price-${item.pdNum}">${item.sbagAmount}개</span>
+					                <span id="quantity-text">${item.sbagAmount}개</span>
 					            </div>
 					            <br>
-					            <div class="btn-group mt-2" role="group" aria-label="Default button group">
-					                <button type="button" class="btn btn-outline-secondary decrease" data-id="${item.pdNum}">-</button>
-					                <input type="text" class="quantity-input" style="width: 40px; text-align: center;" value="1" data-id="${item.pdNum}" />
-					                <button type="button" class="btn btn-outline-secondary increase" data-id="${item.pdNum}">+</button>
-					            </div>	
+					            <div class="btn-group" role="group" aria-label="Default button group">
+	                             <button type="button" id="decrease" class="btn btn-outline-secondary">-</button>
+	                             <button type="button" id="increase" class="btn btn-outline-secondary">+</button>
+	                         </div>	
 					        </td>
 				            <!-- 주문 금액 -->
-				            <td class="text-center align-middle" id="price-${item.pdNum}">${item.sbagPrice}원</td>
+				            <td class="text-center align-middle" id="price-${item.pdNum}">
+				            	<span id="total-price">${item.sbagPrice}원</span>
+				            </td>
 				            <!-- 배송비 -->
 				            <td class="text-center align-middle" style="background-color:#ffe282;">
 				                <span>무료</span>        
 				            </td>
 				        </tr>
-				    </c:forEach>
+				     </c:forEach>
 				</tbody>
 			</table>
 			<div>
@@ -191,7 +193,8 @@
 		    	  <tr class="table-warning text-center">
 		     		  <th class="text-center align-middle" style="background-color:white; border-left: none; border-right: none;">
 		                  <div class="d-flex justify-content-center align-items-center">
-		                      <span>총 주문상품 ${item.sbagPrice}개</span>
+		                  	  <c:set var="itemCount" value="${fn:length(products)}" />
+		                      <span>총 주문상품 ${itemCount}개</span>
 		                  </div>
 	            	  </th>
 			      </tr>
@@ -200,11 +203,11 @@
 				   <tr>  
 		              <td class="text-center align-middle" style="height:250px; border-left: none; border-right: none;">
 	                     <div style="display: block; margin-bottom: 15px; font-size: 1.7em;">
-						     <span>${item.sbagPrice}원</span>
+						     <span id="total-price2">${item.sbagPrice}원</span>
 						     <span style="margin-left: 100px;"> + </span>
 						     <span style="margin-right: 100px; margin-left: 10px;">0원</span>
 						     <span style="font-weight: bold;"> = </span>
-						     <span style="margin-left: 10px; font-weight: bold;">${item.sbagPrice}원</span>
+						     <span id="total-price3" style="margin-left: 10px; font-weight: bold;">${item.sbagPrice}원</span>
 						 </div>
 						 <div style="display: block; color:grey;">
 						    <span>상품금액</span>
@@ -226,49 +229,58 @@
 	
 <script>
 $(document).ready(function() {
-    $('button.increase').on('click', function() {
-        const productId = $(this).data('id'); // 상품 ID
-        const quantityInput = $(`.quantity-input[data-id='${productId}']`); // 해당 상품의 수량 입력 필드
-        let quantity = parseInt(quantityInput.val()); // 현재 수량
-        quantity++; // 수량 증가
-        quantityInput.val(quantity); // 수량 업데이트
+	let pricePerItem = parseInt(document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''));
+	let quantity = parseInt(document.getElementById('quantity-text').textContent.replace(/[^0-9]/g, ''));
+    
+    // 초기 값 확인
+    console.log("초기 개별 가격:", pricePerItem);
+    console.log("초기 수량:", quantity);
+    console.log("초기 item.pdNum:", ${item.pdNum});
 
-        // 가격 업데이트
-        updatePrice(productId, quantity);
-    });
-
-    $('button.decrease').on('click', function() {
-        const productId = $(this).data('id'); // 상품 ID
-        const quantityInput = $(`.quantity-input[data-id='${productId}']`); // 해당 상품의 수량 입력 필드
-        let quantity = parseInt(quantityInput.val()); // 현재 수량
-        if (quantity > 1) {
-            quantity--; // 수량 감소
-            quantityInput.val(quantity); // 수량 업데이트
-
-            // 가격 업데이트
-            updatePrice(productId, quantity);
-        }
-    });
-
-    $('.quantity-input').on('input', function() {
-        const productId = $(this).data('id'); // 상품 ID
-        let quantity = parseInt($(this).val()); // 입력된 수량
-        if (!$.isNumeric(quantity) || quantity < 1) {
-            quantity = 1; // 수량이 유효하지 않으면 1로 설정
-        }
-        $(this).val(quantity); // 입력 필드 업데이트
-
-        // 가격 업데이트
-        updatePrice(productId, quantity);
-    });
-
-    function updatePrice(productId, quantity) {
-        const pricePerItem = parseInt($(`#price-${productId}`).text().replace(/[^0-9]/g, '')); // 주문 금액에서 숫자 추출
-        const totalPrice = pricePerItem * quantity; // 총 가격 계산
-        $(`#price-${productId}`).text(totalPrice.toLocaleString() + '원'); // 총 가격 업데이트
-        $(`#total-price-${productId}`).text(quantity + '개'); // 수량 업데이트
+    function updateTotalPrice() {
+        let totalPrice = pricePerItem * quantity;
+        $('#total-price').text(totalPrice.toLocaleString() + '원');
+        $('#total-price2').text(totalPrice.toLocaleString() + '원');
+        $('#total-price3').text(totalPrice.toLocaleString() + '원');
+        $('#quantity-text').text(quantity + '개');
+        console.log("업데이트된 총 가격:", totalPrice);
+        console.log("업데이트된 수량:", quantity);
     }
+
+    // 동적으로 생성된 버튼과 입력 필드에 이벤트 바인딩
+    $(document).on('click', '#increase', function() {
+        console.log("increase 버튼 클릭됨");
+        quantity++;
+        $('#quantity-text').val(quantity);
+        updateTotalPrice();
+    });
+
+    $(document).on('click', '#decrease', function() {
+        if (quantity > 1) {
+            console.log("decrease 버튼 클릭됨");
+            quantity--;
+            $('#quantity-text').val(quantity);
+            updateTotalPrice();
+        }
+    });
+
+    // 입력 필드에 값 변경 감지
+    $(document).on('input', '#quantity-text', function() {
+        let inputValue = $(this).val();
+        console.log("입력값 변경됨:", inputValue);
+        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
+            quantity = parseInt(inputValue);
+        } else {
+            quantity = 1;
+        }
+        $(this).val(quantity);
+        updateTotalPrice();
+    });
+
+    // 초기 총 가격 업데이트
+    updateTotalPrice();
 });
+
 </script>
 
 
