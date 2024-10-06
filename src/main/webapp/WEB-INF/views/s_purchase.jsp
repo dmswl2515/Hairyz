@@ -200,13 +200,13 @@ String productPrice = request.getParameter("productPrice");
 		        	<div class="order-info">
 			        	<span class="textbold">주문자 정보</span>    
         
-				        <span id="name-content" class="text-content">김은지</span>
+				        <span id="name-content" class="text-content">${memberList.mb_name}</span>
 				        <input type="text" id="name-input" class="text-content" style="display: none;"/>
 				        
-				        <span id="phone-content" class="text-content">01024114682</span>
+				        <span id="phone-content" class="text-content">${memberList.mb_phone}</span>
 				        <input type="text" id="phone-input" class="text-content" style="display: none; value="01024114682" />
 				        
-				        <span id="email-content" class="text-content">dmswl2515@gmail.com</span>
+				        <span id="email-content" class="text-content">${memberList.mb_id}</span>
 				        <input type="text" id="email-input" class="text-content" style="display: none;" value="dmswl2515@gmail.com" />   
 		        	</div>
 		        	<div class="box-button">
@@ -261,22 +261,22 @@ function toggleEdit() {
 		        	<div class="order-info">
 			        	<span class="textbold">배송 정보</span>    
 			    
-			    		<span id="recipient-name" class="text-content">김은지</span>
+			    		<span id="recipient-name" class="text-content">${memberList.mb_name}</span>
 					    <input id="recipient-input" type="text" class="text-content" style="display:none;" value="김은지"/>
 					
-						<span id="recipient-phone" class="text-content">01024114682</span>
+						<span id="recipient-phone" class="text-content">${memberList.mb_phone}</span>
 						<input id="rphone-input" type="text" style="display:none;" value="01024114682"/>					    
 					    
 					    <div style="display: flex; align-items: center; gap: 10px;">
-						    <span id="zcode-content" class="text-content">2321</span>
+						    <span id="zcode-content" class="text-content">${memberList.mb_zipcode}</span>
 						    <input id="zcode-input" type="text" class="text-content" style="display:none; width:175px;" value="2321"/>
 						    <button id="zcode-button" class="btn btn-secondary zcode-button" style="display:none; width:175px;">우편번호 확인</button>
 						</div>
 						
-					    <span id="recipient-address" class="text-content">서울 성동구 서울숲길 17(성수동1가, 성수파크빌)</span>
+					    <span id="recipient-address" class="text-content">${memberList.mb_addr1}</span>
 						<input id="raddress-input" type="text" style="display:none;" value="서울 성동구 서울숲길 17(성수동1가, 성수파크빌)"/>
 						
-						<span id="recipient-detail-address" class="text-content">915동 113호</span>
+						<span id="recipient-detail-address" class="text-content">${memberList.mb_addr2}</span>
 						<input id="rdaddress-input" type="text" style="display:none;" value="915동 113호"/>
 														        	
 		        	 	<span class="textbold" style="margin-top:10px; margin-bottom:10px;">배송 메모</span>    

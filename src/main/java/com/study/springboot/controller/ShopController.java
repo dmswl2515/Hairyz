@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dto.CartDto;
+import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.CartService;
+import com.study.springboot.service.MemberService;
 import com.study.springboot.service.QnAService;
 
 import jakarta.servlet.http.HttpSession;
@@ -35,6 +37,9 @@ public class ShopController {
 	
 	@Autowired
 	private CartService cartService;
+	
+	@Autowired
+	private MemberService mService;
 	
     
     
@@ -132,6 +137,7 @@ public class ShopController {
 					              @RequestParam("productImage") String productImage,
 					              @RequestParam("productQuantity") int productQuantity,
 					              @RequestParam("productPrice") int productPrice,
+					              HttpSession session,
 					              Model model) {
     		System.out.println("Product Number: " + productNum);
     		System.out.println("Product Name: " + productName);
@@ -145,6 +151,18 @@ public class ShopController {
     	    model.addAttribute("productImage", productImage);
     	    model.addAttribute("productQuantity", productQuantity);
     	    model.addAttribute("productPrice", productPrice);
+    	    
+    	    String memberId = (String) session.getAttribute("userId");
+    	    
+            if (memberId != null) {
+            	MemberDto memberList = mService.getMemberByMemberId(memberId);
+            	model.addAttribute("memberList", memberList);
+            	
+            	System.out.println("memberList :" + memberList);
+            } else {
+            	System.out.println("Member ID is null");
+            }
+    	    
     	    
     	    // 뷰 이름을 반환하여 해당 뷰를 렌더링
     	    return "s_purchase";       
