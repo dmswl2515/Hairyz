@@ -179,10 +179,10 @@ String productPrice = request.getParameter("productPrice");
 
 	<div class=container>
 		<h3 class="text-center mt-5"><strong>결제하기</strong></h3>
-		<form method="POST" action="submitOrder.jsp">
-		<input type="hidden" name="productNum" value="<%= productNum %>">
+		<form method="POST" action="s_completeBuy">
+		<input type="hidden" id="odNum" name="odNum" value="<%= productNum %>">
 		<input type="hidden" name="productName" value="<%= productName %>">
-		<input type="hidden" name="productQuantity" value="<%= productQuantity %>">
+		<input type="hidden" id="odAmount" name="odAmount" value="<%= productQuantity %>">
 		<input type="hidden" name="productPrice" value="<%= productPrice %>">
 		
 		<div class=container1>
@@ -200,15 +200,19 @@ String productPrice = request.getParameter("productPrice");
 		        
 		        <div class="box2">
 		        	<div class="order-info">
-			        	<span class="textbold">주문자 정보</span>    
-        
+			        	<span class="textbold">주문자 정보</span>
+			        	<input type="hidden" id="odMno" name="odMno" value="${memberList.mb_no}"/>
+			        	
+				        <input type="hidden" id="odMname" name="odMname"/>
 				        <span id="name-content" class="text-content">${memberList.mb_name}</span>
 				        <input type="text" id="name-input" class="text-content" style="display: none;"/>
 				        
 				        <span id="phone-content" class="text-content">${memberList.mb_phone}</span>
+				        <input type="hidden" id="odMphone" name="odMphone"/>
 				        <input type="text" id="phone-input" class="text-content" style="display: none;"/>
 				        
 				        <span id="email-content" class="text-content">${memberList.mb_id}</span>
+				        <input type="hidden" id="odMemail" name="odMemail"/>
 				        <input type="text" id="email-input" class="text-content" style="display: none;"/>   
 		        	</div>
 		        	<div class="box-button">
@@ -257,36 +261,42 @@ function toggleEdit() {
     }
 }
 </script>
-
-		    	
+   	
 		    	<div class="box2">
 		        	<div class="order-info">
 			        	<span class="textbold">배송 정보</span>    
 			    
 			    		<span id="recipient-name" class="text-content">${memberList.mb_name}</span>
+					    <input type="hidden" id="odRecipient" name="odRecipient"/>
 					    <input id="recipient-input" type="text" class="text-content" style="display:none;"/>
 					
 						<span id="recipient-phone" class="text-content">${memberList.mb_phone}</span>
+						<input type="hidden" id="odRphone" name="odRphone"/>
 						<input id="rphone-input" type="text" style="display:none;"/>					    
 					    
 					    <div style="display: flex; align-items: center; gap: 10px;">
 						    <span id="zcode-content" class="text-content">${memberList.mb_zipcode}</span>
-						    <input id="zcode-input" type="text" class="text-content" style="display:none; width:175px;"/>
-						    <button type="button" onclick="searchZipcode()" id="zcode-button" class="btn btn-secondary zcode-button" style="display:none; width:175px;">우편번호 확인</button>
+						    <input type="hidden" id="odRzcode" name="odRzcode"/>
+						    <input id="zcode-input" type="text" class="text-content" style="display:none; width:170px;"/>
+						    <button type="button" onclick="searchZipcode()" id="zcode-button" 
+						            class="btn btn-secondary zcode-button" 
+						            style="display:none; width:170px; margin-top:-10px; margin-left:-1px;">우편번호 확인</button>
 						</div>
 						
 					    <span id="recipient-address" class="text-content">${memberList.mb_addr1}</span>
+						<input type="hidden" id="odRaddress" name="odRaddress"/>
 						<input id="raddress-input" type="text" style="display:none;"/>
 						
 						<span id="recipient-detail-address" class="text-content">${memberList.mb_addr2}</span>
+						<input type="hidden" id="odRaddress2" name="odRaddress2"/>
 						<input id="raddress-input2" type="text" style="display:none;"/>
 														        	
 		        	 	<span class="textbold" style="margin-top:10px; margin-bottom:10px;">배송 메모</span>    
 			       		<div id="memo-select-container">
-						    <select id="memo-select" name="memo" style="width:430px; height:35px; margin-bottom:10px;" required>
-						        <option value="memo1">배송 전 미리 연락바랍니다.</option>
-						        <option value="memo2">부재시 경비실에 맡겨주세요.</option>
-						        <option value="memo3">부재시 전화나 문자를 남겨주세요.</option>
+						    <select id="memo-select" name="odMemo" style="width:430px; height:35px; margin-bottom:10px;" required>
+						        <option value="배송 전 미리 연락바랍니다.">배송 전 미리 연락바랍니다.</option>
+						        <option value="부재시 경비실에 맡겨주세요.">부재시 경비실에 맡겨주세요.</option>
+						        <option value="부재시 전화나 문자를 남겨주세요.">부재시 전화나 문자를 남겨주세요.</option>
 						        <option value="direct-input">직접입력</option>
 						    </select>
 						</div>
@@ -296,132 +306,132 @@ function toggleEdit() {
 					</div>    	
 		        </div>	
 
-<script>
-function toggleEdit2() {
-	
- 	// 수신자 이름
-    const recipientNameContent = document.getElementById('recipient-name');
-    const recipientNameInput = document.getElementById('recipient-input');
-
-    // 전화번호
-    const recipientPhoneContent = document.getElementById('recipient-phone');
-    const rphoneInput = document.getElementById('rphone-input');
-
-    // 우편번호
-    const zcodeContent = document.getElementById('zcode-content');
-    const zcodeInput = document.getElementById('zcode-input');
-    const zcodeButton = document.getElementById('zcode-button');
-
-    // 주소
-    const recipientAddressContent = document.getElementById('recipient-address');
-    const raddressInput = document.getElementById('raddress-input');
-
-    // 상세주소
-    const recipientDetailAddressContent = document.getElementById('recipient-detail-address');
-    const rdaddressInput = document.getElementById('raddress-input2');
-
-    
-    if (recipientNameContent.style.display === 'none') {
-        // 입력된 값을 텍스트로 업데이트합니다.
-        recipientNameContent.textContent = recipientNameInput.value;
-        recipientNameContent.style.display = 'inline';
-        recipientNameInput.style.display = 'none';
-
-        recipientPhoneContent.textContent = rphoneInput.value;
-        recipientPhoneContent.style.display = 'inline';
-        rphoneInput.style.display = 'none';
-
-        zcodeContent.textContent = zcodeInput.value;
-        zcodeContent.style.display = 'inline';
-        zcodeInput.style.display = 'none';
-        zcodeButton.style.display = 'none';
-
-        recipientAddressContent.textContent = raddressInput.value;
-        recipientAddressContent.style.display = 'inline';
-        raddressInput.style.display = 'none';
-
-        recipientDetailAddressContent.textContent = rdaddressInput.value;
-        recipientDetailAddressContent.style.display = 'inline';
-        rdaddressInput.style.display = 'none';
-    } else {
-        recipientNameContent.style.display = 'none';
-        recipientNameInput.style.display = 'inline';
-        recipientNameInput.focus();
-
-        recipientPhoneContent.style.display = 'none';
-        rphoneInput.style.display = 'inline';
-        rphoneInput.focus();
-
-        zcodeContent.style.display = 'none';
-        zcodeInput.style.display = 'inline';
-        zcodeInput.focus();
-        zcodeButton.style.display = 'inline';
-
-        recipientAddressContent.style.display = 'none';
-        raddressInput.style.display = 'inline';
-        raddressInput.focus();
-
-        recipientDetailAddressContent.style.display = 'none';
-        rdaddressInput.style.display = 'inline';
-        rdaddressInput.focus();
-    }
-    
-}
-</script>
-
-<script>
-	//배송메모
-	document.getElementById('memo-select').addEventListener('change', function() {
-	    const selectedOption = this.value;
-	
-	    // "직접입력"이 선택되었을 때 input 필드로 전환
-	    if (selectedOption === 'direct-input') {
-	        const memoInput = document.createElement('input');
-	        memoInput.type = 'text';
-	        memoInput.name = 'memo';
-	        memoInput.style.width = '430px';
-	        memoInput.style.height = '35px';
-	        memoInput.style.marginBottom = '10px';
-	        memoInput.required = true;
-	        memoInput.maxLength = 50; //글자수 제
-	        memoInput.placeholder = '직접입력해주세요';
-	        
-	        const charCount = document.createElement('span');
-	        charCount.style.fontSize = '12px';
-	        charCount.style.color = 'gray';
-	        charCount.style.position = 'absolute'; // 포지션을 절대값으로
-            charCount.style.marginTop = '10px'; // input의 위쪽에서 떨어진 위치 조정
-            charCount.style.marginLeft = '-35px'; // input의 왼쪽에서 떨어진 위치 조정
-	        charCount.textContent = '0/50';
-	
-	        // 기존 select 요소를 input 필드로 교체
-	        const memoSelectContainer = document.getElementById('memo-select-container');
-	        memoSelectContainer.innerHTML = '';
-	        memoSelectContainer.appendChild(memoInput); //input 추가
-	        memoSelectContainer.appendChild(charCount); // 글자 수 표시
-	        memoInput.focus();
-	        
-	     	 // 입력할 때마다 글자 수 업데이트
-	        memoInput.addEventListener('input', function() {
-	            const currentLength = memoInput.value.length;
-	            charCount.textContent = `${currentLength}/50`;
-	        });
-	    }
-	});
-</script>
-
-<script>
-function searchZipcode() {
- new daum.Postcode({
-     oncomplete: function(data) {
-         // 선택한 주소의 우편번호와 주소를 입력
-         document.getElementById('zcode-input').value = data.zonecode; // 우편번호
-         document.getElementById('raddress-input').value = data.roadAddress; // 도로명 주소
-         document.getElementById('raddress-input2').focus(); // 상세주소 입력으로 포커스 이동
-     }
- }).open();
-}
-</script>
+				<script>
+				function toggleEdit2() {
+					
+				 	// 수신자 이름
+				    const recipientNameContent = document.getElementById('recipient-name');
+				    const recipientNameInput = document.getElementById('recipient-input');
+				
+				    // 전화번호
+				    const recipientPhoneContent = document.getElementById('recipient-phone');
+				    const rphoneInput = document.getElementById('rphone-input');
+				
+				    // 우편번호
+				    const zcodeContent = document.getElementById('zcode-content');
+				    const zcodeInput = document.getElementById('zcode-input');
+				    const zcodeButton = document.getElementById('zcode-button');
+				
+				    // 주소
+				    const recipientAddressContent = document.getElementById('recipient-address');
+				    const raddressInput = document.getElementById('raddress-input');
+				
+				    // 상세주소
+				    const recipientDetailAddressContent = document.getElementById('recipient-detail-address');
+				    const rdaddressInput = document.getElementById('raddress-input2');
+				
+				    
+				    if (recipientNameContent.style.display === 'none') {
+				        // 입력된 값을 텍스트로 업데이트합니다.
+				        recipientNameContent.textContent = recipientNameInput.value;
+				        recipientNameContent.style.display = 'inline';
+				        recipientNameInput.style.display = 'none';
+				
+				        recipientPhoneContent.textContent = rphoneInput.value;
+				        recipientPhoneContent.style.display = 'inline';
+				        rphoneInput.style.display = 'none';
+				
+				        zcodeContent.textContent = zcodeInput.value;
+				        zcodeContent.style.display = 'inline';
+				        zcodeInput.style.display = 'none';
+				        zcodeButton.style.display = 'none';
+				
+				        recipientAddressContent.textContent = raddressInput.value;
+				        recipientAddressContent.style.display = 'inline';
+				        raddressInput.style.display = 'none';
+				
+				        recipientDetailAddressContent.textContent = rdaddressInput.value;
+				        recipientDetailAddressContent.style.display = 'inline';
+				        rdaddressInput.style.display = 'none';
+				    } else {
+				        recipientNameContent.style.display = 'none';
+				        recipientNameInput.style.display = 'inline';
+				        recipientNameInput.focus();
+				
+				        recipientPhoneContent.style.display = 'none';
+				        rphoneInput.style.display = 'inline';
+				        rphoneInput.focus();
+				
+				        zcodeContent.style.display = 'none';
+				        zcodeInput.style.display = 'inline';
+				        zcodeInput.focus();
+				        zcodeButton.style.display = 'inline';
+				
+				        recipientAddressContent.style.display = 'none';
+				        raddressInput.style.display = 'inline';
+				        raddressInput.focus();
+				
+				        recipientDetailAddressContent.style.display = 'none';
+				        rdaddressInput.style.display = 'inline';
+				        rdaddressInput.focus();
+				    }
+				    
+				}
+				</script>
+				
+				<script>
+					//배송메모
+					document.getElementById('memo-select').addEventListener('change', function() {
+					    const selectedOption = this.value;
+					
+					    // "직접입력"이 선택되었을 때 input 필드로 전환
+					    if (selectedOption === 'direct-input') {
+					        const memoInput = document.createElement('input');
+					        memoInput.type = 'text';
+					        memoInput.name = 'memo';
+					        memoInput.style.width = '430px';
+					        memoInput.style.height = '35px';
+					        memoInput.style.marginBottom = '10px';
+					        memoInput.required = true;
+					        memoInput.maxLength = 50; //글자수 제
+					        memoInput.placeholder = '직접입력해주세요';
+					        
+					        const charCount = document.createElement('span');
+					        charCount.style.fontSize = '12px';
+					        charCount.style.color = 'gray';
+					        charCount.style.position = 'absolute'; // 포지션을 절대값으로
+				            charCount.style.marginTop = '10px'; // input의 위쪽에서 떨어진 위치 조정
+				            charCount.style.marginLeft = '-35px'; // input의 왼쪽에서 떨어진 위치 조정
+					        charCount.textContent = '0/50';
+					
+					        // 기존 select 요소를 input 필드로 교체
+					        const memoSelectContainer = document.getElementById('memo-select-container');
+					        memoSelectContainer.innerHTML = '';
+					        memoSelectContainer.appendChild(memoInput); //input 추가
+					        memoSelectContainer.appendChild(charCount); // 글자 수 표시
+					        memoInput.focus();
+					        
+					     	 // 입력할 때마다 글자 수 업데이트
+					        memoInput.addEventListener('input', function() {
+					            const currentLength = memoInput.value.length;
+					            charCount.textContent = `${currentLength}/50`;
+					        });
+					    }
+					});
+				</script>
+				
+				<script>
+				function searchZipcode() {
+				 new daum.Postcode({
+				     oncomplete: function(data) {
+				         // 선택한 주소의 우편번호와 주소를 입력
+				         document.getElementById('zcode-input').value = data.zonecode; // 우편번호
+				         document.getElementById('raddress-input').value = data.roadAddress; // 도로명 주소
+				         document.getElementById('raddress-input2').focus(); // 상세주소 입력으로 포커스 이동
+				     }
+				 }).open();
+				}
+				</script>
 		        
 		    
 		    </div>
@@ -458,12 +468,12 @@ function searchZipcode() {
 			        	<span class="textbold">결제 수단</span>    
 			       		<div class="form-group">
 						    <div class="form-check">
-						        <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" value="신용카드">
+						        <input class="form-check-input" type="radio" name="odMethod" id="creditCard" value="신용카드">
 						        <label class="form-check-label" for="creditCard">
 						            신용카드
 						        </label>
 						    </div>
-						    <div class="form-check">
+						    <div class="form-check" style="margin-left:-4px;">
 						        <input class="form-check-input" type="radio" name="paymentMethod" id="payco" value="PAYCO">
 						        <label class="form-check-label" for="payco">
 						            PAYCO
@@ -490,12 +500,35 @@ function searchZipcode() {
 		        	</div>
 		        </div>
 		    	<div class="box2">
-		    		<span class="textbold" style="display: inline-block; width: 100%;">결제하기</span>
+		    		<button type="submit" class="textbold text-center" 
+		    				style="display: inline-block; width: 100%; background-color: transparent; border: none; text-align: left; cursor: pointer;">
+					    결제하기
+					</button>
 		    	</div>
 		    </div>		    
 	   </div>
 	   </form>
 	</div>
+	
+<script> 
+// 회원정보가 담긴 span의 텍스트를 가져와서 숨겨진 입력 필드에 설정		
+document.getElementById('odMname').value = document.getElementById('name-content').innerText; 
+
+document.getElementById('odMphone').value = document.getElementById('phone-content').innerText; 
+
+document.getElementById('odMemail').value = document.getElementById('email-content').innerText; 
+
+document.getElementById('odRecipient').value = document.getElementById('recipient-name').innerText; 
+
+document.getElementById('odRphone').value = document.getElementById('recipient-phone').innerText; 
+
+document.getElementById('odRzcode').value = document.getElementById('zcode-content').innerText; 
+
+document.getElementById('odRaddress').value = document.getElementById('recipient-address').innerText; 
+
+document.getElementById('odRaddress2').value = document.getElementById('recipient-detail-address').innerText; 
+
+</script>
 
 					
 <%@ include file="footer.jsp" %>

@@ -7,18 +7,23 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dto.CartDto;
 import com.study.springboot.dto.MemberDto;
+import com.study.springboot.dto.OrderProductDto;
+import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.CartService;
 import com.study.springboot.service.MemberService;
+import com.study.springboot.service.OrdersService;
 import com.study.springboot.service.QnAService;
 
 import jakarta.servlet.http.HttpSession;
@@ -40,6 +45,10 @@ public class ShopController {
 	
 	@Autowired
 	private MemberService mService;
+	
+	@Autowired
+	private OrdersService oService;
+	
 	
     
     
@@ -126,10 +135,6 @@ public class ShopController {
             return "s_details";              
     }
     
-    @RequestMapping("/clickBuyBtn")
-    public String clickBuyButton() {
-        return "redirect:/s_purchase";
-    }
     
     @RequestMapping("/s_purchase")    
     public String productPhrchase(@RequestParam("productNum") int productNum,
@@ -185,6 +190,31 @@ public class ShopController {
             }
     	
             return "s_cart";              
+    }
+    
+    @RequestMapping("/s_completeBuy")    
+    public String completeBuy(@RequestParam("odNum") String odNum,
+    						  @ModelAttribute OrdersDto ordersDto) {
+    		
+		
+		System.out.println("Order Number (odNum): " + ordersDto.getOdNum());
+	    System.out.println("Member Number (odMno): " + ordersDto.getOdMno());
+	    System.out.println("Amount (odAmount): " + ordersDto.getOdAmount());
+	    System.out.println("Member Name (odMname): " + ordersDto.getOdMname());
+	    System.out.println("Member Phone (odMphone): " + ordersDto.getOdMphone());
+	    System.out.println("Member Email (odMemail): " + ordersDto.getOdMemail());
+	    System.out.println("Recipient (odRecipient): " + ordersDto.getOdRecipient());
+	    System.out.println("Recipient Phone (odRphone): " + ordersDto.getOdRphone());
+	    System.out.println("Recipient Zip Code (odRzcode): " + ordersDto.getOdRzcode());
+	    System.out.println("Recipient Address (odRaddress): " + ordersDto.getOdRaddress());
+	    System.out.println("Recipient Address 2 (odRaddress2): " + ordersDto.getOdRaddress2());
+	    System.out.println("Memo (odMemo): " + ordersDto.getOdMemo());
+	    System.out.println("Method (odMethod): " + ordersDto.getOdMethod());
+	    
+	    oService.insertOrder(ordersDto);
+		
+	
+        return "s_completeBuy";              
     }
 }
 
