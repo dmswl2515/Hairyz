@@ -137,6 +137,7 @@
     
     checkboxes.forEach(function(checkbox) {
       checkbox.checked = isChecked;
+      
     });
   });
 </script>
@@ -203,11 +204,11 @@
 				   <tr>  
 		              <td class="text-center align-middle" style="height:250px; border-left: none; border-right: none;">
 	                     <div style="display: block; margin-bottom: 15px; font-size: 1.7em;">
-						     <span id="total-price2">${item.sbagPrice}원</span>
+						     <span id="total-price2">0원</span>
 						     <span style="margin-left: 100px;"> + </span>
 						     <span style="margin-right: 100px; margin-left: 10px;">0원</span>
 						     <span style="font-weight: bold;"> = </span>
-						     <span id="total-price3" style="margin-left: 10px; font-weight: bold;">${item.sbagPrice}원</span>
+						     <span id="total-price3" style="margin-left: 10px; font-weight: bold;">0원</span>
 						 </div>
 						 <div style="display: block; color:grey;">
 						    <span>상품금액</span>
@@ -236,13 +237,24 @@ $(document).ready(function() {
     console.log("초기 개별 가격:", pricePerItem);
     console.log("초기 수량:", quantity);
     console.log("초기 item.pdNum:", ${item.pdNum});
-
+    
     function updateTotalPrice() {
         let totalPrice = pricePerItem * quantity;
         $('#total-price').text(totalPrice.toLocaleString() + '원');
-        $('#total-price2').text(totalPrice.toLocaleString() + '원');
-        $('#total-price3').text(totalPrice.toLocaleString() + '원');
         $('#quantity-text').text(quantity + '개');
+
+        // 체크박스가 체크되어 있는지 확인
+        let isChecked = $('.selectEach').is(":checked");
+        
+        
+        if (isChecked) {
+            $('#total-price2').text(totalPrice.toLocaleString() + '원');
+            $('#total-price3').text(totalPrice.toLocaleString() + '원');
+        } else {
+            $('#total-price2').text('0원');
+            $('#total-price3').text('0원');
+        }
+
         console.log("업데이트된 총 가격:", totalPrice);
         console.log("업데이트된 수량:", quantity);
     }
@@ -281,6 +293,48 @@ $(document).ready(function() {
     updateTotalPrice();
 });
 
+
+
+$(document).ready(function() {
+    // 금액 업데이트 함수
+    function updatePrices(isChecked, sbagPrice) {
+        if (isChecked) {
+            $('#total-price2').text(sbagPrice.toLocaleString() + '원');
+            $('#total-price3').text(sbagPrice.toLocaleString() + '원');
+        } else {
+            $('#total-price2').text('0원');
+            $('#total-price3').text('0원');
+        }
+    }
+    
+ 	// selectAll 체크박스 상태 변화 이벤트
+    $('#selectAll').on('change', function() {
+        let isChecked = $(this).is(":checked");  // selectAll 체크 여부 확인
+        
+        $('.selectEach').prop('checked', isChecked);  // selectEach 체크박스 모두 체크/해제
+        
+        if (isChecked) {
+            // selectAll이 해제되면 total-price2와 total-price3 값 0으로 설정
+            $('#total-price2').text('0원');
+            $('#total-price3').text('0원');
+        } else {
+        	$('#total-price2').text(totalPrice.toLocaleString() + '원');
+            $('#total-price3').text(totalPrice.toLocaleString() + '원');
+        }
+    });
+
+    // 체크박스 상태 변화 이벤트
+    $(document).on('change', '.selectEach', function() {
+        const sbagPrice = parseInt($('#total-price').text().replace(/[^0-9]/g, '')); // 상품 가격 가져오기
+        const isChecked = $(this).is(":checked"); // 체크 여부 확인
+
+        updatePrices(isChecked, sbagPrice);
+    });
+
+    // 페이지 로드 시 초기 값 설정 (체크박스 해제 상태로 초기화)
+    $('#total-price2').text('0원');
+    $('#total-price3').text('0원');
+});
 </script>
 
 
