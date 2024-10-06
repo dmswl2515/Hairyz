@@ -18,6 +18,8 @@ String productPrice = request.getParameter("productPrice");
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<!-- 우편번호 검색 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -204,10 +206,10 @@ String productPrice = request.getParameter("productPrice");
 				        <input type="text" id="name-input" class="text-content" style="display: none;"/>
 				        
 				        <span id="phone-content" class="text-content">${memberList.mb_phone}</span>
-				        <input type="text" id="phone-input" class="text-content" style="display: none; value="01024114682" />
+				        <input type="text" id="phone-input" class="text-content" style="display: none;"/>
 				        
 				        <span id="email-content" class="text-content">${memberList.mb_id}</span>
-				        <input type="text" id="email-input" class="text-content" style="display: none;" value="dmswl2515@gmail.com" />   
+				        <input type="text" id="email-input" class="text-content" style="display: none;"/>   
 		        	</div>
 		        	<div class="box-button">
 				        <button type="button" class="btn btn-outline-warning" onclick="toggleEdit()">수정</button>
@@ -262,22 +264,22 @@ function toggleEdit() {
 			        	<span class="textbold">배송 정보</span>    
 			    
 			    		<span id="recipient-name" class="text-content">${memberList.mb_name}</span>
-					    <input id="recipient-input" type="text" class="text-content" style="display:none;" value="김은지"/>
+					    <input id="recipient-input" type="text" class="text-content" style="display:none;"/>
 					
 						<span id="recipient-phone" class="text-content">${memberList.mb_phone}</span>
-						<input id="rphone-input" type="text" style="display:none;" value="01024114682"/>					    
+						<input id="rphone-input" type="text" style="display:none;"/>					    
 					    
 					    <div style="display: flex; align-items: center; gap: 10px;">
 						    <span id="zcode-content" class="text-content">${memberList.mb_zipcode}</span>
-						    <input id="zcode-input" type="text" class="text-content" style="display:none; width:175px;" value="2321"/>
-						    <button id="zcode-button" class="btn btn-secondary zcode-button" style="display:none; width:175px;">우편번호 확인</button>
+						    <input id="zcode-input" type="text" class="text-content" style="display:none; width:175px;"/>
+						    <button type="button" onclick="searchZipcode()" id="zcode-button" class="btn btn-secondary zcode-button" style="display:none; width:175px;">우편번호 확인</button>
 						</div>
 						
 					    <span id="recipient-address" class="text-content">${memberList.mb_addr1}</span>
-						<input id="raddress-input" type="text" style="display:none;" value="서울 성동구 서울숲길 17(성수동1가, 성수파크빌)"/>
+						<input id="raddress-input" type="text" style="display:none;"/>
 						
 						<span id="recipient-detail-address" class="text-content">${memberList.mb_addr2}</span>
-						<input id="rdaddress-input" type="text" style="display:none;" value="915동 113호"/>
+						<input id="raddress-input2" type="text" style="display:none;"/>
 														        	
 		        	 	<span class="textbold" style="margin-top:10px; margin-bottom:10px;">배송 메모</span>    
 			       		<div id="memo-select-container">
@@ -316,7 +318,7 @@ function toggleEdit2() {
 
     // 상세주소
     const recipientDetailAddressContent = document.getElementById('recipient-detail-address');
-    const rdaddressInput = document.getElementById('rdaddress-input');
+    const rdaddressInput = document.getElementById('raddress-input2');
 
     
     if (recipientNameContent.style.display === 'none') {
@@ -407,6 +409,19 @@ function toggleEdit2() {
 	    }
 	});
 </script>
+
+<script>
+function searchZipcode() {
+ new daum.Postcode({
+     oncomplete: function(data) {
+         // 선택한 주소의 우편번호와 주소를 입력
+         document.getElementById('zcode-input').value = data.zonecode; // 우편번호
+         document.getElementById('raddress-input').value = data.roadAddress; // 도로명 주소
+         document.getElementById('raddress-input2').focus(); // 상세주소 입력으로 포커스 이동
+     }
+ }).open();
+}
+</script>
 		        
 		    
 		    </div>
@@ -417,15 +432,13 @@ function toggleEdit2() {
 			       
 			        	<span class="text-content">상품 가격
 				        	<span class="text-content"style="margin-left:100px;">
-					        		<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
-					              	18,900원
+					        		<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
 				        	</span>
 			        	</span>
 			        	
 			        	<span class="text-content">배송비
 			        		<span class="text-content" style="margin-left:158px;">
-					        		<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
-					              	0원
+					        		<fmt:formatNumber value="${product.pd_fee}" pattern="#,##0원" />
 				        	</span>
 			        	</span>
 			        	
@@ -433,8 +446,7 @@ function toggleEdit2() {
 			        	    
 			        	<span class="text-content" style="font-weight: bold;">총 주문 금액
 			        		<span class="text-content"style="margin-left:70px;">
-					        		<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
-					              	18,900원
+					        		<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
 				        	</span>
 			        	</span>
 			        </div>
