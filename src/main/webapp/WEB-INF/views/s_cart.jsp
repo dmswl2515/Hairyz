@@ -20,9 +20,9 @@
 
 <style>
 	
-	   .table {
-      border-color: #ffc107; /* 테이블 테두리 색상 */
-      border-collapse: collapse;
+   .table {
+     border-color: #ffc107; /* 테이블 테두리 색상 */
+     border-collapse: collapse;
   }
 
   .table th{

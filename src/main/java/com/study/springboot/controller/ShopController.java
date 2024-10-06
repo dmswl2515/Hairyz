@@ -193,10 +193,9 @@ public class ShopController {
     }
     
     @RequestMapping("/s_completeBuy")    
-    public String completeBuy(@RequestParam("odNum") String odNum,
-    						  @ModelAttribute OrdersDto ordersDto) {
-    		
-		
+    public String completeBuy(@ModelAttribute OrdersDto ordersDto,
+    						  Model model) {
+    	
 		System.out.println("Order Number (odNum): " + ordersDto.getOdNum());
 	    System.out.println("Member Number (odMno): " + ordersDto.getOdMno());
 	    System.out.println("Amount (odAmount): " + ordersDto.getOdAmount());
@@ -210,8 +209,11 @@ public class ShopController {
 	    System.out.println("Recipient Address 2 (odRaddress2): " + ordersDto.getOdRaddress2());
 	    System.out.println("Memo (odMemo): " + ordersDto.getOdMemo());
 	    System.out.println("Method (odMethod): " + ordersDto.getOdMethod());
-	    
+
+    	
 	    oService.insertOrder(ordersDto);
+	    
+	    
 		
 	
         return "s_completeBuy";              
