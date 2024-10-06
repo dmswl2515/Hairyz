@@ -1,5 +1,7 @@
 package com.study.springboot.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,9 +127,27 @@ public class ShopController {
     }
     
     @RequestMapping("/s_purchase")    
-    public String productPhrchase(Model model) {
-    	
-            return "s_purchase";              
+    public String productPhrchase(@RequestParam("productNum") int productNum,
+					              @RequestParam("productName") String productName,
+					              @RequestParam("productImage") String productImage,
+					              @RequestParam("productQuantity") int productQuantity,
+					              @RequestParam("productPrice") int productPrice,
+					              Model model) {
+    		System.out.println("Product Number: " + productNum);
+    		System.out.println("Product Name: " + productName);
+    		System.out.println("Product Image: " + productImage);
+    		System.out.println("Product Quantity: " + productQuantity);
+    		System.out.println("Product Price: " + productPrice);
+    		
+    		// 요청된 파라미터를 모델에 추가
+    	    model.addAttribute("productNum", productNum);
+    	    model.addAttribute("productName", productName);
+    	    model.addAttribute("productImage", productImage);
+    	    model.addAttribute("productQuantity", productQuantity);
+    	    model.addAttribute("productPrice", productPrice);
+    	    
+    	    // 뷰 이름을 반환하여 해당 뷰를 렌더링
+    	    return "s_purchase";       
     }
     
     @RequestMapping("/s_cart")    

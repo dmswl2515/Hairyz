@@ -3,12 +3,11 @@
     pageEncoding="UTF-8"%>
     
 <% 
-    String productNum = request.getParameter("productNum");
-    String productName = request.getParameter("productName");
-    String productPrice = request.getParameter("productPrice");
-    String productImage = request.getParameter("productImage");
-    String productQuantity = request.getParameter("productQuantity");
-    int totalPrice = Integer.parseInt(productPrice) * Integer.parseInt(productQuantity);
+String productNum = request.getParameter("productNum");
+String productName = request.getParameter("productName");
+String productImage = request.getParameter("productImage");
+String productQuantity = request.getParameter("productQuantity");
+String productPrice = request.getParameter("productPrice");
 %>
 
 
@@ -179,6 +178,11 @@
 	<div class=container>
 		<h3 class="text-center mt-5"><strong>결제하기</strong></h3>
 		<form method="POST" action="submitOrder.jsp">
+		<input type="hidden" name="productNum" value="<%= productNum %>">
+		<input type="hidden" name="productName" value="<%= productName %>">
+		<input type="hidden" name="productQuantity" value="<%= productQuantity %>">
+		<input type="hidden" name="productPrice" value="<%= productPrice %>">
+		
 		<div class=container1>
 		    <div class="left">
 		        <div class="box" style="height:170px;">
@@ -187,7 +191,7 @@
 			        	<span class=product-name><%= productName %></span>
 			           	<span style="font-size: 13px;">수량 : <%= productQuantity %></span>
 			            <span style="font-size: 16px; font-weight: bold;">
-			              	<fmt:formatNumber value="<%= totalPrice %>" pattern="#,##0원" />
+			              	<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
 			            </span>
 			        </div>
 		        </div>

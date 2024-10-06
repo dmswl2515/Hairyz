@@ -113,11 +113,13 @@
 		<div class=container>
 		    <div class="product-container">	
 	              <div class="product-box">
-	           		<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px; object-fit:cover;">
+	           		<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" id="productImg" alt="${product.pdName}" 
+	           			 style="width:100%; height:100%; margin-right:10px; object-fit:cover;">
 	             
 	              </div>
 	              <div class="product-text">
-		              <span class="product-name">${product.pdName}</span><br>
+	              	  <input type="hidden" id="productNum" name="productNum" value="${product.pdNum}" />
+		              <span class="product-name" id='productName'>${product.pdName}</span><br>
 		              <span class="product-price">
 		              	<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
 		              </span>
@@ -204,6 +206,31 @@
 </script>
 
 <script>
+	//구매버튼 클릭 이벤트
+	function goToPurchase() {
+	    let ProductNum = document.getElementById('productNum').value;
+	    let ProductName = document.getElementById('productName').innerText;
+	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
+	    let Productquantity = document.getElementById('quantity-input').value;
+	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
+	    
+		console.log(ProductNum)    
+	    console.log(ProductName)
+	    console.log(ProductImage)
+	    console.log(Productquantity)
+	    console.log(Productprice)
+	    
+	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
+              '&productName=' + encodeURIComponent(ProductName) +
+              '&productImage=' + encodeURIComponent(ProductImage) +
+              '&productQuantity=' + encodeURIComponent(Productquantity) +
+              '&productPrice=' + encodeURIComponent(Productprice);
+	    
+	    console.log(url)
+	    
+	    window.location.href = url;
+	}
+
     // 장바구니에 담기 버튼 클릭 이벤트
     function goToCart() {
         alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체

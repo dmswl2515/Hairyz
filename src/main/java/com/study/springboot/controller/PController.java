@@ -61,11 +61,11 @@ public class PController {
     @PostMapping("/p_registration")    
     public String handleInformation(@RequestParam("file") MultipartFile file, 
 						    		@RequestParam("file2") MultipartFile file2,
-						            @RequestParam String pdName, 
-						            @RequestParam String pdCategory, 
-						            @RequestParam String pdAnimal, 
-						            @RequestParam Integer pd_price, 
-						            @RequestParam Integer pd_amount) throws IOException  {
+						            @RequestParam("pdName") String pdName,
+						            @RequestParam("pd_animal") String pdAnimal,
+						            @RequestParam("pd_category") String pdCategory,
+						            @RequestParam("pd_price") Integer pd_price,
+						            @RequestParam("pd_amount") Integer pd_amount) throws IOException  {
         
     	// 파일 존재 여부 체크
     	if (file.isEmpty() || file2.isEmpty()) {
