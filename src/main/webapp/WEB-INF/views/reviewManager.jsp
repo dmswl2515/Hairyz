@@ -41,31 +41,10 @@ body {
     overflow: hidden;      /* 넘치는 텍스트 숨김 */
     text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
     max-width: 200px;      /* 원하는 최대 너비 설정 */
-    display: inline-block; /* 요소의 너비를 제한하려면 inline-block 사용 */
+    /* display: inline-block; */ /* 요소의 너비를 제한하려면 inline-block 사용 */
 }
 
 </style>
-<script>
-function updateOrderState(orderno, state) {
-    $.ajax({
-        url: 'orderState.do',
-        type: 'POST',
-        data: { 
-        	orderno: orderno, 
-            state: state 
-        },
-        success: function(response) {
-            // 서버로부터 응답을 받고 나면 status 갱신
-            console.log('Response:', response);
-            location.reload();
-        },
-        error: function(xhr, state, error) {
-            console.log('Error: ' + error);
-        }
-    });
-}
-
-</script>
 </head>
 <body>
 	<!-- 로그 및 로그인 -->
@@ -90,29 +69,31 @@ function updateOrderState(orderno, state) {
 			        </thead>
 			        <tbody>
 			            <c:choose>
-			                <c:when test="${empty salesManage}">
+			                <c:when test="${empty reviewManager}">
 			                    <tr>
 			                        <td colspan="6" class="text-center text-muted py-4">등록된 구매 평이 없습니다.</td>
 			                    </tr>
 			                </c:when>
 			                <c:otherwise>
-			                    <c:forEach var="sm" items="${salesManage}" varStatus="status">
-			                        <tr style="cursor: pointer;" onclick="window.location.href='#'">
-			                            <td>${totalCount - status.index}</td>
-			                            <td>${sm.pr_reviewDate}</td>
-			                            <td>${sm.pr_MbNnme}</td>
-			                            <td class="ellipsis">${sm.pr_reviewText}</td>
-			                            <td>
-				                            <c:choose>
-											    <c:when test="${sm.pr_hasReply == Y}">
-											        <span class="badge badge-success">답변 완료</span>
-											    </c:when>
-											    <c:when test="${sm.pr_hasReply == N}">
-											        <span class="badge badge-warning">미답변</span>
-											    </c:when>
-											</c:choose>
-										</td>
-			                        </tr>
+			                    <c:forEach var="rm" items="${reviewManager}" varStatus="status">
+			                    	 <c:if test="${rm.pr_visibility == 'Y'}">
+				                        <tr style="cursor: pointer;" onclick="window.location.href='#'">
+				                            <td>${rm.pr_reviewId}</td>
+				                            <td>${rm.pr_reviewDate}</td>
+				                            <td>${rm.pr_MbNnme}</td>
+				                            <td class="ellipsis">${rm.pr_reviewText}</td>
+				                            <td>
+					                            <c:choose>
+												    <c:when test="${rm.pr_hasReply == 'Y'}">
+												        <span class="badge badge-success">답변 완료</span>
+												    </c:when>
+												    <c:when test="${rm.pr_hasReply == 'N'}">
+												        <span class="badge badge-warning">미답변</span>
+												    </c:when>
+												</c:choose>
+											</td>
+				                        </tr>
+			                        </c:if>
 			                    </c:forEach>
 			                </c:otherwise>
 			            </c:choose>
@@ -147,7 +128,7 @@ function updateOrderState(orderno, state) {
 					    if (pageNumber < 1 || pageNumber > ${totalPages}) {
 					        return; // 페이지 번호가 범위를 벗어나면 아무 것도 하지 않음
 					    }
-					    window.location.href = "salesManagement.do?page=" + pageNumber; // 페이지 이동
+					    window.location.href = "reviewManager.do?page=" + pageNumber; // 페이지 이동
 					}
 					</script>
 
