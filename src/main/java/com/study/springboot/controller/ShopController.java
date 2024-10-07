@@ -19,12 +19,14 @@ import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrderProductDto;
 import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PDto;
+import com.study.springboot.dto.ProductReviewDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.CartService;
 import com.study.springboot.service.MemberService;
 import com.study.springboot.service.OrdersService;
+import com.study.springboot.service.ProductReviewService;
 import com.study.springboot.service.QnAService;
 
 import jakarta.servlet.http.HttpSession;
@@ -49,6 +51,9 @@ public class ShopController {
 	
 	@Autowired
 	private OrdersService oService;
+	
+	@Autowired
+    private ProductReviewService PRService;
 	
 	
     
@@ -109,8 +114,11 @@ public class ShopController {
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
         
-        List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qna_no);
+        //페이지 네이션 위한 용도
+        List<QnaReplyDto> qnaRepList1 = qnaService.getQnaReplyByQnaNo(qna_no);
+        
         if (qna_no > 0) {
+        	List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qna_no);
             model.addAttribute("qnaRepList", qnaRepList);
             model.addAttribute("currentQnaRep", qnaRepList.isEmpty() ? null : qnaRepList.get(0)); // 첫 번째 답변만 추가
             System.out.println("qna_no: " + qna_no);
@@ -121,11 +129,16 @@ public class ShopController {
         
 	        // 페이지네이션 설정
 	        int pageSize = 1; // 페이지당 항목 수
-	        int totalQnAs = qnaRepList.size(); // 전체 상품 수
+	        int totalQnAs = qnaRepList1.size(); // 전체 상품 수
 	        int startRow = (page - 1) * pageSize; // 시작 인덱스
 	        int endRow = Math.min(startRow + pageSize, totalQnAs);
 	        
-	        List<QnaReplyDto> paginatedQnAs = qnaRepList.subList(startRow, endRow);
+	        //구매평
+	        List<ProductReviewDto> reviews = PRService.getReviewsByProductId(pdNum);
+	        model.addAttribute("reviews", reviews);
+	        
+	        //QnA
+	        List<QnaReplyDto> paginatedQnAs = qnaRepList1.subList(startRow, endRow);
 	        
 	        model.addAttribute("products", paginatedQnAs);
 	        model.addAttribute("currentPage", page); // 현재 페이지 번호
@@ -133,7 +146,7 @@ public class ShopController {
 	        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
 	        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalQnAs / pageSize), page + 2)); // 끝 페이지
         
-            return "s_details";              
+            return "p_details";              
     }
     
     

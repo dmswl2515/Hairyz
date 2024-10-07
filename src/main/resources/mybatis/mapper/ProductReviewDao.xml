@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.study.springboot.dao.IProductReviewDao">
+
+	<select id="getReviewsByProductId" resultType="com.study.springboot.dto.ProductReviewDto">
+    	SELECT 
+            pr_reviewId AS reviewId,
+            pr_productId AS productId,
+            pr_MbNum AS mbNum,
+            pr_MbNnme AS mbName,
+            pr_rating AS rating,
+            pr_reviewText AS reviewText,
+            pr_reviewDate AS reviewDate,
+            pr_hasReply AS hasReply,
+            pr_imgPath AS imgPath,
+            pr_orgName AS orgName,
+            pr_modName AS modName,
+            pr_visibility AS visibility
+        FROM 
+            PRODUCTREVIEW
+        WHERE 
+            pr_productId = #{productId}
+    </select>
+	
+</mapper>
