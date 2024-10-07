@@ -60,7 +60,7 @@ public class MbController {
         
         if (result > 0) {
         	String email = paramMap.get("mb_id"); // 사용자가 입력한 아이디
-            session.setAttribute("userId", email); // 세션에 아이디 저장
+            session.setAttribute("joinId", email); // 세션에 아이디 저장
             
             jsonResponse = "{\"code\": \"success\", \"desc\": \"회원가입을 축하합니다! \"}";
         } else {

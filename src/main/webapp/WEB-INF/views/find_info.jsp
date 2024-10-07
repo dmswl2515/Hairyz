@@ -9,17 +9,26 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="http://code.jquery.com/jquery.js"></script>
 <script>
-//이메일 마스킹 함수
+/// 이메일 마스킹 함수
 function maskEmail(email) {
     const parts = email.split('@'); // '@'를 기준으로 이메일을 나누기
     const username = parts[0]; // 이메일의 사용자 이름 부분
     const domain = parts[1]; // 이메일의 도메인 부분
 
-    // 사용자 이름의 첫 4자리와 마지막 2자리 제외하고 '*'로 마스킹
-    const maskedUsername = username.substring(0, 4) + '*****' + username.substring(username.length - 2);
-    
-    return maskedUsername + '@' + domain; // 마스킹된 이메일 반환
+    // 사용자 이름 길이가 4글자 이상인 경우 첫 4글자 표시하고 나머지 마스킹
+    if (username.length > 4) {
+        const visibleLength = 4; // 항상 첫 4글자를 보이도록 설정
+        const maskedUsername = username.substring(0, visibleLength) + '*'.repeat(username.length - visibleLength);
+        return maskedUsername + '@' + domain;
+    } else {
+        // 사용자 이름이 4글자 이하인 경우, 첫 1~2글자만 보이고 나머지는 마스킹
+        const visibleLength = Math.floor(username.length / 2); // 사용자 이름 절반 정도만 보이도록 설정
+        const maskedUsername = username.substring(0, visibleLength) + '*'.repeat(username.length - visibleLength);
+        return maskedUsername + '@' + domain;
+    }
 }
+
+
 $(document).ready(function() {
 	//아이디 찾기
 	$('#findIdForm').on('submit', function(e) {
