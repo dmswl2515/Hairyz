@@ -215,7 +215,6 @@ public class ShopController {
 	    System.out.println("Recipient Address (odRaddress): " + ordersDto.getOdRaddress());
 	    System.out.println("Recipient Address 2 (odRaddress2): " + ordersDto.getOdRaddress2());
 	    System.out.println("Memo (odMemo): " + ordersDto.getOdMemo());
-	    System.out.println("Method (odMethod): " + ordersDto.getOdMethod());
 
     	
 	    oService.insertOrder(ordersDto);

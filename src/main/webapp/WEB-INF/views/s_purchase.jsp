@@ -39,18 +39,18 @@ String productPrice = request.getParameter("productPrice");
 	 
 	 .container1 {
             display: flex; /* 플렉스 컨테이너로 설정 */
+            justify-content: center; /* 수평 가운데 정렬 */
             width: 100%; /* 전체 너비 사용 */
             margin-top:20px;
      }
 	
 	 .left {
-	     flex: 4; /* 왼쪽 영역의 비율 */
 	     padding: 20px;
 	     background-color: #fff9c4; /* 배경 색상 */
 	 }
 	
 	 .right {
-	     flex: 2; /* 오른쪽 영역의 비율 */
+	     
 	     padding: 20px;
 	     background-color: #ffe282; /* 배경 색상 */
 	 }
@@ -155,7 +155,7 @@ String productPrice = request.getParameter("productPrice");
 	
 	.custom-hr {
 	    border: 0.5px solid #d8d8d8; 
-	    width: 230px;
+	    width: 235px;
 	}
 	
 	input[type="text"] {
@@ -209,15 +209,18 @@ String productPrice = request.getParameter("productPrice");
 			        	
 				        <input type="hidden" id="odMname" name="odMname"/>
 				        <span id="name-content" class="text-content">${memberList.mb_name}</span>
-				        <input type="text" id="name-input" class="text-content" style="display: none;"/>
+				        <input type="text" id="name-input" class="text-content" 
+				               style="display: none;" value="${memberList.mb_name}" placeholder="이름" required />
 				        
 				        <span id="phone-content" class="text-content">${memberList.mb_phone}</span>
 				        <input type="hidden" id="odMphone" name="odMphone"/>
-				        <input type="text" id="phone-input" class="text-content" style="display: none;"/>
+				        <input type="text" id="phone-input" class="text-content" 
+				               style="display: none;" value="${memberList.mb_phone}" placeholder="핸드폰 번호" required/>
 				        
 				        <span id="email-content" class="text-content">${memberList.mb_id}</span>
 				        <input type="hidden" id="odMemail" name="odMemail"/>
-				        <input type="text" id="email-input" class="text-content" style="display: none;"/>   
+				        <input type="text" id="email-input" class="text-content" 
+				               style="display: none;" value="${memberList.mb_id}" placeholder="이메일" required />   
 		        	</div>
 		        	<div class="box-button">
 				        <button type="button" class="btn btn-outline-warning" onclick="toggleEdit()">수정</button>
@@ -272,16 +275,18 @@ String productPrice = request.getParameter("productPrice");
 			    
 			    		<span id="recipient-name" class="text-content">${memberList.mb_name}</span>
 					    <input type="hidden" id="odRecipient" name="odRecipient"/>
-					    <input id="recipient-input" type="text" class="text-content" style="display:none;"/>
+					    <input id="recipient-input" type="text" class="text-content" 
+					           style="display:none;" placeholder="이름" required />
 					
 						<span id="recipient-phone" class="text-content">${memberList.mb_phone}</span>
 						<input type="hidden" id="odRphone" name="odRphone"/>
-						<input id="rphone-input" type="text" style="display:none;"/>					    
+						<input id="rphone-input" type="text" style="display:none;" placeholder="핸드폰 번호" required />					    
 					    
 					    <div style="display: flex; align-items: center; gap: 10px;">
 						    <span id="zcode-content" class="text-content">${memberList.mb_zipcode}</span>
 						    <input type="hidden" id="odRzcode" name="odRzcode"/>
-						    <input id="zcode-input" type="text" class="text-content" style="display:none; width:170px;"/>
+						    <input id="zcode-input" type="text" class="text-content" 
+						           style="display:none; width:170px;" placeholder="우편번호" required />
 						    <button type="button" onclick="searchZipcode()" id="zcode-button" 
 						            class="btn btn-secondary zcode-button" 
 						            style="display:none; width:170px; margin-top:-10px; margin-left:-1px;">우편번호 확인</button>
@@ -289,11 +294,11 @@ String productPrice = request.getParameter("productPrice");
 						
 					    <span id="recipient-address" class="text-content">${memberList.mb_addr1}</span>
 						<input type="hidden" id="odRaddress" name="odRaddress"/>
-						<input id="raddress-input" type="text" style="display:none;"/>
+						<input id="raddress-input" type="text" style="display:none;" placeholder="주소" required />
 						
 						<span id="recipient-detail-address" class="text-content">${memberList.mb_addr2}</span>
 						<input type="hidden" id="odRaddress2" name="odRaddress2"/>
-						<input id="raddress-input2" type="text" style="display:none;"/>
+						<input id="raddress-input2" type="text" style="display:none;" placeholder="상세 주소"/>
 														        	
 		        	 	<span class="textbold" style="margin-top:10px; margin-bottom:10px;">배송 메모</span>    
 			       		<div id="memo-select-container">
@@ -451,42 +456,22 @@ String productPrice = request.getParameter("productPrice");
 				        	</span>
 				        	
 				        	<span class="text-content">배송비
-				        		<span class="text-content" style="margin-left:158px;">
+				        		<span class="text-content" style="margin-left:138px;">
 						        		<fmt:formatNumber value="${product.pd_fee}" pattern="#,##0원" />
+					        			 0원
 					        	</span>
 				        	</span>
 				        	
 				        	<hr class="custom-hr">
 				        	    
 				        	<span class="text-content" style="font-weight: bold;">총 주문 금액
-				        		<span class="text-content"style="margin-left:70px;">
+				        		<span class="text-content"style="margin-left:75px;">
 						        		<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
 					        	</span>
 				        	</span>
 				        </div>
 			        </div>
 			        
-			        
-			        <div class="box2">
-			        	<div class="order-summary">
-				        	<span class="textbold">결제 수단</span>    
-				       		<div class="form-group">
-							    <div class="form-check">
-							        <input class="form-check-input" type="radio" name="odMethod" id="creditCard" value="신용카드">
-							        <label class="form-check-label" for="creditCard">
-							            신용카드
-							        </label>
-							    </div>
-							    <div class="form-check" style="margin-left:-4px;">
-							        <input class="form-check-input" type="radio" name="odMethod" id="payco" value="PAYCO">
-							        <label class="form-check-label" for="payco">
-							            PAYCO
-							        </label>
-							    </div>
-							</div>	       					        	
-				        </div>
-			        
-			        </div>
 			        <div class="box2" style="margin-bottom:0px;">
 			        	<div class="order-summary">
 				        	<div class="form-group" style="text-align:left;">
@@ -512,6 +497,18 @@ String productPrice = request.getParameter("productPrice");
 							//부트페이
 							document.getElementById('paymentButton').addEventListener('click', function() {
 						        
+								if (!validateForm()) {
+						            alert('모든 정보를 입력해주세요.');
+						            return;  
+						        }
+								
+								// 체크박스 체크 여부 확인
+						        const agreeAll = document.getElementById('agreeAll');
+						        if (!agreeAll.checked) {
+						            alert('전체 동의를 선택해주세요.');
+						            return;  // 체크박스가 체크되지 않은 경우 결제 진행하지 않음
+						        }
+								
 								//HTML에서 값 가져오기
 								var productPrice = document.getElementById('productPrice').value;
 								var orderNumber = document.getElementById('odNo').value;
@@ -564,13 +561,36 @@ String productPrice = request.getParameter("productPrice");
 						        }).then(function(response) {
 						            console.log(response);  // 결제 성공 시 처리할 코드
 						            alert('결제가 성공적으로 처리되었습니다!');
-						            
 						            document.querySelector('form').submit();
 						        }).catch(function(error) {
 						            console.error(error);  // 결제 실패 시 처리할 코드
 						            alert("결제에 실패했습니다. 다시 시도해주세요.");
 						        });
 						    });
+							
+								function validateForm() {
+							        const requiredFields = [
+							        	document.getElementById('name-input'),
+							        	document.getElementById('phone-input'),
+							        	document.getElementById('email-input'),
+							        	document.getElementById('recipient-input'),
+							        	document.getElementById('rphone-input'),
+							        	document.getElementById('zcode-input'),
+							        	document.getElementById('raddress-input'),
+							        	document.getElementById('memo-select') 
+							        ];
+	
+							        for (const field of requiredFields) {
+							        	if (field.type === 'text' && field.style.display === 'none') {
+							                continue;  // 필드가 보이지 않으면 검사하지 않음
+							            }
+							        	
+							        	if (!field.value) {
+							                return false; // 필드가 비어있으면 false 반환
+							            }
+							        }
+							        return true; // 모든 필드가 채워졌으면 true 반환
+							    }
 							</script>
 			    	</div>
 			    </div>		    

@@ -17,13 +17,12 @@
 	    INSERT INTO Orders (
 		    od_no, od_mno, od_date, od_num, od_amount, od_mname, od_mphone,
 		    od_memail, od_recipient, od_rphone, od_rzcode, od_raddress,
-		    od_raddress2, od_memo, od_method, od_payment, od_state
+		    od_raddress2, od_memo, od_payment, od_state
 		) VALUES (
 		    #{odNo}, #{odMno}, SYSDATE, #{odNum},  #{odAmount}, #{odMname}, #{odMphone},
 		    #{odMemail}, #{odRecipient}, #{odRphone}, #{odRzcode}, #{odRaddress},
-		    #{odRaddress2}, #{odMemo}, #{odMethod}, 'Y', '1'
+		    #{odRaddress2}, #{odMemo}, 'Y', '1'
 		)
-
 	</insert>
 
 	
