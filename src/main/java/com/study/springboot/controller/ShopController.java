@@ -2,6 +2,7 @@ package com.study.springboot.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +144,7 @@ public class ShopController {
 					              @RequestParam("productQuantity") int productQuantity,
 					              @RequestParam("productPrice") int productPrice,
 					              HttpSession session,
-					              Model model) {
+					              Model model) throws SQLException {
     		System.out.println("Product Number: " + productNum);
     		System.out.println("Product Name: " + productName);
     		System.out.println("Product Image: " + productImage);
@@ -157,6 +158,7 @@ public class ShopController {
     	    model.addAttribute("productQuantity", productQuantity);
     	    model.addAttribute("productPrice", productPrice);
     	    
+    	    //회원정보 가져오기
     	    String memberId = (String) session.getAttribute("userId");
     	    
             if (memberId != null) {
@@ -167,6 +169,10 @@ public class ShopController {
             } else {
             	System.out.println("Member ID is null");
             }
+            
+            //주문번호 생성
+            Integer uniqueOrderNumber = oService.generateUniqueOrderNumber();
+            model.addAttribute("orderNumber", uniqueOrderNumber);
     	    
     	    
     	    // 뷰 이름을 반환하여 해당 뷰를 렌더링
@@ -191,6 +197,7 @@ public class ShopController {
     	
             return "s_cart";              
     }
+    
     
     @RequestMapping("/s_completeBuy")    
     public String completeBuy(@ModelAttribute OrdersDto ordersDto,
@@ -217,6 +224,11 @@ public class ShopController {
 		
 	
         return "s_completeBuy";              
+    }
+    
+    @RequestMapping("/test1")
+    public String root() throws Exception{
+        return "test1";
     }
 }
 

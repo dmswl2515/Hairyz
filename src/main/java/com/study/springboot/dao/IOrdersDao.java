@@ -10,5 +10,7 @@ public interface IOrdersDao
 {
     void insertOrder(OrdersDto ordersDto);
 
+	boolean orderNumberExists(Integer orderNumber);
+
 	
 }

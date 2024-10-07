@@ -5,6 +5,13 @@
 	
 <mapper namespace="com.study.springboot.dao.IOrdersDao">
 	
+	<!-- 주문번호 중복 확인 -->
+	<select id="orderNumberExists" resultType="boolean">
+	    SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+	    FROM Orders
+	    WHERE od_no = #{orderNumber}
+	</select>
+	
 	<!-- 주문 등록 쿼리 -->
     <insert id="insertOrder" parameterType="com.study.springboot.dto.OrdersDto">
 	    INSERT INTO Orders (
@@ -12,7 +19,7 @@
 		    od_memail, od_recipient, od_rphone, od_rzcode, od_raddress,
 		    od_raddress2, od_memo, od_method, od_payment, od_state
 		) VALUES (
-		    order_seq.NEXTVAL, #{odMno}, SYSDATE, #{odNum},  #{odAmount}, #{odMname}, #{odMphone},
+		    #{odNo}, #{odMno}, SYSDATE, #{odNum},  #{odAmount}, #{odMname}, #{odMphone},
 		    #{odMemail}, #{odRecipient}, #{odRphone}, #{odRzcode}, #{odRaddress},
 		    #{odRaddress2}, #{odMemo}, #{odMethod}, 'Y', '1'
 		)

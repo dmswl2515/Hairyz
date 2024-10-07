@@ -20,6 +20,8 @@ String productPrice = request.getParameter("productPrice");
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <!-- 우편번호 검색 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- 부트페이 -->
+<script src="https://js.bootpay.co.kr/bootpay-5.0.1.min.js" type="application/javascript"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -180,10 +182,11 @@ String productPrice = request.getParameter("productPrice");
 	<div class=container>
 		<h3 class="text-center mt-5"><strong>결제하기</strong></h3>
 		<form method="POST" action="s_completeBuy">
+		<input type="hidden" id="odNo" name="odNo" value="${orderNumber}">
 		<input type="hidden" id="odNum" name="odNum" value="<%= productNum %>">
-		<input type="hidden" name="productName" value="<%= productName %>">
+		<input type="hidden" id="productName" name="productName" value="<%= productName %>">
 		<input type="hidden" id="odAmount" name="odAmount" value="<%= productQuantity %>">
-		<input type="hidden" name="productPrice" value="<%= productPrice %>">
+		<input type="hidden" id="productPrice" name="productPrice" value="<%= productPrice %>">
 		
 		<div class=container1>
 		    <div class="left">
@@ -202,6 +205,7 @@ String productPrice = request.getParameter("productPrice");
 		        	<div class="order-info">
 			        	<span class="textbold">주문자 정보</span>
 			        	<input type="hidden" id="odMno" name="odMno" value="${memberList.mb_no}"/>
+			        	<input type="hidden" id="memberId" name="memberId" value="${memberList.mb_id}"/>
 			        	
 				        <input type="hidden" id="odMname" name="odMname"/>
 				        <span id="name-content" class="text-content">${memberList.mb_name}</span>
@@ -220,47 +224,47 @@ String productPrice = request.getParameter("productPrice");
 				    </div>
 		        </div>
 
-<script>
-function toggleEdit() {
-    // 주문자 정보의 내용과 입력 필드를 가져옵니다.
-    const nameContent = document.getElementById('name-content');
-    const nameInput = document.getElementById('name-input');
-
-    const phoneContent = document.getElementById('phone-content');
-    const phoneInput = document.getElementById('phone-input');
-
-    const emailContent = document.getElementById('email-content');
-    const emailInput = document.getElementById('email-input');
-
-    // 텍스트와 입력 필드의 표시 상태를 토글합니다.
-    if (nameContent.style.display === 'none') {
-        // 입력된 값을 텍스트로 업데이트합니다.
-        nameContent.textContent = nameInput.value;
-        nameContent.style.display = 'inline';
-        nameInput.style.display = 'none';
-
-        phoneContent.textContent = phoneInput.value;
-        phoneContent.style.display = 'inline';
-        phoneInput.style.display = 'none';
-
-        emailContent.textContent = emailInput.value;
-        emailContent.style.display = 'inline';
-        emailInput.style.display = 'none';
-    } else {
-        nameContent.style.display = 'none';
-        nameInput.style.display = 'inline';
-        nameInput.focus();
-
-        phoneContent.style.display = 'none';
-        phoneInput.style.display = 'inline';
-        phoneInput.focus();
-
-        emailContent.style.display = 'none';
-        emailInput.style.display = 'inline';
-        emailInput.focus();
-    }
-}
-</script>
+				<script>
+				function toggleEdit() {
+				    // 주문자 정보의 내용과 입력 필드를 가져옵니다.
+				    const nameContent = document.getElementById('name-content');
+				    const nameInput = document.getElementById('name-input');
+				
+				    const phoneContent = document.getElementById('phone-content');
+				    const phoneInput = document.getElementById('phone-input');
+				
+				    const emailContent = document.getElementById('email-content');
+				    const emailInput = document.getElementById('email-input');
+				
+				    // 텍스트와 입력 필드의 표시 상태를 토글합니다.
+				    if (nameContent.style.display === 'none') {
+				        // 입력된 값을 텍스트로 업데이트합니다.
+				        nameContent.textContent = nameInput.value;
+				        nameContent.style.display = 'inline';
+				        nameInput.style.display = 'none';
+				
+				        phoneContent.textContent = phoneInput.value;
+				        phoneContent.style.display = 'inline';
+				        phoneInput.style.display = 'none';
+				
+				        emailContent.textContent = emailInput.value;
+				        emailContent.style.display = 'inline';
+				        emailInput.style.display = 'none';
+				    } else {
+				        nameContent.style.display = 'none';
+				        nameInput.style.display = 'inline';
+				        nameInput.focus();
+				
+				        phoneContent.style.display = 'none';
+				        phoneInput.style.display = 'inline';
+				        phoneInput.focus();
+				
+				        emailContent.style.display = 'none';
+				        emailInput.style.display = 'inline';
+				        emailInput.focus();
+				    }
+				}
+				</script>
    	
 		    	<div class="box2">
 		        	<div class="order-info">
@@ -434,81 +438,145 @@ function toggleEdit() {
 				</script>
 		        
 		    
-		    </div>
-		    <div class="right">
-		        <div class="box2">
-		        	<div class="order-summary">
-			        	<span class="textbold">주문 요약</span>    
-			       
-			        	<span class="text-content">상품 가격
-				        	<span class="text-content"style="margin-left:100px;">
-					        		<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
+			    </div>
+			    <div class="right">
+			        <div class="box2">
+			        	<div class="order-summary">
+				        	<span class="textbold">주문 요약</span>    
+				       
+				        	<span class="text-content">상품 가격
+					        	<span class="text-content"style="margin-left:100px;">
+						        		<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
+					        	</span>
 				        	</span>
-			        	</span>
-			        	
-			        	<span class="text-content">배송비
-			        		<span class="text-content" style="margin-left:158px;">
-					        		<fmt:formatNumber value="${product.pd_fee}" pattern="#,##0원" />
+				        	
+				        	<span class="text-content">배송비
+				        		<span class="text-content" style="margin-left:158px;">
+						        		<fmt:formatNumber value="${product.pd_fee}" pattern="#,##0원" />
+					        	</span>
 				        	</span>
-			        	</span>
-			        	
-			        	<hr class="custom-hr">
-			        	    
-			        	<span class="text-content" style="font-weight: bold;">총 주문 금액
-			        		<span class="text-content"style="margin-left:70px;">
-					        		<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
+				        	
+				        	<hr class="custom-hr">
+				        	    
+				        	<span class="text-content" style="font-weight: bold;">총 주문 금액
+				        		<span class="text-content"style="margin-left:70px;">
+						        		<fmt:formatNumber value="<%= productPrice %>" pattern="#,##0원" />
+					        	</span>
 				        	</span>
-			        	</span>
+				        </div>
 			        </div>
-		        </div>
-		        
-		        
-		        <div class="box2">
-		        	<div class="order-summary">
-			        	<span class="textbold">결제 수단</span>    
-			       		<div class="form-group">
-						    <div class="form-check">
-						        <input class="form-check-input" type="radio" name="odMethod" id="creditCard" value="신용카드">
-						        <label class="form-check-label" for="creditCard">
-						            신용카드
-						        </label>
-						    </div>
-						    <div class="form-check" style="margin-left:-4px;">
-						        <input class="form-check-input" type="radio" name="paymentMethod" id="payco" value="PAYCO">
-						        <label class="form-check-label" for="payco">
-						            PAYCO
-						        </label>
-						    </div>
-						</div>	       					        	
+			        
+			        
+			        <div class="box2">
+			        	<div class="order-summary">
+				        	<span class="textbold">결제 수단</span>    
+				       		<div class="form-group">
+							    <div class="form-check">
+							        <input class="form-check-input" type="radio" name="odMethod" id="creditCard" value="신용카드">
+							        <label class="form-check-label" for="creditCard">
+							            신용카드
+							        </label>
+							    </div>
+							    <div class="form-check" style="margin-left:-4px;">
+							        <input class="form-check-input" type="radio" name="odMethod" id="payco" value="PAYCO">
+							        <label class="form-check-label" for="payco">
+							            PAYCO
+							        </label>
+							    </div>
+							</div>	       					        	
+				        </div>
+			        
 			        </div>
-		        
-		        </div>
-		        <div class="box2" style="margin-bottom:0px;">
-		        	<div class="order-summary">
-			        	<div class="form-group" style="text-align:left;">
-						    <div class="form-check" style="margin-bottom:10px;">
-						        <input class="form-check-input" type="checkbox" id="agreeAll">
-						        <label class="form-check-label" for="agreeAll">
-						            <span class="textbold">전체 동의</span>
-						        </label>
-						    </div>
-						    <div class="ml-4"> <!-- indent 추가 -->
-						        <i class="fas fa-angle-right"></i>
-						        <span style="font-size: 14px;">구매조건 확인 및 결제진행에 동의</span>
-						    </div>
-						</div>
-		        	</div>
-		        </div>
-		    	<div class="box2">
-		    		<button type="submit" class="textbold text-center" 
-		    				style="display: inline-block; width: 100%; background-color: transparent; border: none; text-align: left; cursor: pointer;">
-					    결제하기
-					</button>
-		    	</div>
-		    </div>		    
-	   </div>
-	   </form>
-	</div>
+			        <div class="box2" style="margin-bottom:0px;">
+			        	<div class="order-summary">
+				        	<div class="form-group" style="text-align:left;">
+							    <div class="form-check" style="margin-bottom:10px;">
+							        <input class="form-check-input" type="checkbox" id="agreeAll">
+							        <label class="form-check-label" for="agreeAll">
+							            <span class="textbold">전체 동의</span>
+							        </label>
+							    </div>
+							    <div class="ml-4"> <!-- indent 추가 -->
+							        <i class="fas fa-angle-right"></i>
+							        <span style="font-size: 14px;">구매조건 확인 및 결제진행에 동의</span>
+							    </div>
+							</div>
+			        	</div>
+			        </div>
+			    	<div class="box2">
+			    		<button type="button" class="textbold text-center" id="paymentButton"
+			    				style="display: inline-block; width: 100%; background-color: transparent; border: none; text-align: left; cursor: pointer;">
+						    결제하기
+						</button>
+						<script>
+							//부트페이
+							document.getElementById('paymentButton').addEventListener('click', function() {
+						        
+								//HTML에서 값 가져오기
+								var productPrice = document.getElementById('productPrice').value;
+								var orderNumber = document.getElementById('odNo').value;
+								var customerId = document.getElementById('memberId').value;
+								var customerName = document.getElementById('odMname').value;
+								var customerPhone = document.getElementById('odMphone').value;
+								var customerEmail = document.getElementById('odMemail').value;
+								var productNum = document.getElementById('odNum').value;
+								var productName = document.getElementById('productName').value;
+								var productQantity = document.getElementById('odAmount').value;
+								
+								console.log(productPrice)
+								console.log(orderNumber)
+								console.log(customerId)
+								console.log(customerName)
+								console.log(customerPhone)
+								console.log(customerEmail)
+								console.log(productNum)
+								console.log(productName)
+								console.log(productQantity)
+								
+								
+								Bootpay.requestPayment({
+						            "application_id": "6703330ccc5274a3ac3fc385",
+						            "price": productPrice,
+						            "order_name": "주문 결제",
+						            "order_id": orderNumber,
+						            "pg": "",
+						            "method": "card",
+						            "tax_free": 0,
+						            "user": {
+						                "id": customerId,
+						                "username": customerName,
+						                "phone": customerPhone,
+						                "email": customerEmail
+						            },
+						            "items": [
+						                {
+						                    "id": productNum,
+						                    "name": productName,
+						                    "qty": productQantity,
+						                    "price": productPrice
+						                }
+						            ],
+						            "extra": {
+						                "open_type": "iframe",
+						                "card_quota": "0,2,3",
+						                "escrow": false
+						            }
+						        }).then(function(response) {
+						            console.log(response);  // 결제 성공 시 처리할 코드
+						            alert('결제가 성공적으로 처리되었습니다!');
+						            
+						            document.querySelector('form').submit();
+						        }).catch(function(error) {
+						            console.error(error);  // 결제 실패 시 처리할 코드
+						            alert("결제에 실패했습니다. 다시 시도해주세요.");
+						        });
+						    });
+							</script>
+			    	</div>
+			    </div>		    
+		   </div>
+		   </form>
+		</div>	
 	
 <script> 
 // 회원정보가 담긴 span의 텍스트를 가져와서 숨겨진 입력 필드에 설정		

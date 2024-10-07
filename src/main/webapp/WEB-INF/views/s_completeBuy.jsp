@@ -45,7 +45,7 @@
 		            <td class="text-center" style="font-weight: bold; background-color: #fff9c4;">주문 번호</td>
 		            	<td>
 		            		<div style="margin-left:20px;">
-		            			${ordersDto.odDate}1000000043
+		            			${ordersDto.odNo}
 		            		</div>
 		            	</td>
 		        </tr>
