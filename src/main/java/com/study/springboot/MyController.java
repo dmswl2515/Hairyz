@@ -609,6 +609,24 @@ public class MyController {
 
 	    return "reviewManager";
 	}
+	
+	// 관리자 - 구매평 관리 - 구매평 댓글
+	@RequestMapping("/reviewReply.do")
+	public String reviewReply(Model model, HttpServletRequest request)
+	{
+		String id = request.getParameter("reviewId");
+		String date = request.getParameter("reviewDate");
+		String name = request.getParameter("mbName");
+		String text = request.getParameter("reviewText");
+
+	    // JSP에 값 전달
+	    model.addAttribute("id", id);
+	    model.addAttribute("date", date);
+	    model.addAttribute("name", name);
+	    model.addAttribute("text", text);
+
+	    return "reviewReply";
+	}
 
 	// uuid 생성할 메서드 선언
 	/*

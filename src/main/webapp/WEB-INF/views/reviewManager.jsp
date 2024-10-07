@@ -77,7 +77,7 @@ body {
 			                <c:otherwise>
 			                    <c:forEach var="rm" items="${reviewManager}" varStatus="status">
 			                    	 <c:if test="${rm.pr_visibility == 'Y'}">
-				                        <tr style="cursor: pointer;" onclick="window.location.href='#'">
+				                        <tr style="cursor: pointer;" onclick="window.open('reviewReply.do?reviewId=${rm.pr_reviewId}&reviewDate=${rm.pr_reviewDate}&mbName=${rm.pr_MbNnme}&reviewText=${rm.pr_reviewText}', '_blank', 'width=700, height=600, top=50, left=50, scrollbars=yes')">
 				                            <td>${rm.pr_reviewId}</td>
 				                            <td>${rm.pr_reviewDate}</td>
 				                            <td>${rm.pr_MbNnme}</td>
