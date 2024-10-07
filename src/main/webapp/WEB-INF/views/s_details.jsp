@@ -1,4 +1,5 @@
 <%@ page import="com.study.springboot.dto.QDto" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.DayOfWeek" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
@@ -35,103 +36,9 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-<style>
-        /* 기본 레이아웃 설정 */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        /* 내용물이 차지할 공간을 유지 */
-        .content {
-            flex: 1;
-        }
-
-        /* footer를 페이지 하단에 고정 */
-        footer {
-            background-color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            width: 100%;
-            
-        }
-
-        /* hr 두께 설정 */
-        .custom-container hr {
-            border: 1px solid #d8d8d8;
-            width: 100%;
-            margin-top: 100px;
-            margin-bottom: 20px;
-        }
-
-        .custom-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .logo-container {
-            text-align: center;
-        }
-
-        .logo-container img {
-            max-width: 100px;
-            margin-left: 250px; 
-        }
-
-    </style>
+<link rel="icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">
 </head>
 <body>
-	<!-- 로그 및 로그인 -->
-    <div class="content">
-        <div class="custom-container">
-            <div class="row align-items-center py-3">
-                <div class="col-9 logo-container">
-                    <a href="main_view.do">
-                        <img src="images/logo.png" alt="로고">
-                    </a>
-                </div>
-				
-				<div class="col-3 text-right">
-					<%
-					//아이디 취득 후 id가 Null인지 확인
-					String id = (String)session.getAttribute("id");
-					if (id == null)
-					{
-					%>
-                    	<a href="#" class="btn btn-outline-warning">로그인</a>
-                    <%}else{%>
-                    	<a href="#" class="btn btn-outline-warning">마이페이지</a>
-                    	<a href="#" class="btn btn-outline-warning">장바구니</a>
-                    <%} %>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="custom-container">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">커뮤니티</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">쇼핑</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">동물병원</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">멍카페</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">캠페인</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
 <style>
 	
 	/*상품 상세*/
@@ -144,9 +51,8 @@
 	.product-box {
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 20px;
             margin-top: 80px;
-            margin-left: 50px;
+            margin-left: 48px;
             margin-right: 50px;
             text-align: center;
             width: 550px;
@@ -166,6 +72,7 @@
     	line-height: 2;
         font-size: 1.5em;
         overflow-wrap: break-word; /*텍스트 길이 줄바꿈*/
+        font-weight: bold;
     }
 
     .product-price {
@@ -198,15 +105,21 @@
 	}
         
 </style>
-		    
+
+	<div class="content">
+		<%@ include file="header.jsp" %>
+	</div>
+	    
 		<div class=container>
 		    <div class="product-container">	
 	              <div class="product-box">
-	           		<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" alt="${product.pdName}" style="width:100%; height:100%; margin-right:10px;" object-fit:cover;>
+	           		<img src="${pageContext.request.contextPath}/upload/${product.pd_chng_fname}" id="productImg" alt="${product.pdName}" 
+	           			 style="width:100%; height:100%; margin-right:10px; object-fit:cover;">
 	             
 	              </div>
 	              <div class="product-text">
-		              <span class="product-name">${product.pdName}</span><br>
+	              	  <input type="hidden" id="productNum" name="productNum" value="${product.pdNum}" />
+		              <span class="product-name" id='productName'>${product.pdName}</span><br>
 		              <span class="product-price">
 		              	<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
 		              </span>
@@ -240,8 +153,8 @@
                     	</div>
 	              	   <hr class="product-hr">
 	              	   		<div>
-    							<button id="buy-now" class="btn btn-warning" style="width: 200px; margin-left: 10px;">구매하기</button>
-		              	   		<button id="add-to-cart" class="btn btn-outline-warning" style="width: 200px; color: black;">장바구니</button>
+    							<button onclick="goToPurchase()" id="buy-now" class="btn btn-warning" style="width: 200px; margin-left: 10px;">구매하기</button>
+		              	   		<button onclick="goToCart()" id="add-to-cart" class="btn btn-outline-warning" style="width: 200px; color: black;">장바구니</button>
 		              	   	</div>
 	              </div>
               </div> 
@@ -290,13 +203,38 @@
 	    // 초기 총 가격 업데이트
 	    updateTotalPrice();
 	});
-</script>	              
+</script>
 
 <script>
+	//구매버튼 클릭 이벤트
+	function goToPurchase() {
+	    let ProductNum = document.getElementById('productNum').value;
+	    let ProductName = document.getElementById('productName').innerText;
+	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
+	    let Productquantity = document.getElementById('quantity-input').value;
+	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
+	    
+		console.log(ProductNum)    
+	    console.log(ProductName)
+	    console.log(ProductImage)
+	    console.log(Productquantity)
+	    console.log(Productprice)
+	    
+	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
+              '&productName=' + encodeURIComponent(ProductName) +
+              '&productImage=' + encodeURIComponent(ProductImage) +
+              '&productQuantity=' + encodeURIComponent(Productquantity) +
+              '&productPrice=' + encodeURIComponent(Productprice);
+	    
+	    console.log(url)
+	    
+	    window.location.href = url;
+	}
+
     // 장바구니에 담기 버튼 클릭 이벤트
-    $('#add-to-cart').on('click', function() {
+    function goToCart() {
         alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
-    });
+    }
 </script>
 
 
@@ -304,7 +242,6 @@
     .info-tabs {
         display: flex;
         justify-content: space-around;
-        margin: 20px 0;
         max-width: 1000px; /* 최대 너비 설정 */
     	margin: 20px auto;
     }
@@ -368,9 +305,7 @@
 	.my-custom-table td, .my-custom-table th {
 	    line-height: 2; /* 이 테이블에만 적용 */
 	}
-	
-	
-    
+ 
 </style>
 		
        	<div class=container>
@@ -752,12 +687,12 @@ function submitQnA() {
 		
 <style>
 /* 페이지네이션 */
-.director {
-    display: flex; /* Flexbox 레이아웃 사용 */
-    justify-content: center; /* 수평 가운데 정렬 */
-    align-items: center; /* 수직 가운데 정렬 */
-    height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
-}
+	.director {
+	    display: flex; /* Flexbox 레이아웃 사용 */
+	    justify-content: center; /* 수평 가운데 정렬 */
+	    align-items: center; /* 수직 가운데 정렬 */
+	    height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
+	}
 
 .page-button {
 		background-color: #ffe082;
@@ -771,23 +706,12 @@ function submitQnA() {
         background-color: #ffc107; /* 호버 시 색상 변화 */
     }
 </style>
-       	
-		<!-- Divider -->
-        <div class="custom-container">
-            <hr>
-        </div>
-    </div>
-    
-    
-    <!-- FOOTER -->
-    <footer class="container">
-        <p class="float-end"><strong>털뭉치즈</strong></p>
-        <p>COMPANY : 털뭉치즈</p>
-    </footer>
-    
-    
-<!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<%@ include file="footer.jsp" %>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,27 +1,55 @@
 package com.study.springboot.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.study.springboot.dao.IMemberDao;
+import com.study.springboot.dto.CartDto;
+import com.study.springboot.dto.MemberDto;
+import com.study.springboot.dto.OrderProductDto;
+import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
+import com.study.springboot.service.CartService;
+import com.study.springboot.service.MemberService;
+import com.study.springboot.service.OrdersService;
 import com.study.springboot.service.QnAService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ShopController {
+	
+	@Autowired
+    private IMemberDao memberDao;
 	
 	@Autowired
 	private PRepository pRepository;
 	
 	@Autowired
 	private QnAService qnaService;
+	
+	@Autowired
+	private CartService cartService;
+	
+	@Autowired
+	private MemberService mService;
+	
+	@Autowired
+	private OrdersService oService;
+	
+	
     
     
     
@@ -29,8 +57,9 @@ public class ShopController {
     public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
                                    @RequestParam(required = false) String pd_animal,
                                    @RequestParam(required = false) String pd_category,
+                                   @RequestParam(required = false) String id,
                                    Model model) {
-        
+    	
         // 페이지당 항목 수
         int pageSize = 16; 
         
@@ -73,6 +102,7 @@ public class ShopController {
         // 상품 정보가 있을 경우, 모델에 추가하여 JSP에서 사용할 수 있게 함
         if (!product.isEmpty()) {
             model.addAttribute("product", product.get(0));  // 첫 번째 상품 정보만 전달
+            
         }
         
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
@@ -105,16 +135,88 @@ public class ShopController {
             return "s_details";              
     }
     
+    
     @RequestMapping("/s_purchase")    
-    public String productPhrchase(Model model) {
-    	
-            return "s_purchase";              
+    public String productPhrchase(@RequestParam("productNum") int productNum,
+					              @RequestParam("productName") String productName,
+					              @RequestParam("productImage") String productImage,
+					              @RequestParam("productQuantity") int productQuantity,
+					              @RequestParam("productPrice") int productPrice,
+					              HttpSession session,
+					              Model model) {
+    		System.out.println("Product Number: " + productNum);
+    		System.out.println("Product Name: " + productName);
+    		System.out.println("Product Image: " + productImage);
+    		System.out.println("Product Quantity: " + productQuantity);
+    		System.out.println("Product Price: " + productPrice);
+    		
+    		// 요청된 파라미터를 모델에 추가
+    	    model.addAttribute("productNum", productNum);
+    	    model.addAttribute("productName", productName);
+    	    model.addAttribute("productImage", productImage);
+    	    model.addAttribute("productQuantity", productQuantity);
+    	    model.addAttribute("productPrice", productPrice);
+    	    
+    	    String memberId = (String) session.getAttribute("userId");
+    	    
+            if (memberId != null) {
+            	MemberDto memberList = mService.getMemberByMemberId(memberId);
+            	model.addAttribute("memberList", memberList);
+            	
+            	System.out.println("memberList :" + memberList);
+            } else {
+            	System.out.println("Member ID is null");
+            }
+    	    
+    	    
+    	    // 뷰 이름을 반환하여 해당 뷰를 렌더링
+    	    return "s_purchase";       
     }
     
     @RequestMapping("/s_cart")    
-    public String shoppingCart(Model model) {
+    public String shoppingCart(HttpSession session, Model model) {
+    		
+    		String memberId = (String) session.getAttribute("userId");
+    		System.out.println("Member ID: " + memberId);
+    		
+    		if (memberId != null) {
+                // 회원의 장바구니 내역 가져오기
+                List<CartDto> cartList = cartService.getCartByMemberId(memberId);
+                model.addAttribute("products", cartList);
+                
+                System.out.println("Cart List: " + cartList);
+            } else {
+                System.out.println("Member ID is null");
+            }
     	
             return "s_cart";              
+    }
+    
+    @RequestMapping("/s_completeBuy")    
+    public String completeBuy(@ModelAttribute OrdersDto ordersDto,
+    						  Model model) {
+    	
+		System.out.println("Order Number (odNum): " + ordersDto.getOdNum());
+	    System.out.println("Member Number (odMno): " + ordersDto.getOdMno());
+	    System.out.println("Amount (odAmount): " + ordersDto.getOdAmount());
+	    System.out.println("Member Name (odMname): " + ordersDto.getOdMname());
+	    System.out.println("Member Phone (odMphone): " + ordersDto.getOdMphone());
+	    System.out.println("Member Email (odMemail): " + ordersDto.getOdMemail());
+	    System.out.println("Recipient (odRecipient): " + ordersDto.getOdRecipient());
+	    System.out.println("Recipient Phone (odRphone): " + ordersDto.getOdRphone());
+	    System.out.println("Recipient Zip Code (odRzcode): " + ordersDto.getOdRzcode());
+	    System.out.println("Recipient Address (odRaddress): " + ordersDto.getOdRaddress());
+	    System.out.println("Recipient Address 2 (odRaddress2): " + ordersDto.getOdRaddress2());
+	    System.out.println("Memo (odMemo): " + ordersDto.getOdMemo());
+	    System.out.println("Method (odMethod): " + ordersDto.getOdMethod());
+
+    	
+	    oService.insertOrder(ordersDto);
+	    
+	    
+		
+	
+        return "s_completeBuy";              
     }
 }
 

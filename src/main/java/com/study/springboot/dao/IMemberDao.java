@@ -1,5 +1,6 @@
 package com.study.springboot.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -21,9 +22,11 @@ public interface IMemberDao
     // 회원가입 처리
     int insertMember(Map<String, String> paramMap);
     
-    // 로그인, SNS로그인
+    // 로그인, SNS로그인, 결제 정보입력
 	public MemberDto findById(String id);
 	
+	// 아이디/비밀번호 찾기
 	public String findEmailByPhone(String phone);
+	public String findPwById(String id);
 	
 }
