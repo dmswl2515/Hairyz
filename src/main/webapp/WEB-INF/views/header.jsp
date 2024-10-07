@@ -62,7 +62,7 @@
                  	<a href="login.do" class="btn btn-outline-warning">로그인</a>
                  <%}else{%>
                  	<a href="#" class="btn btn-outline-warning">마이페이지</a>
-                 	<a href="#" class="btn btn-outline-warning">장바구니</a>
+                 	<a href="s_cart" class="btn btn-outline-warning">장바구니</a>
                  <%} %>
              </div>
          </div>
@@ -76,7 +76,7 @@
                      <a class="nav-link" href="#">커뮤니티</a>
                  </li>
                  <li class="nav-item">
-                     <a class="nav-link" href="#">쇼핑</a>
+                     <a class="nav-link" href="s_main">쇼핑</a>
                  </li>
                  <li class="nav-item">
                      <a class="nav-link" href="#">동물병원</a>
