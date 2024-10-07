@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.study.springboot.dao.IBoardDao">
+
+	<insert id="insertPost" parameterType="com.study.springboot.dto.BoardDto">
+	    INSERT INTO board 
+    	  (bd_no, bd_cate, bd_writer, bd_title, bd_content, bd_date, 
+    	  	bd_imgpath, bd_orgname, bd_modname)
+	    VALUES 
+    	  (board_seq.NEXTVAL, #{bd_cate, jdbcType=CHAR}, #{bd_writer}, #{bd_title}, #{bd_content}, SYSDATE, 
+    	  	#{bd_imgpath}, #{bd_orgname}, #{bd_modname})
+	</insert>
+	
+	
+</mapper>
