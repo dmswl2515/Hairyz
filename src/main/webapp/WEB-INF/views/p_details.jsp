@@ -108,15 +108,26 @@
             alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
         }
         
-     // 모달 열기
+     	// 모달 열기
+        var userId = "${sessionScope.userId != null ? sessionScope.userId : ''}";
+        
+        function getUserId() {
+            return userId; 
+        }
+        
         function openModal() {
-            $('#qnaModal').modal('show');
+        	if (!getUserId()) { // 로그인 안된 상태
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.href = "/login.do"; // 로그인 페이지로 이동
+                return;
+            } else{        	
+	            $('#qnaModal').modal('show');
+            }
         }
 
 
         function openModal() {
-            // 회원 ID (예시로 하드코딩된 값입니다. 실제로는 동적으로 할당해야 함)
-            const userId = "test01" // 실제 회원 ID를 가져오는 방법으로 변경할 것
+            
 
             // AJAX 요청으로 회원 정보 가져오기
             $.ajax({
@@ -257,6 +268,14 @@
 	    font-size: 1.2em;
 	    cursor: pointer;
 	}
+	.star {
+        font-size: 24px; /* 별의 크기 */
+        color: gold; /* 채워진 별 색상 */
+    }
+    .star-empty {
+        color: lightgray; /* 비어 있는 별 색상 */
+    }	
+
         
 </style>
 
@@ -402,27 +421,35 @@
 			    <p>상품을 구매하신 분들이 작성한 리뷰입니다.</p>
 			</div>
 			<table class="mb-2 my-custom-table" style="width: 100%;">
-			    <thead>
-			        <tr>
-			            <th scope="col">평가</th>
-			            <th scope="col">작성자</th>
-			            <th scope="col">날짜</th>
-			            <th scope="col">리뷰 내용</th>
-			        </tr>
-			    </thead>
 			    <tbody>
 			        <c:forEach var="item" items="${reviews}">
 			            <tr class="table-white text-left">
-			                <td>${item.rating}</td>
-			                <td>${item.mbName}</td>
-			                <td>${item.reviewDate}</td> <!-- item.reviewDate로 날짜를 가져옵니다. -->
-			                <td>${item.reviewText}</td>
-			            </tr>
-			            <tr class="table-white text-left">
 			                <td colspan="4">
-			                    <img src="${item.productImage}" alt="상품 이미지" style="width:100px; height:auto;"> <!-- item.productImage로 이미지 URL을 가져옵니다. -->
+			                	<span style="font-weight: bold;">
+				                    <c:forEach var="i" begin="1" end="5">
+				                        <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
+				                    </c:forEach>
+			                		${item.pr_rating}
+				                </span>
 			                </td>
-			            </tr>
+			             </tr>
+			             <tr>
+			                <td colspan="4">
+			                    <span style="font-weight:bold; margin-right:15px;">${item.pr_MbNnme}</span>
+			                    <span>${item.pr_reviewDate}</span>
+			                </td>
+			             </tr>
+			             <td colspan="3" class="table-bottom-border">${item.pr_reviewText}</td>
+			             <c:if test="${not empty item.pr_modName}">
+				                <td colspan="1"></td>
+				                <td class="table-bottom-border" style="width:300px;">
+				                    <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" alt="상품 이미지" style="width:100px; height:auto;"> <!-- item.productImage로 이미지 URL을 가져옵니다. --> 	
+				                </td>
+			             </c:if>
+			             <c:if test="${!not empty item.pr_modName}">
+				                <td colspan="1"></td>
+				                <td class="table-bottom-border"></td>
+			             </c:if>
 			        </c:forEach>
 			    </tbody>
 			</table>
