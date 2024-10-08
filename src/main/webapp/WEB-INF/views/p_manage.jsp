@@ -3,6 +3,7 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
 <!DOCTYPE html>
@@ -100,7 +101,7 @@
 			<!-- 통합검색 창 -->
             <form class="form-inline d-flex justify-content-center" method="get" action="${pageContext.request.contextPath}/p_manage">
                  <select class="form-control mr-2" id="searchCondition" name="condition">
-                    <option value="all" <c:if test="${condition == 'all'}">selected</c:if>>전체</option>
+                    <!-- <option value="all" <c:if test="${condition == 'all'}">selected</c:if>>전체</option> -->
                     <option value="productName" <c:if test="${condition == 'productName'}">selected</c:if>>상품명</option>
                     <option value="productNumber" <c:if test="${condition == 'productNumber'}">selected</c:if>>상품 번호</option>
                     
@@ -142,28 +143,50 @@
 		                    </td>
 		                    <td class="text-center align-middle">${item.pd_amount}개</td>
 		                    <td class="text-center align-middle">
-		                        <form method="post" action="/updateSellingStatus" id="sellingForm" onsubmit="return submitForm();">
+		                        <form method="post" action="/updateSellingStatus" id="sellingForm" onsubmit="return submit_form();">
 								    <input type="hidden" name="pdNum" value="${item.pdNum}" />
-								    <input type="hidden" name="newStatus" id="sellingStatus" value="${currentStatus == 'Y' ? 'N' : 'Y'}" />
-								    <input type="submit" id="toggleSellingButton" class="btn btn-outline-warning custom-width mb-2" value="${currentStatus == 'Y' ? '판매 재시작' : '판매 중지'}" />
+								    <c:choose>
+									    <c:when test="${fn:contains(item.pd_selling, 'Y')}">
+									        <input type="button" id="toggleSellingButton" class="btn btn-outline-danger custom-width mb-2"
+									               value="판매 중지" onclick="submit_form('${item.pdNum}', 'Y')"/>
+									    </c:when>
+									    <c:when test="${fn:contains(item.pd_selling, 'N')}">
+									        
+									        <input type="button" id="toggleSellingButton" class="btn btn-outline-warning custom-width mb-2"
+									               value="판매 재시작" style="text-align: center; padding-right: 95px;" onclick="submit_form('${item.pdNum}', 'N')"/>
+									    </c:when>
+									</c:choose>
+									<script>
+								        function submit_form(pdNum, action) {
+								        	
+								        	var sellStatus = action === 'Y' ? 'N' : 'Y';
+								        	
+								            // AJAX 요청을 여기에 추가
+								            console.log("pdNum: " + pdNum + ", Action: " + action);
+								            console.log(sellStatus)
+								            
+								            $.ajax({
+								    			url:'/updateSellingStatus',
+								    			type:'POST',
+								    			data:{pdNum : pdNum, sellStatus : sellStatus},
+								    			dataType: 'json',
+								    			success: function(result) {
+								                    console.log(result); // 응답 확인
+								                    if (result.status === "success") {
+								                        alert(result.message);
+								                        location.reload();
+								                    } else {
+								                        alert("Error: " + result.message);
+								                    }
+								                },
+								                error: function(xhr, status, error) {
+								                    console.error("AJAX Error: " + status + " - " + error);
+								                    alert("AJAX Error: " + status + " - " + error);
+								                }
+								            });
+								        }
+								    </script>
 								</form>
-
-								<script>
-								function submitForm() {
-								    
-									const button = document.getElementById("toggleSellingButton");
-								    const form = document.getElementById("sellingForm");
-								
-								 	// 서버에서 판매 상태를 변경한 후 버튼 텍스트 변경
-								    if (form.sellingStatus.value === "Y") {
-								        button.value = "판매 중지"; 
-								    } else {
-								        button.value = "판매 재시작";
-								    }
-								
-								    return true;
-								}
-								</script>
 		                        <br>
 		                        
 		                        <input type="button" class="btn btn-outline-warning custom-width" 
@@ -249,7 +272,6 @@
     
     
 <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

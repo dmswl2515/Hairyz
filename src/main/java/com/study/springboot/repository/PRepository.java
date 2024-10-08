@@ -16,7 +16,8 @@ public interface PRepository extends JpaRepository<PDto, Integer>
 {
 	List<PDto> findAll();
 	
-	List<PDto> findByPdNum(Integer pdNum); // 상품 번호로 검색
+	// 상품 번호로 상품 검색
+	List<PDto> findByPdNum(Integer pdNum); 
     List<PDto> findByPdNameContaining(String pdName);
     
     @Query(value = "SELECT * FROM ( SELECT p.*, ROW_NUMBER() OVER (ORDER BY pd_num) AS rn FROM product p ) WHERE rn BETWEEN :startRow AND :endRow", nativeQuery = true)
