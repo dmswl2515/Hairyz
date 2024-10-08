@@ -10,4 +10,12 @@
 	    SELECT * FROM admin WHERE admin_id = #{id}
 	</select>
 	
+	
+	<!-- Q&A 답변 -->
+	<select id="getAllQna" resultType="com.study.springboot.dto.QDto">
+	    SELECT *
+	    FROM QNA
+	    ORDER BY qna_rstate
+	</select>
+	
 </mapper>

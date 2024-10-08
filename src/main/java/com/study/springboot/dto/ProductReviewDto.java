@@ -1,11 +1,13 @@
 package com.study.springboot.dto;
-import java.sql.Timestamp;
 
+
+import java.sql.Timestamp;
 import lombok.Data;
 
 @Data
 public class ProductReviewDto
 {
+
 	private int pr_reviewId;
 	private int pr_productId;
 	private int pr_MbNum;

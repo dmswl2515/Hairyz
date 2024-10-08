@@ -21,7 +21,6 @@ public class OrdersDto {
     private String odRaddress;      // 수령인 주소
     private String odRaddress2;     // 수령인 상세주소
     private String odMemo;          // 배송 메모
-    private String odMethod;        // 결제 수단
     private char odPayment;       // 결제 여부 (Y/N)
     private String odState;         // 상품 주문 상태
 }

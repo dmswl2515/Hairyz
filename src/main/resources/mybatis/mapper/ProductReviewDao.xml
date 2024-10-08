@@ -5,6 +5,27 @@
 	
 <mapper namespace="com.study.springboot.dao.IProductReviewDao">
 
+
+	<select id="getReviewsByProductId" resultType="com.study.springboot.dto.ProductReviewDto">
+    	SELECT 
+            pr_reviewId,
+            pr_productId,
+            pr_MbNum,
+            pr_MbNnme,
+            pr_rating,
+            pr_reviewText,
+            pr_reviewDate,
+            pr_hasReply,
+            pr_imgPath,
+            pr_orgName,
+            pr_modName,
+            pr_visibility
+        FROM 
+            PRODUCTREVIEW
+        WHERE 
+            pr_productId = #{productId}
+    </select>
+
 	<select id="selectReview" resultType="com.study.springboot.dto.ProductReviewDto">
 	SELECT *
 		FROM (
