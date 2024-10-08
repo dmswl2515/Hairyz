@@ -200,8 +200,8 @@ public class PController {
         
         if (!products.isEmpty()) {
             model.addAttribute("product", products.get(0)); // 첫 번째 상품을 모델에 추가
-        }
-         return "p_modify"; // 수정 페이지 이름  
+        } 
+         return "p_modify";
     }
     
     
@@ -277,13 +277,8 @@ public class PController {
             // 제품 정보 저장
             pRepository.save(product);
             
-            // 성공 메시지 추가
-            redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다.");
-        } else {
-            // 실패 메시지 추가
-            redirectAttributes.addFlashAttribute("error", "해당 상품을 찾을 수 없습니다.");
         }
-    	return "redirect:/p_manage";
+    	return "redirect:/p_modify?pdNum=" + pdNum;
     }
     
 }
