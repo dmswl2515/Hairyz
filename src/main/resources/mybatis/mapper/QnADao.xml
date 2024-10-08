@@ -45,5 +45,13 @@
         INSERT INTO qna (qna_pnum, qna_name, qna_date, qna_content, qna_qstate, qna_hide, qna_rstate)
         VALUES (#{qna_pnum}, #{qna_name}, NOW(), #{qna_content}, #{qna_qstate}, #{qna_hide}, #{qna_rstate})
     </insert>
+    
+    <update id="updateRstate">
+		update qna set qna_rstate = #{param2} where qna_no = #{param1}
+	</update>
+	
+    <update id="updateHide">
+		update qna set qna_hide = #{param2} where qna_no = #{param1}
+	</update>
 	
 </mapper>

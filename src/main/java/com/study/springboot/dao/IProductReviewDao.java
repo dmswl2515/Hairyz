@@ -16,4 +16,7 @@ public interface IProductReviewDao
 
 	public List<ProductReviewDto> selectReview(int endRow, int startRow);
 	public PageDto reviewTotal();
+	public int updateHasReply(int pr_reviewId, String pr_hasReply);
+	public int updateVisibility(int pr_reviewId, String pr_visibility);
+	
 }

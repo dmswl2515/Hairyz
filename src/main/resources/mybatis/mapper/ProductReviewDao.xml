@@ -42,7 +42,15 @@
 	</select>
 	
 	<select id="reviewTotal" resultType="com.study.springboot.dto.PageDto">
-		SELECT COUNT(*) as total FROM productreview
+		SELECT COUNT(*) as total FROM productreview where pr_visibility = 'Y'
 	</select>
+	
+	<update id="updateHasReply">
+		update PRODUCTREVIEW set pr_hasReply = #{param2} where pr_reviewId = #{param1}
+	</update>
+	
+	<update id="updateVisibility">
+		update PRODUCTREVIEW set pr_visibility = #{param2} where pr_reviewId = #{param1}
+	</update>
 	
 </mapper>

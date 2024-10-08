@@ -30,6 +30,7 @@ import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dao.IOrderProductDao;
 import com.study.springboot.dao.IPetListDao;
 import com.study.springboot.dao.IProductReviewDao;
+import com.study.springboot.dao.IReviewReplyDao;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrderProductDto;
 import com.study.springboot.dto.PageDto;
@@ -60,6 +61,9 @@ public class MyController {
 	
 	@Autowired
     private ServletContext servletContext;
+	
+	@Autowired
+	IReviewReplyDao reviewReplyDao;
 	
 	@Value("${KAKAO-KEY}")
 	private String KAKAO_KEY;
@@ -626,6 +630,55 @@ public class MyController {
 	    model.addAttribute("text", text);
 
 	    return "reviewReply";
+	}
+	
+	// 관리자 - 구매평 답변 - 답변 등록
+	@PostMapping("/submitReply.do")
+	@ResponseBody
+	public ResponseEntity<String> submitReply(Model model, HttpServletRequest request, HttpSession session)
+	{
+
+
+		String reviewId = request.getParameter("reviewId");
+		String adminId = (String) session.getAttribute("adminId");
+//		String adminId = "admin"; // 테스트용 어드민 아이디
+		String replyText = request.getParameter("replyText");
+		
+		int rpId = Integer.parseInt(reviewId);
+
+		try
+		{
+			reviewReplyDao.insertReply(rpId, adminId, replyText);
+			reviewDao.updateHasReply(rpId, "Y");
+			return ResponseEntity.ok().body("success");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+
+	}
+	
+	// 관리자 - 구매평 답변 - 숨기기
+	@PostMapping("/hideReview.do")
+	@ResponseBody
+	public ResponseEntity<String> hideReview(Model model, HttpServletRequest request)
+	{
+
+		String reviewId = request.getParameter("reviewId");
+
+		int rpId = Integer.parseInt(reviewId);
+
+		try
+		{
+			reviewDao.updateVisibility(rpId, "N");
+			return ResponseEntity.ok().body("success");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+
 	}
 
 	// uuid 생성할 메서드 선언

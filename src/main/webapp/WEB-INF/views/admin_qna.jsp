@@ -101,7 +101,7 @@
 	                            <fmt:formatDate value="${qList.qna_date}" pattern="yyyy-MM-dd" />        
 	                        </td>        
 	                        <td class="text-center align-middle">${qList.qna_name}</td>
-	                        <td onclick="#" style="cursor: pointer;">
+	                        <td onclick="window.open('qnaReply.do?qnaNo=${qList.qna_no}&number=${(currentPage - 1) * pageSize + status.index + 1}&qnaDate=${qList.qna_date}&qnaName=${qList.qna_name}&qnaContent=${qList.qna_content}', '_blank', 'width=700, height=600, top=50, left=50, scrollbars=yes')" style="cursor: pointer;">
 	                            <div class="product-container">    
                                     <c:choose>
 								        <c:when test="${fn:length(qList.qna_content) > 28}">
