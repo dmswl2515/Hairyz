@@ -632,7 +632,7 @@ public class MyController {
 	    return "reviewReply";
 	}
 	
-	// 구매평 등록
+	// 관리자 - 구매평 답변 - 답변 등록
 	@PostMapping("/submitReply.do")
 	@ResponseBody
 	public ResponseEntity<String> submitReply(Model model, HttpServletRequest request, HttpSession session)
@@ -640,8 +640,8 @@ public class MyController {
 
 
 		String reviewId = request.getParameter("reviewId");
-//		String adminId = (String) session.getAttribute("adminId");
-		String adminId = "admin"; // 테스트용 어드민 아이디
+		String adminId = (String) session.getAttribute("adminId");
+//		String adminId = "admin"; // 테스트용 어드민 아이디
 		String replyText = request.getParameter("replyText");
 		
 		int rpId = Integer.parseInt(reviewId);
@@ -650,6 +650,28 @@ public class MyController {
 		{
 			reviewReplyDao.insertReply(rpId, adminId, replyText);
 			reviewDao.updateHasReply(rpId, "Y");
+			return ResponseEntity.ok().body("success");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+
+	}
+	
+	// 관리자 - 구매평 답변 - 숨기기
+	@PostMapping("/hideReview.do")
+	@ResponseBody
+	public ResponseEntity<String> hideReview(Model model, HttpServletRequest request)
+	{
+
+		String reviewId = request.getParameter("reviewId");
+
+		int rpId = Integer.parseInt(reviewId);
+
+		try
+		{
+			reviewDao.updateVisibility(rpId, "N");
 			return ResponseEntity.ok().body("success");
 		} catch (Exception e)
 		{
