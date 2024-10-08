@@ -80,13 +80,8 @@
 					%>
                     	<a href="login.do" class="btn btn-outline-warning">로그인</a>
                     <%}else{%>
-<<<<<<< HEAD
                     	<a href="myProfile_view.do" class="btn btn-outline-warning">마이페이지</a>
-                    	<a href="#" class="btn btn-outline-warning">장바구니</a>
-=======
-                    	<a href="#" class="btn btn-outline-warning">마이페이지</a>
                     	<a href="s_cart" class="btn btn-outline-warning">장바구니</a>
->>>>>>> ab5d132484c49a58fb7be9d6672d81bec44d8fd6
                     <%} %>
                 </div>
             </div>
@@ -175,6 +170,8 @@
             <hr>
         </div>
     </div>
+    
+    <%@ include file="kakaoCh.jsp" %>
     
     <!-- FOOTER -->
     <footer class="container">

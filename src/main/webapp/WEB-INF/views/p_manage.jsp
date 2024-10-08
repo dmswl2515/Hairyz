@@ -3,6 +3,7 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
 <!DOCTYPE html>
@@ -13,167 +14,103 @@
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<style>
-        /* 기본 레이아웃 설정 */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        /* 내용물이 차지할 공간을 유지 */
-        .content {
-            flex: 1;
-        }
-
-        /* footer를 페이지 하단에 고정 */
-        footer {
-            background-color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            width: 100%;
-        }
-
-        /* hr 두께 설정 */
-        hr {
-            border: 1px solid #d8d8d8;
-            width: 100%;
-            margin-top: 100px
-        }
-
-        .custom-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .logo-container {
-            text-align: center;
-        }
-
-        .logo-container img {
-            max-width: 100px;
-            margin-left: 250px; 
-        }
-
-    </style>
 </head>
 <body>
-	<!-- 로그 및 로그인 -->
-    <div class="content">
-        <div class="custom-container">
-            <div class="row align-items-center py-3">
-                <div class="col-9 logo-container">
-                    <a href="main_view.do">
-                        <img src="images/logo.png" alt="로고">
-                    </a>
-                </div>
-				
-				<div class="col-3 text-right">
-					<%
-					//아이디 취득 후 id가 Null인지 확인
-					String id = (String)session.getAttribute("id");
-					if (id == null)
-					{
-					%>
-                    	<a href="#" class="btn btn-outline-warning">로그인</a>
-                    <%}else{%>
-                    	<a href="#" class="btn btn-outline-warning">마이페이지</a>
-                    	<a href="#" class="btn btn-outline-warning">장바구니</a>
-                    <%} %>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="custom-container">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">커뮤니티</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">쇼핑</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">동물병원</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">멍카페</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">캠페인</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+	<div class="content">
+		<%@ include file="header.jsp" %>
+	</div>
         
-        <!-- 통합검색 창 -->
-        <div class="custom-container my-4">
-            <form class="form-inline d-flex justify-content-center" method="get" action="${pageContext.request.contextPath}/p_manage">
-            	 <select class="form-control mr-2" id="searchCondition" name="condition">
-		            <option value="all" <c:if test="${condition == 'all'}">selected</c:if>>전체</option>
-		            <option value="productName" <c:if test="${condition == 'productName'}">selected</c:if>>상품명</option>
-		            <option value="productNumber" <c:if test="${condition == 'productNumber'}">selected</c:if>>상품 번호</option>
-		        	
-		        </select>
-                <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="통합검색" aria-label="Search" style="width: 30%;" value="${keyword}">
-                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">검색</button>
-            </form>
-        </div>
-        
-<style>
-    
-    /* 수정& 취소 버튼 넓이 */
-    .custom-width {
-        width: 100px; /* 원하는 너비로 설정 */
-    }
-    
-    .product-container {
-	    display: flex; /* Flexbox를 사용하여 내부 요소를 수평으로 배치 */
-	    align-items: center; /* 수직 가운데 정렬 */
-	    margin-bottom: 10px; /* 요소 간 간격 조정 */
-	}
-    
-    .product-box {
+	<style>
+	    
+	    /* 수정& 취소 버튼 넓이 */
+	    .custom-width {
+	        width: 100px; /* 원하는 너비로 설정 */
+	    }
+	    
+	    .product-container {
+		    display: flex; /* Flexbox를 사용하여 내부 요소를 수평으로 배치 */
+		    align-items: center; /* 수직 가운데 정렬 */
+		    margin-bottom: 10px; /* 요소 간 간격 조정 */
+		}
+	    
+	    .product-box {
             border: 1px solid #ddd;
             border-radius: 5px;
             margin: 10px;
             text-align: center;
             width: 130px;
             height: 150px;
-            
-    }
-    
-    .align-middle {
-	    vertical-align: middle !important; /* 모든 테이블 셀의 내용을 세로로 가운데 정렬 */
-	}
+	            
+	    }
+	    
+	    .align-middle {
+		    vertical-align: middle !important; /* 모든 테이블 셀의 내용을 세로로 가운데 정렬 */
+		}
+		
+		.table {
+	        border-color: #ffc107; /* 테이블 테두리 색상 */
+	   }
 	
-	.table {
-      border-color: #ffc107; /* 테이블 테두리 색상 */
-  }
-
-  .table th{
-  	  background-color: #fff9c4;
-  }
-  
-  .table td {
-      border-color: #ffc107; /* 테이블 헤더와 셀 테두리 색상 */
-  }
-  
-	.table thead th {
-	    border-bottom: 1px solid #ffcc00;
-	}
+	   .table th{
+	  	    background-color: #fff9c4;
+	   }
+	  
+	   .table td {
+	        border-color: #ffc107; /* 테이블 헤더와 셀 테두리 색상 */
+	   }
+	  
+	   .table thead th {
+		    border-bottom: 1px solid #ffcc00;
+	   }
+		
+	   .table-white {
+			background-color: #ffffff;
+	   }
+		
+	   .table-bottom-border {
+		    border-bottom: 1px solid #ffc107; /* 원하는 색상과 두께로 테두리 설정 */
+	  }
+		
+	  /* 페이지네이션 */
+	  .director {
+		    display: flex; /* Flexbox 레이아웃 사용 */
+		    justify-content: center; /* 수평 가운데 정렬 */
+		    align-items: center; /* 수직 가운데 정렬 */
+		    height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
+	  }
+		
+	  .page-button {
+			background-color: #ffe082;
+			border: 1px solid #ffc107;
+			color: gray;
+			justify-content: center;
+			cursor: pointer;
+	  }
+			
+	  .page-button:hover {
+	        background-color: #ffc107; /* 호버 시 색상 변화 */
+	  }
 	
-	.table-white {
-		background-color: #ffffff;
-	}
+	  .custom-container {
+           max-width: 1000px;
+           margin: 0 auto;
+      }    
+	</style>
+		<div class="custom-container my-4">
+			<h3 class="text-center mt-1 mb-4"><strong>Q&A 관리</strong></h3>
+			<!-- 통합검색 창 -->
+            <form class="form-inline d-flex justify-content-center" method="get" action="${pageContext.request.contextPath}/p_manage">
+                 <select class="form-control mr-2" id="searchCondition" name="condition">
+                    <!-- <option value="all" <c:if test="${condition == 'all'}">selected</c:if>>전체</option> -->
+                    <option value="productName" <c:if test="${condition == 'productName'}">selected</c:if>>상품명</option>
+                    <option value="productNumber" <c:if test="${condition == 'productNumber'}">selected</c:if>>상품 번호</option>
+                    
+                </select>
+                <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="통합검색" aria-label="Search" style="width: 300px;" value="${keyword}">
+                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">검색</button>
+            </form>
+        </div>     
 	
-	.table-bottom-border {
-	    border-bottom: 1px solid #ffc107; /* 원하는 색상과 두께로 테두리 설정 */
-	}
-	
-</style>     
 		<div class="container">
 		    <table class="table table-bordered mb-2">
 		        <thead>
@@ -197,38 +134,61 @@
 		                            </a>
 		                            </div>
 		                            <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;"> 
-		                            	${item.pdName}
+		                            	<span>
+		                            		${item.pdName}
+		                            	</span>
 		                            </a>
 		                            
 		                        </div>     
 		                    </td>
 		                    <td class="text-center align-middle">${item.pd_amount}개</td>
 		                    <td class="text-center align-middle">
-		                        <form method="post" action="/updateSellingStatus" id="sellingForm" onsubmit="return submitForm();">
+		                        <form method="post" action="/updateSellingStatus" id="sellingForm" onsubmit="return submit_form();">
 								    <input type="hidden" name="pdNum" value="${item.pdNum}" />
-								    <input type="hidden" name="newStatus" id="sellingStatus" value="${currentStatus == 'Y' ? 'N' : 'Y'}" />
-								    <input type="submit" id="toggleSellingButton" class="btn btn-outline-warning custom-width mb-2" value="${currentStatus == 'Y' ? '판매 재시작' : '판매 중지'}" />
+								    <c:choose>
+									    <c:when test="${fn:contains(item.pd_selling, 'Y')}">
+									        <input type="button" id="toggleSellingButton" class="btn btn-outline-danger custom-width mb-2"
+									               value="판매 중지" onclick="submit_form('${item.pdNum}', 'Y')"/>
+									    </c:when>
+									    <c:when test="${fn:contains(item.pd_selling, 'N')}">
+									        
+									        <input type="button" id="toggleSellingButton" class="btn btn-outline-warning custom-width mb-2"
+									               value="판매 재시작" style="text-align: center; padding-right: 95px;" onclick="submit_form('${item.pdNum}', 'N')"/>
+									    </c:when>
+									</c:choose>
+									<script>
+								        function submit_form(pdNum, action) {
+								        	
+								        	var sellStatus = action === 'Y' ? 'N' : 'Y';
+								        	
+								            // AJAX 요청을 여기에 추가
+								            console.log("pdNum: " + pdNum + ", Action: " + action);
+								            console.log(sellStatus)
+								            
+								            $.ajax({
+								    			url:'/updateSellingStatus',
+								    			type:'POST',
+								    			data:{pdNum : pdNum, sellStatus : sellStatus},
+								    			dataType: 'json',
+								    			success: function(result) {
+								                    console.log(result); // 응답 확인
+								                    if (result.status === "success") {
+								                        alert(result.message);
+								                        location.reload();
+								                    } else {
+								                        alert("Error: " + result.message);
+								                    }
+								                },
+								                error: function(xhr, status, error) {
+								                    console.error("AJAX Error: " + status + " - " + error);
+								                    alert("AJAX Error: " + status + " - " + error);
+								                }
+								            });
+								        }
+								    </script>
 								</form>
-
-<script>
-function submitForm() {
-    
-	const button = document.getElementById("toggleSellingButton");
-    const form = document.getElementById("sellingForm");
-
- 	// 서버에서 판매 상태를 변경한 후 버튼 텍스트 변경
-    if (form.sellingStatus.value === "Y") {
-        button.value = "판매 중지"; 
-    } else {
-        button.value = "판매 재시작";
-    }
-
-    return true;
-}
-</script>
-
-
 		                        <br>
+		                        
 		                        <input type="button" class="btn btn-outline-warning custom-width" 
 		                        value="상품 수정" 
 		                        onclick="window.location.href='p_modify?pdNum=${item.pdNum}';"/>
@@ -298,33 +258,10 @@ function submitForm() {
 		</div>
 		<!-- 페이지네이션 -->
 		
-<style>
-/* 페이지네이션 */
-.director {
-    display: flex; /* Flexbox 레이아웃 사용 */
-    justify-content: center; /* 수평 가운데 정렬 */
-    align-items: center; /* 수직 가운데 정렬 */
-    height: 10vh; /* 뷰포트 전체 높이를 기준으로 가운데 정렬 */
-}
-
-.page-button {
-		background-color: #ffe082;
-		border: 1px solid #ffc107;
-		color: gray;
-		justify-content: center;
-		cursor: pointer;
-	}
-	
-.page-button:hover {
-        background-color: #ffc107; /* 호버 시 색상 변화 */
-    }
-</style>
-       	
 		<!-- Divider -->
         <div class="custom-container">
             <hr>
         </div>
-    </div>
     
     
     <!-- FOOTER -->
@@ -335,7 +272,6 @@ function submitForm() {
     
     
 <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

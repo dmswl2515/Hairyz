@@ -1,10 +1,14 @@
 package com.study.springboot.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.study.springboot.dao.IAdminDao;
 import com.study.springboot.dto.AdminDto;
+import com.study.springboot.dto.QDto;
+import com.study.springboot.dto.QnaReplyDto;
 
 @Service
 public class AdminService {
@@ -21,6 +25,10 @@ public class AdminService {
         } else {
             return false;
         }
+    }
+    
+    public List<QDto> getAllQna() {
+        return adminDao.getAllQna();
     }
 
 }

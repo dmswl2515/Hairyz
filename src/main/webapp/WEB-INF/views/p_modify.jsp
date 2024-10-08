@@ -133,7 +133,7 @@
     
 </style>     
 
-	   	 <h4 class="text-center mt-4">상품 수정</h4>
+	   	 	<h4 class="text-center mt-4">상품 수정</h4>
 			<div class="d-flex justify-content-center align-items-center">
 			    <form action="p_update" method="post" enctype="multipart/form-data" class="text-center">
 			        <input type="hidden" name="pdNum" value="${product.pdNum}" />
@@ -150,25 +150,59 @@
 			        	<label for="fileInput" class="btn btn-outline-warning">파일 선택</label><br>
     					<span id="fileName" class="ml-2">${product.pd_ori_fname}</span>
 			        </div>
-			
 			        
-			            <input type="text" name="pdName" class="form-control custom-input-width mt-2" 
-			            	   placeholder="상품명" value="${product.pdName}" required /><br>
+			        <!-- 이미지 미리보기 -->
+					<script>
+					function previewImage(event, previewId, fileNameId) {
+					    const reader = new FileReader();
+					    const imagePreview = document.getElementById(previewId);
+					    const fileNameSpan = document.getElementById(fileNameId);
+					    
+					    reader.onload = function() {
+					        if (reader.readyState === 2) {
+					            imagePreview.src = reader.result; // 선택한 이미지 미리보기
+					        }
+					    }
+					
+					    reader.readAsDataURL(event.target.files[0]); // 파일을 읽어 미리보기 설정
+					    
+					 	// 선택한 파일의 이름을 표시
+					    const fileName = event.target.files[0] ? event.target.files[0].name : "선택된 파일이 없습니다.";
+					    fileNameSpan.textContent = fileName; // 파일 이름 표시
+					}
+					</script>
+		            
+		            <input type="text" name="pdName" class="form-control custom-input-width mt-2" 
+		            	   placeholder="상품명" value="${product.pdName}" required /><br>
 			        
 			
 			        <div class="d-flex justify-content-center">
 			            <select name="pd_animal" class="form-control mr-2" required>
-			                <option value="all" <c:if test="${product.pd_animal == 'all'}">selected</c:if>>전체</option>
-						    <option value="dog" <c:if test="${product.pd_animal == 'dog'}">selected</c:if>>강아지</option>
-						    <option value="cat" <c:if test="${product.pd_animal == 'cat'}">selected</c:if>>고양이</option>
+			                <option value="all" <c:if test="${product.pdAnimal == 'all'}">selected</c:if>>전체</option>
+						    <option value="dog" <c:if test="${product.pdAnimal == 'dog'}">selected</c:if>>강아지</option>
+						    <option value="cat" <c:if test="${product.pdAnimal == 'cat'}">selected</c:if>>고양이</option>
 			            </select>
 			        
 			
 			            <select name="pd_category" class="form-control mb-4" required>
-			                <option value="food" <c:if test="${product.pd_category == 'food'}">selected</c:if>>사료</option>
-				            <option value="refreshment" <c:if test="${product.pd_category == 'refreshment'}">selected</c:if>>간식</option>
-				            <option value="product" <c:if test="${product.pd_category == 'product'}">selected</c:if>>용품</option>
-				            <option value="etc" <c:if test="${product.pd_category == 'etc'}">selected</c:if>>리빙</option>
+			            	<c:choose>
+						        <c:when test="${product.pdCategory == 'food'}">
+						            <option value="food" selected>사료</option>
+						        </c:when>
+						        <c:when test="${product.pdCategory == 'refreshment'}">
+						            <option value="refreshment" selected>간식</option>
+						        </c:when>
+						        <c:when test="${product.pdCategory == 'product'}">
+						            <option value="product" selected>용품</option>
+						        </c:when>
+						        <c:when test="${product.pdCategory == 'etc'}">
+						            <option value="etc" selected>리빙</option>
+						        </c:when>
+						    </c:choose>
+						    <option value="food">사료</option>
+				            <option value="refreshment">간식</option>
+				            <option value="product">용품</option>
+				            <option value="etc">리빙</option>
 			            </select><br>
 			        </div>
 			        
@@ -195,33 +229,22 @@
 			        
 			        <hr class="custom-hr">
 			        
-				        <input type="submit" class="btn btn-outline-warning mb-2 custom-width" value="수정하기" /></br>
+				        <input type="submit" class="btn btn-outline-warning mb-2 custom-width" value="수정하기" onclick="showMessage()"/></br>
 				        <input type="button" class="btn btn-outline-warning custom-width" value="취소하기"
 				               onclick="window.location.href='/p_manage'"/>
 			    </form>
+			    
+			    <script>
+				    function showMessage() {
+				    	alert('수정이 완료되었습니다.');
+				        
+				        // 잠시 후 메시지를 숨김 (2초 후)
+				        setTimeout(() => {
+				            document.getElementById('message').style.display = 'none';
+				        }, 2000);
+				    }
+			    </script>
 			</div>
-			
-<!-- 이미지 미리보기 -->
-<script>
-function previewImage(event, previewId, fileNameId) {
-    const reader = new FileReader();
-    const imagePreview = document.getElementById(previewId);
-    const fileNameSpan = document.getElementById(fileNameId);
-    
-    reader.onload = function() {
-        if (reader.readyState === 2) {
-            imagePreview.src = reader.result; // 선택한 이미지 미리보기
-        }
-    }
-
-    reader.readAsDataURL(event.target.files[0]); // 파일을 읽어 미리보기 설정
-    
- 	// 선택한 파일의 이름을 표시
-    const fileName = event.target.files[0] ? event.target.files[0].name : "선택된 파일이 없습니다.";
-    fileNameSpan.textContent = fileName; // 파일 이름 표시
-}
-
-</script>
        
 		<!-- Divider -->
         <div class="custom-container">

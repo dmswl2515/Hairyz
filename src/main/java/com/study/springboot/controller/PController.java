@@ -6,26 +6,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.springboot.dto.PDto;
-import com.study.springboot.dto.QDto;
-import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.PService;
 import com.study.springboot.service.QnAService;
@@ -150,8 +147,8 @@ public class PController {
             }
         } else if ("productName".equals(condition) && keyword != null && !keyword.isEmpty()) {
             productList = pService.getProductsByName(keyword); // 상품명으로 검색
-        } else if ("all".equals(condition)) {
-            productList = pService.getAllProducts();
+//        } else if ("all".equals(condition)) {
+//            productList = pService.getAllProducts();
         } else {
             productList = pService.getAllProducts(); // 기본적으로 모든 상품 반환
         }
@@ -176,20 +173,34 @@ public class PController {
     }
     
     @PostMapping("/updateSellingStatus")
-    public String updateSellingStatus(@RequestParam("pdNum") Integer pdNum, 
-	            					  @RequestParam("newStatus") Character newStatus) {
+    @ResponseBody
+    public Map<String, Object> updateSellingStatus(@RequestParam("pdNum") Integer pdNum, 
+	            					  			   @RequestParam("sellStatus") char sellStatus) {
     	
-    	List<PDto> products = pRepository.findByPdNum(pdNum);
-        if (products.isEmpty()) {
-            throw new RuntimeException("제품을 찾을 수 없습니다: pdNum=" + pdNum);
-        }
-
-        // 제품 상태 업데이트
-        PDto product = products.get(0); // 첫 번째 제품 가져오기
-        product.setPd_selling(newStatus);
-        pRepository.save(product);
-		
-		return "redirect:/p_manage"; // 업데이트 후 리다이렉트할 페이지
+    	System.out.println(sellStatus);
+    	Map<String, Object> response = new HashMap<>();
+    	
+    	try
+		{
+    		List<PDto> products = pRepository.findByPdNum(pdNum);
+    		if (products.isEmpty()) {
+    			throw new RuntimeException("제품을 찾을 수 없습니다: pdNum=" + pdNum);
+    		}
+    		
+    		// 제품 상태 업데이트
+    		PDto product = products.get(0); // 첫 번째 제품 가져오기
+    		product.setPd_selling(sellStatus);
+    		pRepository.save(product);
+    		
+    		response.put("status", "success");
+    		response.put("message", "제품의 판매상태가 업데이트되었습니다.");
+		} catch (Exception e)
+		{
+			response.put("status", "error");
+			response.put("message", e.getMessage());
+		}
+       
+		return response;
 	}
     
  
@@ -200,8 +211,8 @@ public class PController {
         
         if (!products.isEmpty()) {
             model.addAttribute("product", products.get(0)); // 첫 번째 상품을 모델에 추가
-        }
-         return "p_modify"; // 수정 페이지 이름  
+        } 
+         return "p_modify";
     }
     
     
@@ -277,13 +288,8 @@ public class PController {
             // 제품 정보 저장
             pRepository.save(product);
             
-            // 성공 메시지 추가
-            redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다.");
-        } else {
-            // 실패 메시지 추가
-            redirectAttributes.addFlashAttribute("error", "해당 상품을 찾을 수 없습니다.");
         }
-    	return "redirect:/p_manage";
+    	return "redirect:/p_modify?pdNum=" + pdNum;
     }
     
 }

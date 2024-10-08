@@ -32,6 +32,171 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    	$(document).ready(function() {
+    	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
+    	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
+    	
+    	    function updateTotalPrice() {
+    	        let totalPrice = pricePerItem * quantity;
+    	        $('#total-price').text(totalPrice.toLocaleString() + '원');
+    	    }
+    	
+    	    $('#increase').on('click', function() {
+    	        quantity++;
+    	        $('#quantity-input').val(quantity);
+    	        updateTotalPrice();
+    	    });
+    	
+    	    $('#decrease').on('click', function() {
+    	        if (quantity > 1) {
+    	            quantity--;
+    	            $('#quantity-input').val(quantity);
+    	            updateTotalPrice();
+    	        }
+    	    });
+    	    
+    	    $('#quantity-input').on('focus', function() {
+    	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
+            });
+    	
+    	    $('#quantity-input').on('input', function() {
+    	        // 사용자가 입력한 값을 받아오기
+    	        let inputValue = $(this).val();
+    	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
+    	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
+    	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
+    	        } else {
+    	            quantity = 1; // 기본값 1 설정
+    	        }
+    	        $(this).val(quantity); // 입력란의 값을 업데이트
+    	        updateTotalPrice(); // 총 가격 업데이트
+    	    });
+    	
+    	    // 초기 총 가격 업데이트
+    	    updateTotalPrice();
+    	});
+    	
+    	//구매버튼 클릭 이벤트
+    	function goToPurchase() {
+    	    let ProductNum = document.getElementById('productNum').value;
+    	    let ProductName = document.getElementById('productName').innerText;
+    	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
+    	    let Productquantity = document.getElementById('quantity-input').value;
+    	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
+    	    
+    		console.log(ProductNum)    
+    	    console.log(ProductName)
+    	    console.log(ProductImage)
+    	    console.log(Productquantity)
+    	    console.log(Productprice)
+    	    
+    	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
+                  '&productName=' + encodeURIComponent(ProductName) +
+                  '&productImage=' + encodeURIComponent(ProductImage) +
+                  '&productQuantity=' + encodeURIComponent(Productquantity) +
+                  '&productPrice=' + encodeURIComponent(Productprice);
+    	    
+    	    console.log(url)
+    	    
+    	    window.location.href = url;
+    	}
+
+        // 장바구니에 담기 버튼 클릭 이벤트
+        function goToCart() {
+            alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
+        }
+        
+     	// 모달 열기
+        var userId = "${sessionScope.userId != null ? sessionScope.userId : ''}";
+        
+        function getUserId() {
+            return userId; 
+        }
+        
+        function openModal() {
+        	if (!getUserId()) { // 로그인 안된 상태
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.href = "/login.do"; // 로그인 페이지로 이동
+                return;
+            } else{        	
+	            $('#qnaModal').modal('show');
+            }
+        }
+
+
+        function openModal() {
+            
+
+            // AJAX 요청으로 회원 정보 가져오기
+            $.ajax({
+            	url: `/getMemberInfo/${userId}`, // 회원 정보 가져올 URL (서버에 설정된 경로에 따라 수정)
+                type: 'GET',
+                success: function(memberInfo) {
+                    console.log(memberInfo);
+                    $('#qnaModal').modal('show');
+                },
+                error: function(error) {
+                    // 오류 처리
+                    alert('회원 정보를 가져오는 데 실패했습니다.');
+                }
+            });
+        }
+
+        // Q&A 제출
+        function submitQnA() {
+            const content = document.getElementById('qnaContent').value;
+            const visibility = document.querySelector('input[name="visibility"]:checked').value;
+
+            // 유효성 검사 (여기서 추가적인 검사를 할 수 있습니다)
+            if (!content) {
+                alert('문의 내용을 입력하세요.');
+                return;
+            }
+
+            // 서버에 데이터를 전송 (예시: AJAX 사용)
+            $.ajax({
+                url: '/submitQnA', // Q&A를 제출할 URL
+                type: 'POST',
+                data: {
+                    content: content,
+                    visibility: visibility
+                },
+                success: function(response) {
+                    // 성공적으로 등록된 후 처리 (예: 알림, 리스트 갱신 등)
+                    alert('문의가 등록되었습니다.');
+                    $('#qnaModal').modal('hide');
+                    document.getElementById('qnaForm').reset(); // 폼 초기화
+                    // 추가로 Q&A 리스트 갱신 코드를 작성할 수 있습니다
+                },
+                error: function(error) {
+                    // 오류 처리
+                    alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');
+                }
+            });
+        }
+        
+    	document.querySelectorAll('.tab-button').forEach(button => {
+    	    button.addEventListener('click', function() {
+    	        // 모든 버튼에서 'active' 클래스 제거
+    	        document.querySelectorAll('.tab-button').forEach(btn => {
+    	            btn.classList.remove('active');
+    	        });
+    	        
+    	        // 클릭한 버튼에 'active' 클래스 추가
+    	        this.classList.add('active');
+    	        
+    	     	// 해당 섹션으로 스크롤
+                const targetId = this.id.replace('-tab', '-content'); // ID 변환
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' }); // 부드럽게 스크롤
+                }
+    	    });
+    	});
+    });
+</script>
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -103,6 +268,14 @@
 	    font-size: 1.2em;
 	    cursor: pointer;
 	}
+	.star {
+        font-size: 24px; /* 별의 크기 */
+        color: gold; /* 채워진 별 색상 */
+    }
+    .star-empty {
+        color: lightgray; /* 비어 있는 별 색상 */
+    }	
+
         
 </style>
 
@@ -159,84 +332,6 @@
 	              </div>
               </div> 
 		</div>
-<script>
-	$(document).ready(function() {
-	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
-	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
-	
-	    function updateTotalPrice() {
-	        let totalPrice = pricePerItem * quantity;
-	        $('#total-price').text(totalPrice.toLocaleString() + '원');
-	    }
-	
-	    $('#increase').on('click', function() {
-	        quantity++;
-	        $('#quantity-input').val(quantity);
-	        updateTotalPrice();
-	    });
-	
-	    $('#decrease').on('click', function() {
-	        if (quantity > 1) {
-	            quantity--;
-	            $('#quantity-input').val(quantity);
-	            updateTotalPrice();
-	        }
-	    });
-	    
-	    $('#quantity-input').on('focus', function() {
-	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
-        });
-	
-	    $('#quantity-input').on('input', function() {
-	        // 사용자가 입력한 값을 받아오기
-	        let inputValue = $(this).val();
-	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
-	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
-	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
-	        } else {
-	            quantity = 1; // 기본값 1 설정
-	        }
-	        $(this).val(quantity); // 입력란의 값을 업데이트
-	        updateTotalPrice(); // 총 가격 업데이트
-	    });
-	
-	    // 초기 총 가격 업데이트
-	    updateTotalPrice();
-	});
-</script>
-
-<script>
-	//구매버튼 클릭 이벤트
-	function goToPurchase() {
-	    let ProductNum = document.getElementById('productNum').value;
-	    let ProductName = document.getElementById('productName').innerText;
-	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
-	    let Productquantity = document.getElementById('quantity-input').value;
-	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
-	    
-		console.log(ProductNum)    
-	    console.log(ProductName)
-	    console.log(ProductImage)
-	    console.log(Productquantity)
-	    console.log(Productprice)
-	    
-	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
-              '&productName=' + encodeURIComponent(ProductName) +
-              '&productImage=' + encodeURIComponent(ProductImage) +
-              '&productQuantity=' + encodeURIComponent(Productquantity) +
-              '&productPrice=' + encodeURIComponent(Productprice);
-	    
-	    console.log(url)
-	    
-	    window.location.href = url;
-	}
-
-    // 장바구니에 담기 버튼 클릭 이벤트
-    function goToCart() {
-        alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
-    }
-</script>
-
 
 <style>
     .info-tabs {
@@ -321,55 +416,43 @@
 			        <!-- 데이터베이스에서 불러온 내용 표시 -->
 			    </div>
 			<hr class="product-hr">
-			    <div id="reviews-content">
-			        <h3><strong>구매평</strong></h3>
-			        <p>상품을 구매하신 분들이 작성한 리뷰입니다.</p>
-			    </div>
-				    <table class="mb-2 my-custom-table" style="width: 100%;">
-						  <thead>
-					        <c:forEach var="item" items="${boardPage.content}">
-							    <tr class="table-white text-left">
-							      <td scope="col" colspan="4">별점</td>
-							    </tr>
-						  </thead>
-						      <tbody>
-					            <tr class="table-white text-left">
-							      <td scope="col">김*지</td>
-							      <td scope="col" colspan="3">2024-09-20</td>
-							    </tr>
-							    <tr class="table-white text-left">
-							      	<td scope="col" colspan="4">
-						                <img src="${item.imageUrl}" alt="상품 이미지" style="width:100px; height:auto;">
-						            </td>
-							    </tr>
-					            <tr class="table-white text-left table-bottom-border">
-							      <td scope="col" colspan="4">양도 많고 너무 잘먹어요...<br>특히 둘째가 가리는게 많은데 너무 잘 먹어 대만족이에요!</td>
-							    </tr>
-					        </c:forEach>
-					      <thead>
-					        <c:forEach var="item" items="${boardPage.content}">
-							    <tr class="table-white text-left">
-							      <td scope="col" colspan="4">별점</td>
-							    </tr>
-						  </thead>
-						      <tbody>
-					            <tr class="table-white text-left">
-							      <td scope="col">김*지</td>
-							      <td scope="col" colspan="3">2024-09-20</td>
-							    </tr>
-							    <tr class="table-white text-left">
-							      	<td scope="col" colspan="4">
-						                <img src="${item.imageUrl}" alt="상품 이미지" style="width:100px; height:auto;">
-						            </td>
-							    </tr>
-					            <tr class="table-white text-left table-bottom-border">
-							      <td scope="col" colspan="4">양도 많고 너무 잘먹어요...<br>특히 둘째가 가리는게 많은데 너무 잘 먹어 대만족이에요!</td>
-							    </tr>
-					        </c:forEach>  
-					      </tbody>
-						</table>
-						
-						<!-- 페이지네이션 -->
+			<div id="reviews-content">
+			    <h3><strong>구매평</strong></h3>
+			    <p>상품을 구매하신 분들이 작성한 리뷰입니다.</p>
+			</div>
+			<table class="mb-2 my-custom-table" style="width: 100%;">
+			    <tbody>
+			        <c:forEach var="item" items="${reviews}">
+			            <tr class="table-white text-left">
+			                <td colspan="4">
+			                	<span style="font-weight: bold;">
+				                    <c:forEach var="i" begin="1" end="5">
+				                        <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
+				                    </c:forEach>
+			                		${item.pr_rating}
+				                </span>
+			                </td>
+			             </tr>
+			             <tr>
+			                <td colspan="4">
+			                    <span style="font-weight:bold; margin-right:15px;">${item.pr_MbNnme}</span>
+			                    <span>${item.pr_reviewDate}</span>
+			                </td>
+			             </tr>
+			             <td colspan="3" class="table-bottom-border">${item.pr_reviewText}</td>
+			             <c:if test="${not empty item.pr_modName}">
+				                <td colspan="1"></td>
+				                <td class="table-bottom-border" style="width:300px;">
+				                    <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" alt="상품 이미지" style="width:100px; height:auto;"> <!-- item.productImage로 이미지 URL을 가져옵니다. --> 	
+				                </td>
+			             </c:if>
+			             <c:if test="${!not empty item.pr_modName}">
+				                <td colspan="1"></td>
+				                <td class="table-bottom-border"></td>
+			             </c:if>
+			        </c:forEach>
+			    </tbody>
+			</table>
 						 
 			    
 			<hr class="product-hr">
@@ -417,65 +500,6 @@
 					        </div>
 					    </div>
 					</div>
-<script>
-// 모달 열기
-function openModal() {
-    $('#qnaModal').modal('show');
-}
-
-
-function openModal() {
-    // 회원 ID (예시로 하드코딩된 값입니다. 실제로는 동적으로 할당해야 함)
-    const userId = "test01" // 실제 회원 ID를 가져오는 방법으로 변경할 것
-
-    // AJAX 요청으로 회원 정보 가져오기
-    $.ajax({
-    	url: `/getMemberInfo/${userId}`, // 회원 정보 가져올 URL (서버에 설정된 경로에 따라 수정)
-        type: 'GET',
-        success: function(memberInfo) {
-            console.log(memberInfo);
-            $('#qnaModal').modal('show');
-        },
-        error: function(error) {
-            // 오류 처리
-            alert('회원 정보를 가져오는 데 실패했습니다.');
-        }
-    });
-}
-
-// Q&A 제출
-function submitQnA() {
-    const content = document.getElementById('qnaContent').value;
-    const visibility = document.querySelector('input[name="visibility"]:checked').value;
-
-    // 유효성 검사 (여기서 추가적인 검사를 할 수 있습니다)
-    if (!content) {
-        alert('문의 내용을 입력하세요.');
-        return;
-    }
-
-    // 서버에 데이터를 전송 (예시: AJAX 사용)
-    $.ajax({
-        url: '/submitQnA', // Q&A를 제출할 URL
-        type: 'POST',
-        data: {
-            content: content,
-            visibility: visibility
-        },
-        success: function(response) {
-            // 성공적으로 등록된 후 처리 (예: 알림, 리스트 갱신 등)
-            alert('문의가 등록되었습니다.');
-            $('#qnaModal').modal('hide');
-            document.getElementById('qnaForm').reset(); // 폼 초기화
-            // 추가로 Q&A 리스트 갱신 코드를 작성할 수 있습니다
-        },
-        error: function(error) {
-            // 오류 처리
-            alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');
-        }
-    });
-}
-</script>
 			       	<table class="table table-bordered mb-2">
 					  <thead>
 					    <tr class="table-warning text-center">
@@ -578,51 +602,6 @@ function submitQnA() {
 			    </div>
 			</div>
        	</div>
-       	
- <script>
- function handleClick(qnaQState, qnaContent, qnaNo) {
-	    if (qnaQState === '비공개') {
-	        alert("비밀글입니다");
-	    } else {
-	        toggleContent(qnaNo); // 공개글의 경우 toggleContent 호출
-	    }
-	}
-
-	function toggleContent(qnaNo) {
-	    var contentDiv = document.getElementById("content-" + qnaNo);
-	    var detailsRow = document.getElementById("details-" + qnaNo);
-	    
-	    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
-	        contentDiv.style.display = "table-row"; // 내용을 보이게 함
-	        detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
-	    } else {
-	        contentDiv.style.display = "none"; // 내용을 숨김
-	        detailsRow.style.display = "none";
-	    }
-	}
-</script>      	
-       
-<script>
-	document.querySelectorAll('.tab-button').forEach(button => {
-	    button.addEventListener('click', function() {
-	        // 모든 버튼에서 'active' 클래스 제거
-	        document.querySelectorAll('.tab-button').forEach(btn => {
-	            btn.classList.remove('active');
-	        });
-	        
-	        // 클릭한 버튼에 'active' 클래스 추가
-	        this.classList.add('active');
-	        
-	     	// 해당 섹션으로 스크롤
-            const targetId = this.id.replace('-tab', '-content'); // ID 변환
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' }); // 부드럽게 스크롤
-            }
-	    });
-	});
-
-</script>
 
        	<!-- 페이지네이션 -->
 		<div class="director">
@@ -713,5 +692,30 @@ function submitQnA() {
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+	function handleClick(qnaQState, qnaContent, qnaNo) {
+	    if (qnaQState === '비공개') {
+	        alert("비밀글입니다");
+	    } else {
+	        toggleContent(qnaNo); // 공개글의 경우 toggleContent 호출
+	    }
+	}
+	
+	function toggleContent(qnaNo) {
+	    var contentDiv = document.getElementById("content-" + qnaNo);
+	    var detailsRow = document.getElementById("details-" + qnaNo);
+	    
+	    console.log(contentDiv)
+	    console.log(detailsRow)
+	    
+	    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
+	        contentDiv.style.display = "table-row"; // 내용을 보이게 함
+	        detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
+	    } else {
+	        contentDiv.style.display = "none"; // 내용을 숨김
+	        detailsRow.style.display = "none";
+	    }
+	}
+</script>
 </body>
 </html>

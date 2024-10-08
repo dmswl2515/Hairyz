@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.study.springboot.dao.IQnaReplyDao">
+
+	<insert id="insertQnaReply">
+		insert into QNAREPLY (qr_no, qna_no, qr_id, qr_content) values (qnareply_seq.nextval, #{param1}, #{param2}, #{param3})
+	</insert>
+	
+</mapper>

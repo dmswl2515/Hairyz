@@ -409,6 +409,9 @@ document.addEventListener('DOMContentLoaded', function() {
 											    <c:when test="${order.state == 5}">
 											        <span id="status-badge-${order.orderno}" class="badge badge-secondary">반품</span>
 											    </c:when>
+											    <c:when test="${order.state == 6}">
+											        <span class="badge badge-success">배송완료</span>
+											    </c:when>
 											</c:choose>
 										</td>
 			                            <td>
