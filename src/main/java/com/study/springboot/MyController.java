@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,10 +29,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dao.IOrderProductDao;
 import com.study.springboot.dao.IPetListDao;
+import com.study.springboot.dao.IProductReviewDao;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrderProductDto;
 import com.study.springboot.dto.PageDto;
 import com.study.springboot.dto.PetListDto;
+import com.study.springboot.dto.ProductReviewDto;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -53,7 +56,13 @@ public class MyController {
 	IOrderProductDao orderProductDao;
 	
 	@Autowired
+	IProductReviewDao reviewDao;
+	
+	@Autowired
     private ServletContext servletContext;
+	
+	@Value("${KAKAO-KEY}")
+	private String KAKAO_KEY;
 
     @RequestMapping("/")
     public String root() throws Exception{
@@ -61,7 +70,9 @@ public class MyController {
     }
  
     @RequestMapping("/main_view.do")
-    public String main() {
+    public String main(Model model) {
+    	
+    	model.addAttribute("kakaoKey", KAKAO_KEY);
     	
         return "main_view";                 
     }
@@ -564,40 +575,58 @@ public class MyController {
 	}
 	
 	// 관리자 - 구매평 관리
-		@RequestMapping("/reviewManager.do")
-		public String reviewManager(Model model, HttpServletRequest request)
-		{
-			
-			// 한 페이지에 보여줄 항목 수
-		    int pageSize = 10;
+	@RequestMapping("/reviewManager.do")
+	public String reviewManager(Model model, HttpServletRequest request)
+	{
+		
+		// 한 페이지에 보여줄 항목 수
+	    int pageSize = 5;
 
-		    // 현재 페이지 - request에서 page 파라미터를 가져옴
-		    String pageParam = request.getParameter("page");
-		    int currentPage = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
-		    if(currentPage < 1) {
-		    	currentPage = 1;
-		    }
+	    // 현재 페이지 - request에서 page 파라미터를 가져옴
+	    String pageParam = request.getParameter("page");
+	    int currentPage = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
+	    if(currentPage < 1) {
+	    	currentPage = 1;
+	    }
 
-		    // 총 항목 수 계산
-		    PageDto pDto = orderProductDao.orderTotal();
-		    int totalCount = pDto.getTotal();
-		    // 총 페이지 수 계산
-		    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	    // 총 항목 수 계산
+	    PageDto pDto = reviewDao.reviewTotal();
+	    int totalCount = pDto.getTotal();
+	    // 총 페이지 수 계산
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
-		    // MyBatis 쿼리에 필요한 offset 계산
-		    int startRow = (currentPage - 1) * pageSize + 1; // 시작 행
-		    int endRow = startRow + pageSize - 1; // 끝 행
-		    
-		    // 데이터 가져오기
-		    List<OrderProductDto> salesManage = orderProductDao.selectPageSalesM(startRow, endRow);
+	    // MyBatis 쿼리에 필요한 offset 계산
+	    int startRow = (currentPage - 1) * pageSize + 1; // 시작 행
+	    int endRow = startRow + pageSize - 1; // 끝 행
+	    
+	    // 데이터 가져오기
+	    List<ProductReviewDto> reviewManage = reviewDao.selectReview(endRow, startRow);
 
-		    // JSP에 값 전달
-		    model.addAttribute("salesManage", salesManage);
-		    model.addAttribute("currentPage", currentPage);
-		    model.addAttribute("totalPages", totalPages);
+	    // JSP에 값 전달
+	    model.addAttribute("reviewManager", reviewManage);
+	    model.addAttribute("currentPage", currentPage);
+	    model.addAttribute("totalPages", totalPages);
 
-		    return "reviewManager";
-		}
+	    return "reviewManager";
+	}
+	
+	// 관리자 - 구매평 관리 - 구매평 댓글
+	@RequestMapping("/reviewReply.do")
+	public String reviewReply(Model model, HttpServletRequest request)
+	{
+		String id = request.getParameter("reviewId");
+		String date = request.getParameter("reviewDate");
+		String name = request.getParameter("mbName");
+		String text = request.getParameter("reviewText");
+
+	    // JSP에 값 전달
+	    model.addAttribute("id", id);
+	    model.addAttribute("date", date);
+	    model.addAttribute("name", name);
+	    model.addAttribute("text", text);
+
+	    return "reviewReply";
+	}
 
 	// uuid 생성할 메서드 선언
 	/*

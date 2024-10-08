@@ -5,24 +5,44 @@
 	
 <mapper namespace="com.study.springboot.dao.IProductReviewDao">
 
+
 	<select id="getReviewsByProductId" resultType="com.study.springboot.dto.ProductReviewDto">
     	SELECT 
-            pr_reviewId AS reviewId,
-            pr_productId AS productId,
-            pr_MbNum AS mbNum,
-            pr_MbNnme AS mbName,
-            pr_rating AS rating,
-            pr_reviewText AS reviewText,
-            pr_reviewDate AS reviewDate,
-            pr_hasReply AS hasReply,
-            pr_imgPath AS imgPath,
-            pr_orgName AS orgName,
-            pr_modName AS modName,
-            pr_visibility AS visibility
+            pr_reviewId,
+            pr_productId,
+            pr_MbNum,
+            pr_MbNnme,
+            pr_rating,
+            pr_reviewText,
+            pr_reviewDate,
+            pr_hasReply,
+            pr_imgPath,
+            pr_orgName,
+            pr_modName,
+            pr_visibility
         FROM 
             PRODUCTREVIEW
         WHERE 
             pr_productId = #{productId}
     </select>
+
+	<select id="selectReview" resultType="com.study.springboot.dto.ProductReviewDto">
+	SELECT *
+		FROM (
+			SELECT pr.*, ROWNUM AS rnum
+			FROM (
+				SELECT *
+				FROM productreview
+				ORDER BY pr_reviewDate DESC
+		) pr
+		WHERE ROWNUM &lt;= #{param1}
+	)
+	WHERE rnum &gt;= #{param2}
+
+	</select>
+	
+	<select id="reviewTotal" resultType="com.study.springboot.dto.PageDto">
+		SELECT COUNT(*) as total FROM productreview
+	</select>
 	
 </mapper>
