@@ -25,4 +25,8 @@ public interface IQnADao
 	
 	MemberDto findMemberById(String mb_id);
 	
+	public int updateRstate(int qna_no, String qna_rstate);
+	
+	public int updateHide(int qna_no, String qna_hide);
+	
 }

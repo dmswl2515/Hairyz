@@ -1,9 +1,12 @@
 package com.study.springboot.controller;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.study.springboot.dto.PDto;
+import com.study.springboot.dao.IQnADao;
+import com.study.springboot.dao.IQnaReplyDao;
 import com.study.springboot.dto.QDto;
-import com.study.springboot.dto.QnaReplyDto;
 import com.study.springboot.service.AdminService;
-import com.study.springboot.service.QnAService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -25,7 +28,12 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
     
-
+    @Autowired
+    private IQnaReplyDao qnaReplyDao;
+    
+    @Autowired
+    private IQnADao qnaDao;
+    
     @RequestMapping("/admin.do")
     public String main(Model model) {
         return "admin_login"; // admin_login.jsp를 반환
@@ -77,5 +85,87 @@ public class AdminController {
         return "admin_qna"; 
     }
     
+	// 관리자 - QnA 답변화면
+	@RequestMapping("/qnaReply.do")
+	public String qnaReply(Model model, HttpServletRequest request)
+	{
+		String qnaNo = request.getParameter("qnaNo");
+		String number = request.getParameter("number");
+		String qnaDate = request.getParameter("qnaDate");
+		String qnaName = request.getParameter("qnaName");
+		String qnaContent = request.getParameter("qnaContent");
+		
+		SimpleDateFormat targetFormat = null;
+		Date date = null;
+		
+		try {
+			SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", java.util.Locale.ENGLISH);
+			targetFormat = new SimpleDateFormat("yyyy-MM-dd");
+			
+			date = originalFormat.parse(qnaDate);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String fQnaDate = targetFormat.format(date);
+
+		// JSP에 값 전달
+		model.addAttribute("qnaNo", qnaNo);
+		model.addAttribute("number", number);
+		model.addAttribute("qnaDate", fQnaDate);
+		model.addAttribute("qnaName", qnaName);
+		model.addAttribute("qnaContent", qnaContent);
+
+		return "qnaReply";
+	}
+	
+	// 관리자 - QnA 답변 - 답변 등록
+	@PostMapping("/submitQnaReply.do")
+	@ResponseBody
+	public ResponseEntity<String> submitReply(Model model, HttpServletRequest request, HttpSession session)
+	{
+
+		String qnaNo = request.getParameter("qnaNo");
+		String adminId = (String) session.getAttribute("adminId");
+//		String adminId = "admin"; // 테스트용 어드민 아이디
+		String qnaText = request.getParameter("qnaText");
+
+		int qaNo = Integer.parseInt(qnaNo);
+
+		try
+		{
+			qnaReplyDao.insertQnaReply(qaNo, adminId, qnaText);
+			qnaDao.updateRstate(qaNo, "Y");
+			return ResponseEntity.ok().body("success");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+
+	}
+	
+	// 관리자 - QnA 답변 - 숨기기
+	@PostMapping("/hideQna.do")
+	@ResponseBody
+	public ResponseEntity<String> hideReview(Model model, HttpServletRequest request)
+	{
+
+		String qnaNo = request.getParameter("qnaNo");
+
+		int qaNo = Integer.parseInt(qnaNo);
+
+		try
+		{
+			qnaDao.updateHide(qaNo, "Y");
+			return ResponseEntity.ok().body("success");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+
+	}
     
 }

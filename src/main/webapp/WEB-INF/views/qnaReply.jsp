@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>구매평 댓글 달기</title>
+<title>QnA 답변</title>
 <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -37,28 +37,28 @@
 <body>
 
     <div class="popup-container">
-        <div class="popup-header">구매평 댓글 달기</div>
+        <div class="popup-header">QnA 답변하기</div>
 
         <!-- 파라미터로 전달된 값 출력 -->
         <div class="popup-content">
-            <p><strong>번호:</strong>&nbsp;${id}</p>
-            <p><strong>작성일:</strong>&nbsp;${date}</p>
-            <p><strong>작성자:</strong>&nbsp;${name}</p>
+            <p><strong>번호:</strong>&nbsp;${number}</p>
+            <p><strong>작성일:</strong>&nbsp;${qnaDate}</p>
+            <p><strong>작성자:</strong>&nbsp;${qnaName}</p>
         </div>
 
         <div class="popup-content">
-            <label><strong>상품 후기 내용</strong></label>
-            <textarea class="form-control" rows="5" readonly>${text}</textarea>
+            <label><strong>QnA 내용</strong></label>
+            <textarea class="form-control" rows="5" readonly>${qnaContent}</textarea>
         </div>
 
         <div class="popup-content">
             <label><strong>답변 내용</strong></label>
-            <textarea id="replyText" class="form-control" rows="3" placeholder="답변하실 내용을 입력하세요."></textarea>
+            <textarea id="qnaText" class="form-control" rows="3" placeholder="답변하실 내용을 입력하세요."></textarea>
         </div>
 
         <div class="btn-group">
-            <button type="button" class="btn btn-secondary" onclick="hideReview()">숨기기</button>&nbsp;&nbsp;
-            <button type="button" class="btn btn-primary" onclick="submitReply()" >답변 등록</button>
+            <button type="button" class="btn btn-secondary" onclick="hideQnA()">숨기기</button>&nbsp;&nbsp;
+            <button type="button" class="btn btn-primary" onclick="submitQnA()" >답변 등록</button>
         </div>
     </div>
 
@@ -66,36 +66,36 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
      <script type="text/javascript">
-        function hideReview() {
-            const reviewId = '${id}';
+        function hideQnA() {
+            const qnaNo = '${qnaNo}';
             
             $.ajax({
-                url: 'hideReview.do',
+                url: 'hideQna.do',
                 type: 'POST',
                 data: {
-                    reviewId: reviewId
+                    qnaNo: qnaNo
                 },
                 success: function(response) {
-                    alert('리뷰가 숨겨졌습니다.');
+                    alert('QnA가 숨겨졌습니다.');
                     opener.location.reload();
                     window.close();  // 팝업창 닫기
                 },
                 error: function(xhr, status, error) {
-                    alert('리뷰 숨기기 실패: ' + error);
+                    alert('QnA 숨기기 실패: ' + error);
                 }
             });
         }
 
-        function submitReply() {
-            const reviewId = '${id}';
-            const replyText = document.getElementById('replyText').value;
+        function submitQnA() {
+            const qnaNo = '${qnaNo}';
+            const qnaText = document.getElementById('qnaText').value;
             
             $.ajax({
-                url: 'submitReply.do',
+                url: 'submitQnaReply.do',
                 type: 'POST',
                 data: {
-                    reviewId: reviewId,
-                    replyText: replyText
+                	qnaNo: qnaNo,
+                	qnaText: qnaText
                 },
                 success: function(response) {
                     alert('답변이 등록되었습니다.');
