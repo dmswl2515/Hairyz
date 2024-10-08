@@ -67,7 +67,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
      <script type="text/javascript">
         function hideReview() {
-            const reviewId = '<%= request.getParameter("reviewId") %>';
+            const reviewId = '${id}';
             
             $.ajax({
                 url: 'hideReview.do',
@@ -77,6 +77,7 @@
                 },
                 success: function(response) {
                     alert('리뷰가 숨겨졌습니다.');
+                    opener.location.reload();
                     window.close();  // 팝업창 닫기
                 },
                 error: function(xhr, status, error) {
@@ -86,8 +87,8 @@
         }
 
         function submitReply() {
-            const reviewId = '<%= request.getParameter("reviewId") %>';
-            const replyText = $('#replyText').val();
+            const reviewId = '${id}';
+            const replyText = '${text}';
             
             $.ajax({
                 url: 'submitReply.do',
@@ -98,6 +99,7 @@
                 },
                 success: function(response) {
                     alert('답변이 등록되었습니다.');
+                    opener.location.reload();
                     window.close();  // 팝업창 닫기
                 },
                 error: function(xhr, status, error) {

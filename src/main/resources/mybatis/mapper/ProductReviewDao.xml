@@ -24,4 +24,8 @@
 		SELECT COUNT(*) as total FROM productreview
 	</select>
 	
+	<update id="updateHasReply">
+		update PRODUCTREVIEW set pr_hasReply = #{param2} where pr_reviewId = #{param1}
+	</update>
+	
 </mapper>
