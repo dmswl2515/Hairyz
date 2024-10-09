@@ -198,6 +198,12 @@ function form_check(event) {
 
 function submit_ajax() {
 	var queryString = $("#login_frm").serialize();
+	// redirect URL을 세션 스토리지에서 가져와서 queryString에 추가
+    var redirectUrl = sessionStorage.getItem('redirect');
+    if (redirectUrl) {
+        queryString += "&redirect=" + encodeURIComponent(redirectUrl);
+    }
+    
 	$.ajax({
 		url: '/loginOk.do',
 		type: 'POST',
@@ -209,9 +215,15 @@ function submit_ajax() {
 			if (result.code == "success") {
 				alert(result.desc);
 				window.location.replace("main_view.do");
+			} else if (result.code == "redirect") {
+				// 요청한 URL로 리다이렉트
+				window.location.replace(result.url);
 			} else {
 				alert(result.desc);
 			}
+			
+			// 세션 스토리지에서 redirect URL 제거
+		    sessionStorage.removeItem('redirect');
 		}
 	});
 }
