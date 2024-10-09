@@ -32,171 +32,6 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-    	$(document).ready(function() {
-    	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
-    	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
-    	
-    	    function updateTotalPrice() {
-    	        let totalPrice = pricePerItem * quantity;
-    	        $('#total-price').text(totalPrice.toLocaleString() + '원');
-    	    }
-    	
-    	    $('#increase').on('click', function() {
-    	        quantity++;
-    	        $('#quantity-input').val(quantity);
-    	        updateTotalPrice();
-    	    });
-    	
-    	    $('#decrease').on('click', function() {
-    	        if (quantity > 1) {
-    	            quantity--;
-    	            $('#quantity-input').val(quantity);
-    	            updateTotalPrice();
-    	        }
-    	    });
-    	    
-    	    $('#quantity-input').on('focus', function() {
-    	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
-            });
-    	
-    	    $('#quantity-input').on('input', function() {
-    	        // 사용자가 입력한 값을 받아오기
-    	        let inputValue = $(this).val();
-    	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
-    	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
-    	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
-    	        } else {
-    	            quantity = 1; // 기본값 1 설정
-    	        }
-    	        $(this).val(quantity); // 입력란의 값을 업데이트
-    	        updateTotalPrice(); // 총 가격 업데이트
-    	    });
-    	
-    	    // 초기 총 가격 업데이트
-    	    updateTotalPrice();
-    	});
-    	
-    	//구매버튼 클릭 이벤트
-    	function goToPurchase() {
-    	    let ProductNum = document.getElementById('productNum').value;
-    	    let ProductName = document.getElementById('productName').innerText;
-    	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
-    	    let Productquantity = document.getElementById('quantity-input').value;
-    	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
-    	    
-    		console.log(ProductNum)    
-    	    console.log(ProductName)
-    	    console.log(ProductImage)
-    	    console.log(Productquantity)
-    	    console.log(Productprice)
-    	    
-    	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
-                  '&productName=' + encodeURIComponent(ProductName) +
-                  '&productImage=' + encodeURIComponent(ProductImage) +
-                  '&productQuantity=' + encodeURIComponent(Productquantity) +
-                  '&productPrice=' + encodeURIComponent(Productprice);
-    	    
-    	    console.log(url)
-    	    
-    	    window.location.href = url;
-    	}
-
-        // 장바구니에 담기 버튼 클릭 이벤트
-        function goToCart() {
-            alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
-        }
-        
-     	// 모달 열기
-        var userId = "${sessionScope.userId != null ? sessionScope.userId : ''}";
-        
-        function getUserId() {
-            return userId; 
-        }
-        
-        function openModal() {
-        	if (!getUserId()) { // 로그인 안된 상태
-                alert("로그인이 필요한 서비스입니다.");
-                window.location.href = "/login.do"; // 로그인 페이지로 이동
-                return;
-            } else{        	
-	            $('#qnaModal').modal('show');
-            }
-        }
-
-
-        function openModal() {
-            
-
-            // AJAX 요청으로 회원 정보 가져오기
-            $.ajax({
-            	url: `/getMemberInfo/${userId}`, // 회원 정보 가져올 URL (서버에 설정된 경로에 따라 수정)
-                type: 'GET',
-                success: function(memberInfo) {
-                    console.log(memberInfo);
-                    $('#qnaModal').modal('show');
-                },
-                error: function(error) {
-                    // 오류 처리
-                    alert('회원 정보를 가져오는 데 실패했습니다.');
-                }
-            });
-        }
-
-        // Q&A 제출
-        function submitQnA() {
-            const content = document.getElementById('qnaContent').value;
-            const visibility = document.querySelector('input[name="visibility"]:checked').value;
-
-            // 유효성 검사 (여기서 추가적인 검사를 할 수 있습니다)
-            if (!content) {
-                alert('문의 내용을 입력하세요.');
-                return;
-            }
-
-            // 서버에 데이터를 전송 (예시: AJAX 사용)
-            $.ajax({
-                url: '/submitQnA', // Q&A를 제출할 URL
-                type: 'POST',
-                data: {
-                    content: content,
-                    visibility: visibility
-                },
-                success: function(response) {
-                    // 성공적으로 등록된 후 처리 (예: 알림, 리스트 갱신 등)
-                    alert('문의가 등록되었습니다.');
-                    $('#qnaModal').modal('hide');
-                    document.getElementById('qnaForm').reset(); // 폼 초기화
-                    // 추가로 Q&A 리스트 갱신 코드를 작성할 수 있습니다
-                },
-                error: function(error) {
-                    // 오류 처리
-                    alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');
-                }
-            });
-        }
-        
-    	document.querySelectorAll('.tab-button').forEach(button => {
-    	    button.addEventListener('click', function() {
-    	        // 모든 버튼에서 'active' 클래스 제거
-    	        document.querySelectorAll('.tab-button').forEach(btn => {
-    	            btn.classList.remove('active');
-    	        });
-    	        
-    	        // 클릭한 버튼에 'active' 클래스 추가
-    	        this.classList.add('active');
-    	        
-    	     	// 해당 섹션으로 스크롤
-                const targetId = this.id.replace('-tab', '-content'); // ID 변환
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' }); // 부드럽게 스크롤
-                }
-    	    });
-    	});
-    });
-</script>
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -511,7 +346,10 @@
 					  </thead>
 				      <tbody>
 				      	<c:if test="${not empty qnaList}">
-					        <c:forEach var="qDTO" items="${qnaList}">
+				      	<c:forEach var="qDTO" items="${qnaList}">
+					        <script>
+				      			console.log()
+				      		</script>
 					            <tr>
 					                <td class="text-center align-middle">
 						                <c:choose>
@@ -557,7 +395,7 @@
 								            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
 								            <td colspan="3">${qDTO.qna_content}</td>    
 								        </tr>
-								        <c:if test="${currentQnaRep != null && currentQnaRep.qnaNo == qDTO.qna_no}">
+								        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
 									        <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
 									            <td colspan="1" class="text-center align-middle"></td>
 									            <td colspan="1" style="font-size: 14px;">
@@ -612,7 +450,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?page=1&pdNum=${pdNum}&qna_no=${qna_no}'">&lt;&lt;</button>
+	            		onclick="location.href='p_details?page=1&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -623,7 +461,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?page=${currentPage - 1}&pdNum=${pdNum}&qna_no=${qna_no}'">&lt;</button>
+	            		onclick="location.href='p_details?page=${currentPage - 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -635,7 +473,7 @@
 	            </c:when>
 	            <c:otherwise>
 	                <button type="button" class="btn page-button" style="color:gray;" 
-	                		onclick="location.href='p_details?page=${i}&pdNum=${pdNum}&qna_no=${qna_no}'">${i}</button>
+	                		onclick="location.href='p_details?page=${i}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -647,7 +485,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	                    onclick="location.href='p_details?page=${currentPage + 1}&pdNum=${pdNum}&qna_no=${qna_no}'">&gt;</button>
+	                    onclick="location.href='p_details?page=${currentPage + 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -658,7 +496,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?page=${totalPages}&pdNum=${pdNum}&qna_no=${qna_no}'">&gt;&gt;</button>
+	            		onclick="location.href='p_details?page=${totalPages}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
@@ -693,6 +531,153 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
+	$(document).ready(function() {
+	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
+	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
+	
+	    function updateTotalPrice() {
+	        let totalPrice = pricePerItem * quantity;
+	        $('#total-price').text(totalPrice.toLocaleString() + '원');
+	    }
+	
+	    $('#increase').on('click', function() {
+	        quantity++;
+	        $('#quantity-input').val(quantity);
+	        updateTotalPrice();
+	    });
+	
+	    $('#decrease').on('click', function() {
+	        if (quantity > 1) {
+	            quantity--;
+	            $('#quantity-input').val(quantity);
+	            updateTotalPrice();
+	        }
+	    });
+	    
+	    $('#quantity-input').on('focus', function() {
+	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
+	    });
+	
+	    $('#quantity-input').on('input', function() {
+	        // 사용자가 입력한 값을 받아오기
+	        let inputValue = $(this).val();
+	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
+	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
+	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
+	        } else {
+	            quantity = 1; // 기본값 1 설정
+	        }
+	        $(this).val(quantity); // 입력란의 값을 업데이트
+	        updateTotalPrice(); // 총 가격 업데이트
+	    });
+	
+	    // 초기 총 가격 업데이트
+	    updateTotalPrice();
+	});
+	
+	//구매버튼 클릭 이벤트
+	function goToPurchase() {
+	    let ProductNum = document.getElementById('productNum').value;
+	    let ProductName = document.getElementById('productName').innerText;
+	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
+	    let Productquantity = document.getElementById('quantity-input').value;
+	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
+	    
+		console.log(ProductNum)    
+	    console.log(ProductName)
+	    console.log(ProductImage)
+	    console.log(Productquantity)
+	    console.log(Productprice)
+	    
+	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
+	          '&productName=' + encodeURIComponent(ProductName) +
+	          '&productImage=' + encodeURIComponent(ProductImage) +
+	          '&productQuantity=' + encodeURIComponent(Productquantity) +
+	          '&productPrice=' + encodeURIComponent(Productprice);
+	    
+	    console.log(url)
+	    
+	    window.location.href = url;
+	}
+	
+	// 장바구니에 담기 버튼 클릭 이벤트
+	function goToCart() {
+	    alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
+	}
+	
+		// 모달 열기
+	var userId = "${sessionScope.userId}";
+	console.log(userId);
+	
+	function getUserId() {
+	    return userId; 
+	}
+	
+	function openModal() {
+		if (!getUserId()) { // 로그인 안된 상태
+	        alert("로그인이 필요한 서비스입니다.");
+	        const redirectUrl = window.location.href;
+	        
+	        sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
+	        window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+	        return;
+	    } else{        	
+	        $('#qnaModal').modal('show');
+	    }
+	}
+	
+	// Q&A 제출
+	function submitQnA() {
+	    const content = document.getElementById('qnaContent').value;
+	    const visibility = document.querySelector('input[name="visibility"]:checked').value;
+	
+	    // 유효성 검사 (여기서 추가적인 검사를 할 수 있습니다)
+	    if (!content) {
+	        alert('문의 내용을 입력하세요.');
+	        return;
+	    }
+	
+	    // 서버에 데이터를 전송 (예시: AJAX 사용)
+	    $.ajax({
+	        url: '/submitQnA', // Q&A를 제출할 URL
+	        type: 'POST',
+	        data: {
+	            content: content,
+	            visibility: visibility
+	        },
+	        success: function(response) {
+	            // 성공적으로 등록된 후 처리 (예: 알림, 리스트 갱신 등)
+	            alert('문의가 등록되었습니다.');
+	            $('#qnaModal').modal('hide');
+	            document.getElementById('qnaForm').reset(); // 폼 초기화
+	            // 추가로 Q&A 리스트 갱신 코드를 작성할 수 있습니다
+	        },
+	        error: function(error) {
+	            // 오류 처리
+	            alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');
+	        }
+	    });
+	}
+	
+	document.querySelectorAll('.tab-button').forEach(button => {
+	    button.addEventListener('click', function() {
+	        // 모든 버튼에서 'active' 클래스 제거
+	        document.querySelectorAll('.tab-button').forEach(btn => {
+	            btn.classList.remove('active');
+	        });
+	        
+	        // 클릭한 버튼에 'active' 클래스 추가
+	        this.classList.add('active');
+	        
+	     	// 해당 섹션으로 스크롤
+	        const targetId = this.id.replace('-tab', '-content'); // ID 변환
+	        const targetElement = document.getElementById(targetId);
+	        if (targetElement) {
+	            targetElement.scrollIntoView({ behavior: 'smooth' }); // 부드럽게 스크롤
+	        }
+	    });
+	});
+	
 	function handleClick(qnaQState, qnaContent, qnaNo) {
 	    if (qnaQState === '비공개') {
 	        alert("비밀글입니다");

@@ -99,8 +99,10 @@ public class ShopController {
     @RequestMapping("/p_details")    
     public String productDetail(@RequestParam(defaultValue = "1") int page,
 								@RequestParam("pdNum") int pdNum, 
-							 	@RequestParam(value = "qna_no", required = false, defaultValue = "0") int qna_no,
+								@RequestParam(value = "qnaNo", defaultValue = "0") int qnaNo,
     							Model model) {
+    	
+    	System.out.println(qnaNo);
     	
     	// pdNum에 해당하는 상품 정보를 DB에서 가져옴
         List<PDto> product = pRepository.findByPdNum(pdNum);
@@ -114,14 +116,14 @@ public class ShopController {
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
         
-        //페이지 네이션 위한 용도
-        List<QnaReplyDto> qnaRepList1 = qnaService.getQnaReplyByQnaNo(qna_no);
+        //QnA 답변 가져오기
+        List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo);
         
-        if (qna_no > 0) {
-        	List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qna_no);
+        if (qnaNo > 0) {
+        	
             model.addAttribute("qnaRepList", qnaRepList);
             model.addAttribute("currentQnaRep", qnaRepList.isEmpty() ? null : qnaRepList.get(0)); // 첫 번째 답변만 추가
-            System.out.println("qna_no: " + qna_no);
+            System.out.println("qna_no: " + qnaNo);
             System.out.println("qnaRepList: " + qnaRepList);
         } else {
             System.out.println("qna_no는 0입니다. Q&A 답변을 가져올 수 없습니다.");
@@ -129,7 +131,7 @@ public class ShopController {
         
 	        // 페이지네이션 설정
 	        int pageSize = 1; // 페이지당 항목 수
-	        int totalQnAs = qnaRepList1.size(); // 전체 상품 수
+	        int totalQnAs = qnaRepList.size(); // 전체 상품 수
 	        int startRow = (page - 1) * pageSize; // 시작 인덱스
 	        int endRow = Math.min(startRow + pageSize, totalQnAs);
 	        
@@ -137,8 +139,8 @@ public class ShopController {
 	        List<ProductReviewDto> reviews = PRService.getReviewsByProductId(pdNum);
 	        model.addAttribute("reviews", reviews);
 	        
-	        //QnA
-	        List<QnaReplyDto> paginatedQnAs = qnaRepList1.subList(startRow, endRow);
+	        //QnA 페이지네이션 
+	        List<QDto> paginatedQnAs = qnaList.subList(startRow, endRow);
 	        
 	        model.addAttribute("products", paginatedQnAs);
 	        model.addAttribute("currentPage", page); // 현재 페이지 번호
