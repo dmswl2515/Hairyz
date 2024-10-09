@@ -23,6 +23,7 @@ import com.study.springboot.service.BoardService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class BdController {
@@ -96,6 +97,19 @@ public class BdController {
     @ResponseBody
     public Map<String, Object> writeOk(BoardDto boardDto, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
+        
+        // 세션에서 userNickname 가져오기
+        HttpSession session = request.getSession();
+        String userNickname = (String) session.getAttribute("userNickname");
+
+        // 작성자 정보가 세션에서 정상적으로 가져왔는지 확인
+        if (userNickname != null && !userNickname.isEmpty()) {
+            boardDto.setBd_writer(userNickname);  // 작성자 설정
+        } else {
+            response.put("result", "fail");
+            response.put("message", "작성자 정보가 없습니다. 로그인 여부를 확인해 주세요.");
+            return response;
+        }
 
         // 파일 정보를 받아옴
         String success = request.getParameter("success");

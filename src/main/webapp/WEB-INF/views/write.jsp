@@ -147,10 +147,12 @@ function submitPost() {
 		</div>
 
 		<!-- 작성자 필드는 hidden으로 처리 -->
-		<!-- <input type="hidden" name="bd_writer" id="bd_writer" value="<%= (String)session.getAttribute("nickname") %>"> -->
-		<div class="form-group">
-			<input type="text" name="bd_writer" id="bd_writer" class="form-control" value="최강도사" readonly>
-		</div>
+		<input type="hidden" name="bd_writer" id="bd_writer" value="<%= (String)session.getAttribute("userNickname") %>">
+		<!-- 
+		<script>
+		    console.log("작성자 닉네임: " + document.getElementById('bd_writer').value);
+		</script>
+		 -->
 
 		<div class="form-group">
 			<input type="text" name="bd_title" id="bd_title" class="form-control" placeholder="제목">
