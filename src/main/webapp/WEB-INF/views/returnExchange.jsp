@@ -137,6 +137,9 @@ body {
 			</div>
 	    </div>
     
+    <!-- 1:1문의 -->
+    <%@ include file="kakaoCh.jsp" %>
+    
     <!-- FOOTER -->
 	<%@ include file="footer.jsp" %>
     <!-- Bootstrap JS, Popper.js, and jQuery -->

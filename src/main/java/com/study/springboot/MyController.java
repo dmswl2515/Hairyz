@@ -88,6 +88,7 @@ public class MyController {
     	String mdId = (String) session.getAttribute("userId");
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("profile_view", dto);
+		model.addAttribute("kakaoKey", KAKAO_KEY);
         return "myProfile_view";
     }
     
@@ -98,6 +99,7 @@ public class MyController {
     	String mdId = request.getParameter("id");
 		MemberDto dto = memberDao.selectMember(mdId);
 		model.addAttribute("editProfile", dto);
+		model.addAttribute("kakaoKey", KAKAO_KEY);
         return "editProfile";
     }
     
@@ -310,6 +312,7 @@ public class MyController {
 		return "petRegister";
 	}
 	
+	// 반려동물 정보 등록 및 반려동물 리스트 화면
 	@RequestMapping("/petProfileCreate.do")
 	public String petProfileCreate(Model model, HttpServletRequest request)
 	{

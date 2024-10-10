@@ -492,6 +492,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			    </table>
 			</div>
 	    </div>
+	    
+	<!-- 1:1문의 -->
+    <%@ include file="kakaoCh.jsp" %>
     
     <!-- FOOTER -->
 	<%@ include file="footer.jsp" %>

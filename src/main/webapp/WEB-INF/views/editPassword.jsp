@@ -158,44 +158,7 @@ hr {
 <body>
 	<!-- 로그 및 로그인 -->
     <div class="content">
-        <div class="custom-container">
-            <div class="row align-items-center py-3">
-                <div class="col-9 logo-container">
-                    <a href="main_view.do">
-                        <img src="images/logo.png" alt="로고">
-                    </a>
-                </div>
-				
-				<div class="col-3 text-right">
-                   	<a href="#" class="btn btn-outline-warning">마이페이지</a>
-                   	<a href="#" class="btn btn-outline-warning">장바구니</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="custom-container">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">커뮤니티</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">쇼핑</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">동물병원</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">멍카페</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">캠페인</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+		<%@ include file="header.jsp" %>
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
@@ -250,6 +213,8 @@ hr {
         </div>
     </div>
     
+    <!-- 1:1문의 -->
+    <%@ include file="kakaoCh.jsp" %>
     
     <!-- FOOTER -->
     <footer class="container">

@@ -161,44 +161,7 @@ hr {
 <body>
 	<!-- 로그 및 로그인 -->
     <div class="content">
-        <div class="custom-container">
-            <div class="row align-items-center py-3">
-                <div class="col-9 logo-container">
-                    <a href="main_view.do">
-                        <img src="images/logo.png" alt="로고">
-                    </a>
-                </div>
-				
-				<div class="col-3 text-right">
-                   	<a href="#" class="btn btn-outline-warning">마이페이지</a>
-                   	<a href="#" class="btn btn-outline-warning">장바구니</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="custom-container">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">커뮤니티</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">쇼핑</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">동물병원</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">멍카페</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">캠페인</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+		<%@ include file="header.jsp" %>
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
@@ -208,9 +171,9 @@ hr {
 						<li><a href="editPassword.do?id=${ accountDelete }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="#">반려동물 프로필</a></li>
-				<li><a href="#">주문 조회</a></li>
-				<li><a href="#">취소/교환/반품</a></li>
+				<li><a href="petList.do?id=${ accountDelete }">반려동물 프로필</a></li>
+				<li><a href="orderLookup.do?id=${ accountDelete }">주문 조회</a></li>
+				<li><a href="returnExchange.do?id=${ accountDelete }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
@@ -247,6 +210,7 @@ hr {
         </div>
     </div>
     
+    <%@ include file="kakaoCh.jsp" %>
     
     <!-- FOOTER -->
     <footer class="container">
