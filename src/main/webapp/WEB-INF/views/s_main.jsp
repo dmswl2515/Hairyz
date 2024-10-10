@@ -69,7 +69,7 @@
       	
 		<div class="container">
 		    <div class="text-center my-4"> 
-		        <button class="category-style" id= '' value='' onclick="selectAnimal('');">#전체</button> 
+		        <button class="category-style" id= 'total' value='' onclick="selectAnimal('');">#전체</button> 
 		        <button class="category-style" id= "dog" value="dog" onclick="selectAnimal('dog');">#강아지</button>
 		        <button class="category-style" id= "cat" value="cat" onclick="selectAnimal('cat');">#고양이</button>
 		    </div>

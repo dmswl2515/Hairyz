@@ -109,7 +109,42 @@
     }
     .star-empty {
         color: lightgray; /* 비어 있는 별 색상 */
-    }	
+    }
+    
+    .modal {
+    	display: none; /* 기본적으로 숨김 */
+	    position: fixed; /* 고정 위치 */
+	    z-index: 1; /* 가장 위에 표시 */
+	    left: 0;
+	    top: 0;
+	    width: 100%; /* 전체 너비 */
+	    height: 100%; /* 전체 높이 */
+	    background-color: rgb(0, 0, 0); /* 배경색 */
+	    background-color: rgba(0, 0, 0, 0.4); /* 배경 투명도 */
+    }
+    
+    .modal-content {
+	    background-color: #ffffe0;
+	    margin: 15% auto; /* 중앙 정렬 */
+	    padding: 20px;
+	    border: 1px solid #888;
+	    width: 20%; /* 모달 너비 */
+	}
+	
+	.close {
+	    color: #aaa; /* 닫기 버튼 색상 */
+	    float: right;
+	    font-size: 28px;
+	    font-weight: bold;
+	}
+	
+	.close:hover,
+	.close:focus {
+	    color: black;
+	    text-decoration: none;
+	    cursor: pointer;
+	}
+	
 
         
 </style>
@@ -164,6 +199,15 @@
     							<button onclick="goToPurchase()" id="buy-now" class="btn btn-warning" style="width: 200px; margin-left: 10px;">구매하기</button>
 		              	   		<button onclick="goToCart()" id="add-to-cart" class="btn btn-outline-warning" style="width: 200px; color: black;">장바구니</button>
 		              	   	</div>
+	              	   		<!-- 모달 -->
+							<div id="cartModal" class="modal">
+							    <div class="modal-content">
+							        <span class="close" onclick="closeModal()">&times;</span>
+							        <p>상품이 장바구니에 담겼습니다.</p>
+							        <button class="btn" onclick="continueShopping()">쇼핑 계속하기</button>
+							        <button class="btn" onclick="goToCartPage()">장바구니로 이동</button>
+							    </div>
+							</div>
 	              </div>
               </div> 
 		</div>
@@ -634,7 +678,67 @@
 	
 	// 장바구니에 담기 버튼 클릭 이벤트
 	function goToCart() {
-	    alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
+		 if (!getUserId()) { // 로그인 안된 상태
+		        alert("로그인이 필요한 서비스입니다.");
+		        const redirectUrl = window.location.href;
+		        
+		        sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
+		        window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+		        return; // 더 이상 진행하지 않음
+		    }
+		 
+	    var productNum = document.getElementById('productNum').value;
+	    var quantity = document.getElementById('quantity-input').value;
+	    var price = parseInt(document.getElementById('total-price').innerText.replace('원', '').replace(',', ''));
+	
+	    console.log(userId);
+	    console.log(productNum);
+	    console.log(quantity);
+	    console.log(price);
+	    
+	    var sbagData = {
+	        mbId: userId, 
+	        pdNum: productNum,
+	        sbagAmount: quantity,
+	        sbagPrice: price
+	    };
+	
+	    fetch('/addProduct', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json'
+	        },
+	        body: JSON.stringify(sbagData)
+	    })
+	    .then(response => response.text())
+	    .then(data => {
+	        console.log(data);
+	        // 모달 표시
+	        document.getElementById('cartModal').style.display = 'block';
+	    })
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
+	}
+	
+	// 모달열기
+	function showModal() {
+	    const modal = document.getElementById("cartModal");
+	    modal.style.display = "block"; // 모달 보이기
+	}
+	
+	function closeModal() {
+	    // 모달닫기
+	    document.getElementById("cartModal").style.display = "none";
+	}
+	
+	function continueShopping() {
+	    closeModal(); // 모달 닫기
+	 
+	}
+
+	function goToCartPage() {
+	    window.location.href = "s_cart"; // 장바구니 페이지로 이동
 	}
 	
 		// 모달 열기

@@ -1,22 +1,22 @@
 package com.study.springboot.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.study.springboot.dao.ICartDao;
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dto.CartDto;
 import com.study.springboot.dto.MemberDto;
-import com.study.springboot.dto.OrderProductDto;
 import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.ProductReviewDto;
@@ -36,6 +36,9 @@ public class ShopController {
 	
 	@Autowired
     private IMemberDao memberDao;
+	
+	@Autowired
+    private ICartDao cartDao;
 	
 	@Autowired
 	private PRepository pRepository;
@@ -73,7 +76,7 @@ public class ShopController {
         long totalProducts;
         List<PDto> products;
         
-     // 동물 및 카테고리 필터링 적용
+        // 동물 및 카테고리 필터링 적용
         if (pd_category != null && !pd_category.isEmpty() && pd_animal != null && !pd_animal.isEmpty()) {
             totalProducts = pRepository.countByPdAnimalAndCategory(pd_animal, pd_category);
             products = pRepository.findByPdAnimalAndCategory(pd_animal, pd_category, (page - 1) * pageSize, pageSize);
@@ -207,6 +210,15 @@ public class ShopController {
     	    
     	    // 뷰 이름을 반환하여 해당 뷰를 렌더링
     	    return "s_purchase";       
+    }
+    
+    @PostMapping("/addProduct")
+    public ResponseEntity<String> addToCart(@RequestBody CartDto cartDto) {
+        // 장바구니에 추가
+    	cartDao.addToCart(cartDto);
+    	
+    	System.out.println(cartDto);
+        return ResponseEntity.ok("상품이 장바구니에 담겼습니다.");
     }
     
     @RequestMapping("/s_cart")    
