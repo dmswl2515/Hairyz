@@ -698,6 +698,13 @@ public class MyController {
 
 	    return "cafeMap";
 	}
+	
+	@RequestMapping("/petAdoption.do")
+	public String petAdoption(Model model, HttpServletRequest request)
+	{
+		
+	    return "petAdoption";
+	}
 
 	// uuid 생성할 메서드 선언
 	/*
