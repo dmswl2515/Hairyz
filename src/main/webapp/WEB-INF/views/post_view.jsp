@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +10,14 @@
 <%@ include file="navbarStyle.jsp" %>
 <meta charset="UTF-8">
 <title>${board.bd_title} | 털뭉치즈</title>
+<style>
+.nav.cate { border:solid #d8d8d8; border-width:1px 0; }
+.nav.cate .nav-link { color: #333; }
+.tit_post { font-size:1.3rem; }
+.ed_area { font-size:0.9rem; }
+.writerInfo { line-height:1.2; }
+.writerInfo div { font-size:0.8rem; }
+</style>
 </head>
 <body>
 	<div class="content">
@@ -17,20 +25,50 @@
 		
 		<div class="container list mt-4">
         <!-- 카테고리 -->
-        <nav class="nav">
-            <a class="nav-link" href="list.do">전체</a>
-            <a class="nav-link ${board.bd_cate == 'f' ? 'active' : ''}" href="list.do?category=f">자유</a>
-            <a class="nav-link ${board.bd_cate == 'q' ? 'active' : ''}" href="list.do?category=q">질문</a>
+        <nav class="nav cate mb-4">
+            <a class="nav-link" href="list.do"># 전체</a>
+            <a class="nav-link ${board.bd_cate == 'f' ? 'active' : ''}" href="list.do?category=f"># 자유</a>
+            <a class="nav-link ${board.bd_cate == 'q' ? 'active' : ''}" href="list.do?category=q"># 질문</a>
         </nav>
 
         <!-- 게시글 제목 -->
-        <h2>${board.bd_title}</h2>
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h2 class="tit_post">${board.bd_title}</h2>
+
+            <!-- 히든 필드로 작성자 ID를 저장 -->
+            <input type="hidden" id="writerId" value="${board.mb_id}" />
+            <c:if test="${userId == board.mb_id}">
+                <div class="ed_area">
+                    <a href="edit.do?bd_no=${board.bd_no}" class="text-muted">수정</a> &nbsp; | &nbsp;
+                    <a href="delete.do?bd_no=${board.bd_no}" class="text-muted">삭제</a>
+                </div>
+            </c:if>
+        </div>
 
         <!-- 작성자 정보 및 조회수 -->
         <div class="d-flex align-items-center">
-            <img src="/images/profile/${board.bd_writer}" alt="프로필 이미지" class="rounded-circle" width="40" height="40">
-            <span class="ms-2">${board.bd_writer}</span> <!-- 작성자 닉네임 -->
-            <span class="ms-4 text-muted">조회수: ${board.bd_hit}</span> <!-- 조회수 -->
+	        <c:choose>
+		        <c:when test="${not empty profile.mb_imgpath}">
+		            <img class="rounded-circle" src="${pageContext.request.contextPath}/upload/${profile.mb_orgname}" alt="프로필 사진" width="40" height="40">
+		        </c:when>
+		        <c:otherwise>
+		            <img class="rounded-circle" src="${pageContext.request.contextPath}/images/logo.png" alt="기본 프로필 사진"  width="40" height="40">
+		        </c:otherwise>
+		    </c:choose>
+            <div class="ml-2 d-flex flex-column writerInfo">
+		        <span>${board.bd_writer}</span> <!-- 작성자 닉네임 -->
+		        <div class="text-muted">
+		            <c:choose>
+		                <c:when test="${board.bd_cate == 'f'}">
+		                    자유
+		                </c:when>
+		                <c:when test="${board.bd_cate == 'q'}">
+		                    질문
+		                </c:when>
+		            </c:choose> 
+		            &nbsp; | &nbsp; 조회수 ${board.bd_hit} <!-- 카테고리 및 조회수 -->
+		        </div>
+		    </div>
         </div>
 
         <!-- 게시글 내용 -->
@@ -38,16 +76,40 @@
             <p>${board.bd_content}</p>
         </div>
 
-        <!-- 좋아요 및 댓글 수 -->
-        <div class="d-flex align-items-center">
-            <i class="fas fa-heart"></i> <span class="ms-1">${board.bd_like}</span> <!-- 좋아요 수 -->
-            <i class="fas fa-comment ms-3"></i> <span class="ms-1">${comments.size()}</span> <!-- 댓글 수 -->
-        </div>
-
         <hr>
 
+        <!-- 좋아요 및 댓글 수 -->
+        <div class="d-flex align-items-center">
+            <i id="likeIcon" class="fas fa-heart" style="color:lightgray;cursor:pointer;"></i>&nbsp;
+    		<span id="likeCount" class="ms-1">${board.bd_like}</span> <!-- 좋아요 수 -->&nbsp;&nbsp;&nbsp;
+            <i class="fas fa-comment ms-3"></i>&nbsp;<span class="ms-1">${reply.size()}</span> <!-- 댓글 수 -->
+        </div>
+        
+        <script>
+	    $(document).ready(function() {
+	        let liked = false; // 좋아요 상태
+	
+	        $('#likeIcon').click(function() {
+	            liked = !liked; // 클릭 시 좋아요 상태 토글
+	
+	            // 좋아요 수 업데이트
+	            let currentCount = parseInt($('#likeCount').text());
+	            if (liked) {
+	                currentCount += 1; // 좋아요 수 증가
+	                $(this).css('color', 'red'); // 아이콘 색상 변경
+	            } else {
+	                currentCount -= 1; // 좋아요 수 감소
+	                $(this).css('color', 'lightgray'); // 아이콘 색상 변경
+	            }
+	
+	            // 변경된 수를 DOM에 업데이트
+	            $('#likeCount').text(currentCount);
+	        });
+	    });
+	</script>
+
+
         <!-- 댓글 목록 -->
-        <h5>댓글</h5>
         <c:forEach var="reply" items="${replies}">
             <div class="d-flex mb-3">
                 <img src="/images/profile/${reply.rp_writer}" alt="프로필 이미지" class="rounded-circle" width="40" height="40">

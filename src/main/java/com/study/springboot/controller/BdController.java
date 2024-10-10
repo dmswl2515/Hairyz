@@ -169,17 +169,21 @@ public class BdController {
     
     // 게시글 상세 페이지
     @GetMapping("/post_view.do/{bd_no}")
-    public String viewBoard(@PathVariable("bd_no") int bdNo, Model model) {
+    public String viewPost(@PathVariable("bd_no") int bdNo, Model model, HttpServletRequest request) {
     	// 게시글 정보 조회
         BoardDto board = boardService.getPostView(bdNo);
         // 작성자의 프로필 정보 조회
-        MemberDto member = memberService.getMemberByMemberId(board.getMb_id());
+        MemberDto profile = memberService.getMemberByMemberId(board.getMb_id());
+        // 세션에서 사용자 ID 가져오기
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
         
         // 댓글 리스트 조회
         List<ReplyDto> reply = replyService.getReplyByBoardId(bdNo);
         model.addAttribute("board", board);
-        model.addAttribute("profile", member); 
+        model.addAttribute("profile", profile); 
         model.addAttribute("reply", reply);
+        model.addAttribute("userId", userId);
         return "post_view";
     }
 
