@@ -8,10 +8,10 @@
 	<insert id="insertPost" parameterType="com.study.springboot.dto.BoardDto">
 	    INSERT INTO board 
     	  (bd_no, bd_cate, bd_writer, bd_title, bd_content, bd_date, 
-    	  	bd_imgpath, bd_orgname, bd_modname)
+    	  	bd_imgpath, bd_orgname, bd_modname, bd_state)
 	    VALUES 
-    	  (board_seq.NEXTVAL, #{bd_cate, jdbcType=CHAR}, #{bd_writer}, #{bd_title}, #{bd_content}, SYSDATE, 
-    	  	#{bd_imgpath}, #{bd_orgname}, #{bd_modname})
+    	  (board_seq.NEXTVAL, #{bd_cate, jdbcType=CHAR}, #{bd_writer, jdbcType=VARCHAR}, #{bd_title, jdbcType=VARCHAR}, #{bd_content, jdbcType=VARCHAR}, SYSDATE, 
+    	  	#{bd_imgpath, jdbcType=VARCHAR}, #{bd_orgname, jdbcType=VARCHAR}, #{bd_modname, jdbcType=VARCHAR}, 'Y')
 	</insert>
 	
 	
