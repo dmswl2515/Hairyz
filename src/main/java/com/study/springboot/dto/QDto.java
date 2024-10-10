@@ -7,6 +7,7 @@ public class QDto
 {	
 	private int qna_no;
     private int qna_pnum;
+    private String qna_authorId;
     private String qna_name;
     private Date qna_date;
     private String qna_content;

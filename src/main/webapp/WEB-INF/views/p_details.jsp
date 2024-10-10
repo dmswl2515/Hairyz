@@ -294,7 +294,7 @@
 			    <div id="qna-content" class="">
 			        <h3><strong>Q&A</strong></h3>
 			        <p>구매하시려는 상품에 대해 궁금한 점이 있으면 문의 주세요.</p>
-										<div class="container d-flex justify-content-end">
+					<div class="container d-flex justify-content-end">
 				        <input type="button" class="btn btn-warning custom-width mb-3" value="Q&A 작성"  onclick="openModal()"/>
 			       	</div>
 			       	<!-- 모달 -->
@@ -404,6 +404,8 @@
 								            		${currentQnaRep.qrContent}
 								           	</td>
 								            <td colspan="1">
+								                <!--  비공개 글인데 자신이 작성자 일 경우 -->
+								                
 								            	<c:choose>
 											        <c:when test="${currentQnaRep.qrId == 'admin'}">
 											            관리자
@@ -425,6 +427,35 @@
 							            <td colspan="1" class="text-center align-middle"></td>
 							            <td colspan="3">${qDTO.qna_content}</td>    
 							        </tr>
+							    </c:when>
+							    <c:when test="${qDTO.qna_qstate == '비공개' && qDTO.qna_authorId == memberList.mb_id}">
+							        <!-- 비공개 글이고 작성자인 경우 -->
+							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
+							            <td colspan="3">${qDTO.qna_content}</td>    
+							        </tr>
+							        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
+							            <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
+							                <td colspan="1" class="text-center align-middle"></td>
+							                <td colspan="1" style="font-size: 14px;">
+							                    <i class="fas fa-angle-right" style="margin-right: 5px;"></i>
+							                    ${currentQnaRep.qrContent}
+							                </td>
+							                <td colspan="1">
+							                    <c:choose>
+							                        <c:when test="${currentQnaRep.qrId == 'admin'}">
+							                            관리자
+							                        </c:when>
+							                        <c:otherwise>
+							                            ${currentQnaRep.qrId}
+							                        </c:otherwise>
+							                    </c:choose>
+							                </td>
+							                <td class="text-center align-middle">
+							                    <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
+							                </td>
+							            </tr>
+							        </c:if>
 							    </c:when>
 							</c:choose>
 		                </c:forEach>
@@ -718,7 +749,9 @@
 	    
 	    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
 	        contentDiv.style.display = "table-row"; // 내용을 보이게 함
-	        detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
+	        if (detailsRow) { // detailsRow가 존재할 때만 display 조정
+	            detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
+	        }
 	    } else {
 	        contentDiv.style.display = "none"; // 내용을 숨김
 	        detailsRow.style.display = "none";

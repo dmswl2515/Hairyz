@@ -6,7 +6,7 @@
 <mapper namespace="com.study.springboot.dao.IQnADao">
 
 	<select id="selectQnaByPdNum" resultType="com.study.springboot.dto.QDto">
-        SELECT p.pd_num, q.qna_no, q.qna_pnum, q.qna_rstate, q.qna_content, q.qna_name, q.qna_date, q.qna_hide, q.qna_qstate
+        SELECT p.pd_num, q.qna_authorId, q.qna_no, q.qna_pnum, q.qna_rstate, q.qna_content, q.qna_name, q.qna_date, q.qna_hide, q.qna_qstate
 	    FROM product p
 	    JOIN qna q ON p.pd_num = q.qna_pnum
 	    WHERE p.pd_num = #{pdNum}
@@ -23,6 +23,8 @@
     <select id="getQnaWithReplies" resultMap="qnaReplyResultMap">
 	    SELECT 
 	        q.qna_no, 
+	        q.qna_pnum,
+	        q.qna_authorId
 	        q.qna_content, 
 	        q.qna_qstate, 
 	        q.qna_rstate,
@@ -42,8 +44,8 @@
     </select>
 	
 	<insert id="insertQnA" parameterType="com.study.springboot.dto.QDto">
-        INSERT INTO qna (qna_no, qna_pnum, qna_name, qna_date, qna_content, qna_qstate, qna_hide, qna_rstate)
-        VALUES (QNA_NO_SEQ.NEXTVAL, #{qna_pnum}, #{qna_name}, SYSDATE, #{qna_content}, #{qna_qstate}, #{qna_hide}, #{qna_rstate})
+        INSERT INTO qna (qna_no, qna_pnum, qna_authorId, qna_name, qna_date, qna_content, qna_qstate, qna_hide, qna_rstate)
+        VALUES (QNA_NO_SEQ.NEXTVAL, #{qna_pnum}, #{qna_authorId}, #{qna_name}, SYSDATE, #{qna_content}, #{qna_qstate}, #{qna_hide}, #{qna_rstate})
     </insert>
     
     <update id="updateRstate">

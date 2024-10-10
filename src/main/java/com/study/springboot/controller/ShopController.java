@@ -100,7 +100,8 @@ public class ShopController {
     public String productDetail(@RequestParam(defaultValue = "1") int page,
 								@RequestParam("pdNum") int pdNum, 
 								@RequestParam(value = "qnaNo", defaultValue = "0") int qnaNo,
-    							Model model) {
+    							HttpSession session,
+								Model model) {
     	
     	System.out.println(qnaNo);
     	
@@ -113,11 +114,24 @@ public class ShopController {
             
         }
         
+        //회원정보 가져오기
+	    String memberId = (String) session.getAttribute("userId");
+	    
+        if (memberId != null) {
+        	MemberDto memberList = mService.getMemberByMemberId(memberId);
+        	model.addAttribute("memberList", memberList);
+        	
+        	System.out.println("memberList :" + memberList);
+        } else {
+        	System.out.println("Member ID is null");
+        }
+        
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
         
         //QnA 답변 가져오기
         List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo);
+        System.out.println("qnaRepList: " + qnaRepList);
         
         if (qnaNo > 0) {
         	
