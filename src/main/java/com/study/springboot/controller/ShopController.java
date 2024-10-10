@@ -1,7 +1,9 @@
 package com.study.springboot.controller;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.study.springboot.dao.ICartDao;
 import com.study.springboot.dao.IMemberDao;
@@ -261,10 +264,35 @@ public class ShopController {
     	
 	    oService.insertOrder(ordersDto);
 	    
-	    
-		
-	
         return "s_completeBuy";              
+    }
+    
+    @PostMapping("/DeleteCart")
+    @ResponseBody
+    public Map<String, Object> deleteSelectedItems(@RequestBody Map<String, Object> requestData) {
+    	
+    	List<Integer> pdNums = (List<Integer>) requestData.get("pdNums"); // Integer로 변환
+        Boolean eachCheckBox = (Boolean) requestData.get("eachCheckBox"); // Boolean으로 변환
+        Map<String, Object> response = new HashMap<>();
+        
+        System.out.println("pdNums : " + pdNums);
+        System.out.println("eachCheckBox : " + eachCheckBox);
+        System.out.println("response : " + response);
+        
+        
+        // 체크박스 값 처리
+        if (eachCheckBox != null && eachCheckBox) {
+            // 체크박스가 선택되었을 때 처리할 로직
+            System.out.println("Checkbox is selected");
+            boolean isDeleted = cartService.deleteSelectedProducts(pdNums);
+            response.put("success", isDeleted);
+        } else {
+            // 체크박스가 선택되지 않았을 때 처리할 로직
+            System.out.println("Checkbox is not selected");
+            response.put("success", false);
+        }
+
+        return response;
     }
     
     @RequestMapping("/test1")

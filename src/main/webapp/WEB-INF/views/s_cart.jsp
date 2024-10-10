@@ -126,7 +126,7 @@
 				            <!-- 체크박스 열 -->
 				            <td class="text-center align-middle">
 				                <div class="d-flex justify-content-center align-items-center" style="height: 100%; margin-left:10px;">
-				                    <input class="form-check-input selectEach" type="checkbox">
+				                    <input class="form-check-input selectEach" type="checkbox" name="eachCheckBox" value="${item.pdNum}">
 				                </div>
 <script>
   // 'selectAll' 체크박스 이벤트 리스너 추가
@@ -335,6 +335,43 @@ $(document).ready(function() {
     $('#total-price2').text('0원');
     $('#total-price3').text('0원');
 });
+
+	//"선택상품 삭제" 버튼 클릭 시 체크된 항목을 서버로 전송
+	document.getElementById("remove-selected").addEventListener("click", function() {
+	    const selectedItems = [];
+	    let eachCheckBox = document.getElementById("selectAll") ? document.getElementById("selectAll").checked : false; // 전체 선택 체크박스의 상태
+	    console.log(eachCheckBox);
+	    
+	    
+	    document.querySelectorAll(".selectEach:checked").forEach(checkbox => {
+	    	selectedItems.push(parseInt(checkbox.value)); // 체크된 상품 번호를 배열에 추가
+	    });
+	
+	    if (selectedItems.length > 0) {
+	        // AJAX 요청으로 서버에 삭제할 상품들 전달
+	        fetch('/DeleteCart', {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/json',
+	            },
+	            body: JSON.stringify({ pdNums: selectedItems, eachCheckBox: eachCheckBox }), // 체크박스 상태 추가
+	        })
+	        .then(response => response.json())
+	        .then(data => {
+	            if (data.success) {
+	                alert('선택된 상품이 삭제되었습니다.');
+	                location.reload(); // 페이지 새로고침
+	            } else {
+	                alert('상품 삭제에 실패했습니다.');
+	            }
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	        });
+	    } else {
+	        alert('삭제할 상품을 선택하세요.');
+	    }
+	});
 </script>
 
 

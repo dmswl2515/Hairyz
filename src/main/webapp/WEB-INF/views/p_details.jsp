@@ -124,16 +124,45 @@
     }
     
     .modal-content {
+    	position: relative;
 	    background-color: #ffffe0;
+	    border-radius: 5px;
 	    margin: 15% auto; /* 중앙 정렬 */
 	    padding: 20px;
 	    border: 1px solid #888;
 	    width: 20%; /* 모달 너비 */
+	    text-align: center;
 	}
 	
+	.cart-icon {
+	    font-size: 40px; /* 장바구니 아이콘 크기 */
+	    margin-bottom: 10px;
+	}
+	
+	.button-container {
+	    display: flex;
+	    justify-content: space-between; /* 버튼들을 한 줄로 정렬하고 사이에 공간 배분 */
+	    margin-top: 20px;
+	}
+	
+	.cartbtn{
+		background-color: #ffc107; /* 버튼 색상 */
+    	border: none;
+    	border-radius: 20px;
+    	flex: 1; /* 버튼의 너비를 동일하게 만듦 */
+   		margin: 0 5px; /* 버튼 사이에 약간의 간격 */
+	}
+	
+	.cartbtn:hover {
+	    background-color: #e0a800; /* 호버 시 조금 더 어두운 색 */
+	}
+	
+	
 	.close {
-	    color: #aaa; /* 닫기 버튼 색상 */
-	    float: right;
+	    color: #ffc107; /* 닫기 버튼 색상 */
+	    position: absolute;
+	    top: 10px;
+	    right: 10px;
 	    font-size: 28px;
 	    font-weight: bold;
 	}
@@ -203,9 +232,17 @@
 							<div id="cartModal" class="modal">
 							    <div class="modal-content">
 							        <span class="close" onclick="closeModal()">&times;</span>
+							        
+							        <!-- 장바구니 아이콘 추가 -->
+							        <div class="cart-icon">
+							            &#128722; <!-- 유니코드 장바구니 아이콘 -->
+							        </div>
+							        
 							        <p>상품이 장바구니에 담겼습니다.</p>
-							        <button class="btn" onclick="continueShopping()">쇼핑 계속하기</button>
-							        <button class="btn" onclick="goToCartPage()">장바구니로 이동</button>
+							        <div class="button-container">
+								        <button class="cartbtn" onclick="continueShopping()">쇼핑 계속하기</button>
+								        <button class="cartbtn" onclick="goToCartPage()">장바구니로 이동</button>
+							    	</div>
 							    </div>
 							</div>
 	              </div>

@@ -22,4 +22,13 @@
         INSERT INTO shopbag (sbag_no, mb_id, pd_num, sbag_amount, sbag_price)
         VALUES (sbag_no_SEQ.NEXTVAL, #{mbId}, #{pdNum}, #{sbagAmount}, #{sbagPrice})
     </insert>
+    
+    <delete id="deleteProducts">
+        DELETE FROM shopbag
+	    WHERE pd_num IN
+	    <foreach item="pdNum" collection="list" open="(" separator="," close=")">
+	        #{pdNum}
+	    </foreach>
+    </delete>
+    
 </mapper>
