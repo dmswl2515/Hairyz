@@ -69,24 +69,25 @@ public class ShopController {
         // 페이지당 항목 수
         int pageSize = 16; 
         
-        // 총 상품 수를 데이터베이스에서 가져옵니다.
-        long totalProducts = pRepository.count(); // 총 상품 수를 세는 메서드
-
-        // 시작 행 번호 및 종료 행 번호를 계산합니다.
-        int startRow = (page - 1) * pageSize; 
-        int endRow = Math.min(startRow + pageSize, (int) totalProducts); 
-
-        // 데이터베이스에서 현재 페이지에 해당하는 상품을 가져옵니다.
-        List<PDto> products = pRepository.findPaginated(startRow, pageSize); // 시작 행 번호와 페이지 크기를 사용합니다.
+        // 필터링된 상품 수 계산
+        long totalProducts;
+        List<PDto> products;
         
-        // 카테고리 또는 동물 필터링 적용
-        if (pd_category != null && !pd_category.isEmpty()) {
-            products = pRepository.findByPdCategory(pd_category, startRow, pageSize);
+     // 동물 및 카테고리 필터링 적용
+        if (pd_category != null && !pd_category.isEmpty() && pd_animal != null && !pd_animal.isEmpty()) {
+            totalProducts = pRepository.countByPdAnimalAndCategory(pd_animal, pd_category);
+            products = pRepository.findByPdAnimalAndCategory(pd_animal, pd_category, (page - 1) * pageSize, pageSize);
         } else if (pd_animal != null && !pd_animal.isEmpty()) {
-            products = pRepository.findByPdAnimal(pd_animal, startRow, pageSize);
+            totalProducts = pRepository.countByPdAnimal(pd_animal);
+            products = pRepository.findByPdAnimal(pd_animal, (page - 1) * pageSize, pageSize);
+        } else if (pd_category != null && !pd_category.isEmpty()) {
+            totalProducts = pRepository.countByPdCategory(pd_category);
+            products = pRepository.findByPdCategory(pd_category, (page - 1) * pageSize, pageSize);
+        } else {
+            totalProducts = pRepository.count(); // 총 상품 수를 세는 메서드
+            products = pRepository.findPaginated((page - 1) * pageSize, pageSize);
         }
 
-        // 모델에 데이터 추가
         model.addAttribute("ProductItems", products); // 현재 페이지의 상품 리스트
         model.addAttribute("currentPage", page); // 현재 페이지 번호
         model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수

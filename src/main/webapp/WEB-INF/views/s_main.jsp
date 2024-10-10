@@ -69,16 +69,16 @@
       	
 		<div class="container">
 		    <div class="text-center my-4"> 
-		        <button class="category-style" value="all" onclick="selectAnimal('all'); updateURL();">#전체</button> 
-		        <button class="category-style" value="dog" onclick="selectAnimal('dog'); updateURL();">#강아지</button>
-		        <button class="category-style" value="cat" onclick="selectAnimal('cat'); updateURL();">#고양이</button>
+		        <button class="category-style" id= '' value='' onclick="selectAnimal('');">#전체</button> 
+		        <button class="category-style" id= "dog" value="dog" onclick="selectAnimal('dog');">#강아지</button>
+		        <button class="category-style" id= "cat" value="cat" onclick="selectAnimal('cat');">#고양이</button>
 		    </div>
 		    
 		   	<div class="text-center my-4"> 
-			    <button class="circle-button" value="food" onclick="selectCategory('food'); updateURL();">사료</button> 
-			    <button class="circle-button" value="refreshment" onclick="selectCategory('refreshment'); updateURL();">간식</button>
-			    <button class="circle-button" value="product" onclick="selectCategory('product'); updateURL();">용품</button>
-			    <button class="circle-button" value="etc" onclick="selectCategory('etc'); updateURL();">리빙</button>
+			    <button class="circle-button" id= "all" value="food" onclick="selectCategory('food');">사료</button> 
+			    <button class="circle-button" id= "refreshment" value="refreshment" onclick="selectCategory('refreshment');">간식</button>
+			    <button class="circle-button" id= "product" value="product" onclick="selectCategory('product');">용품</button>
+			    <button class="circle-button" id= "etc" value="etc" onclick="selectCategory('etc');">리빙</button>
 			</div>
 
 <script>
@@ -104,12 +104,38 @@
 	    button.classList.add('selected');
 	}
 	
-	let selectedAnimal = 'all'; // 기본값
-    let selectedCategory = 'food'; // 기본값
+	let selectedAnimal = ''; // 기본값
+    let selectedCategory = ''; //기본값
+    
+	 // 페이지가 로드될 때 쿼리 파라미터를 읽어 선택 상태 설정
+    window.onload = function() {
+       const urlParams = new URLSearchParams(window.location.search);
+       selectedAnimal = urlParams.get('pd_animal') || '';
+       selectedCategory = urlParams.get('pd_category') || '';
+       
+    // 선택된 동물 버튼 스타일 적용
+       const animalButtons = document.querySelectorAll('.category-style');
+       animalButtons.forEach(btn => {
+           if (btn.value === selectedAnimal) {
+               btn.classList.add('selected');
+           }
+       });
 
+       // 선택된 카테고리 버튼 스타일 적용
+       const categoryButtons = document.querySelectorAll('.circle-button');
+       categoryButtons.forEach(btn => {
+           if (btn.value === selectedCategory) {
+               btn.classList.add('selected');
+           }
+       });
+   };
+
+	
+    //동물 선택 함수
     function selectAnimal(animal) {
         selectedAnimal = animal; // 선택한 동물 업데이트
-        // 선택된 버튼 하이라이트
+        console.log("Selected animal:", selectedAnimal);
+        
         const animalButtons = document.querySelectorAll('.category-style');
         animalButtons.forEach(btn => {
             btn.classList.remove('selected');
@@ -117,11 +143,14 @@
                 btn.classList.add('selected');
             }
         });
+        updateURL(); // 동물 버튼 클릭 시 URL 업데이트
     }
-
+	
+ 	// 카테고리 선택 함수
     function selectCategory(category) {
         selectedCategory = category; // 선택한 카테고리 업데이트
-        // 선택된 버튼 하이라이트
+        console.log("Selected category:", selectedCategory);
+
         const categoryButtons = document.querySelectorAll('.circle-button');
         categoryButtons.forEach(btn => {
             btn.classList.remove('selected');
@@ -129,11 +158,19 @@
                 btn.classList.add('selected');
             }
         });
+        updateURL();
     }
-
+ 	
+ 	// URL 업데이트 함수
     function updateURL() {
-        const url = `s_main?pd_animal=${selectedAnimal}&pd_category=${selectedCategory}`;
-        location.href = url; // 생성된 URL로 리다이렉트
+        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
+        const page = 1; // 페이지는 1로 고정
+        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
+
+        // URL을 동적으로 업데이트 (페이지 이동)
+        console.log("Generated URL:", url);
+        
+        window.location.href = url;
     }
 </script>
 
