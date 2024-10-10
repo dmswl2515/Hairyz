@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-	<style>
+		<style>
 	    /* 기본 레이아웃 설정 */
 	    body {
 	        display: flex;
@@ -13,7 +13,7 @@
 	    .content {
 	        flex: 1;
 	    }
-	
+	    
 	    /* footer를 페이지 하단에 고정 */
 	    footer {
 	        background-color: #ffffff;
@@ -59,7 +59,7 @@
 				if (id == null)
 				{
 				%>
-                 	<a href="login.do" class="btn btn-outline-warning">로그인</a>
+                 	<a href="${pageContext.request.contextPath}/login.do" class="btn btn-outline-warning">로그인</a>
                  <%}else{%>
                  	<a href="#" class="btn btn-outline-warning">마이페이지</a>
                  	<a href="s_cart" class="btn btn-outline-warning">장바구니</a>
@@ -73,7 +73,7 @@
          <div class="custom-container">
              <ul class="navbar-nav mr-auto">
                  <li class="nav-item">
-                     <a class="nav-link" href="#">커뮤니티</a>
+                     <a class="nav-link" href="list.do">커뮤니티</a>
                  </li>
                  <li class="nav-item">
                      <a class="nav-link" href="s_main">쇼핑</a>
