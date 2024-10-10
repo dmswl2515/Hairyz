@@ -681,13 +681,22 @@ public class MyController {
 
 	}
 	
-	@RequestMapping("/map.do")
-	public String map(Model model, HttpServletRequest request)
+	@RequestMapping("/hospitalMap.do")
+	public String hospitalMap(Model model, HttpServletRequest request)
 	{
 		
 		model.addAttribute("kakaoKey", KAKAO_KEY);
 
-	    return "map";
+	    return "hospitalMap";
+	}
+	
+	@RequestMapping("/cafeMap.do")
+	public String cafeMap(Model model, HttpServletRequest request)
+	{
+		
+		model.addAttribute("kakaoKey", KAKAO_KEY);
+
+	    return "cafeMap";
 	}
 
 	// uuid 생성할 메서드 선언

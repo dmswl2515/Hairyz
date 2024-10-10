@@ -98,10 +98,10 @@
                         <a class="nav-link" href="s_main">쇼핑</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">동물병원</a>
+                        <a class="nav-link" href="hospitalMap.do">동물병원</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">멍카페</a>
+                        <a class="nav-link" href="cafeMap.do">멍카페</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">캠페인</a>
@@ -140,12 +140,12 @@
 					</a>
 				</div>
 				<div class="carousel-item">
-					<a href="#">
+					<a href="hospitalMap.do">
 						<img class="d-block w-100" src="images/slider3.png" alt="Third slide">
 					</a>
 				</div>
 				<div class="carousel-item">
-					<a href="#">
+					<a href="cafeMap.do">
 						<img class="d-block w-100" src="images/slider4.png" alt="Fourth slide">
 					</a>
 				</div>
