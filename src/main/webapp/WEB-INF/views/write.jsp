@@ -6,43 +6,129 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>게시글 작성 | 커뮤니티</title>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="http://code.jquery.com/jquery.js"></script>
-<script type="text/javascript" src="/naver-editor/js/service/HuskyEZCreator.js" charset="utf-8"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">	
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/lang/summernote-ko-KR.js"></script>
+
+
 <style>
 .mt_15 { margin-top:15px; }
-.container.find { width:100%;max-width:400px;align-self:center;text-align:center; }
-.find-wrapper { width:100%;max-width:400px;padding:20px; }
-.find-area { margin-bottom:0;text-align:right; }
-.find-wrapper button { margin:10px 0 0;width:100%;height:50px;color:#fff;padding:10px 20px; }
-.invalid-feedback { margin-top:0;margin-bottom:.25rem;text-align:left; }
+body { font-family: 'Roboto', sans-serif; }
+.container.write { max-width: 600px; margin: 50px auto 10px; padding: 20px; background-color: white; 
+				   border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border: 1px solid #ffc107; }
+.write-title { text-align: center; font-weight: 500; font-size: 24px; margin-bottom: 30px; }
 </style>
 <script>
-function form_check() {
-	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
-	
- 	//document.write_form.submit();
-	submit_ajax();
-}
-
-function submit_ajax() {
-	var queryString = $("#write_form").serialize();
-	$.ajax({
-		url: 'write.do',
-		type: 'POST',
-		data: queryString,
-		dataType: 'text',
-		success: function(json) {
-			var result = JSON.parse(json);
-			if (result.code=="success") {
-				alert(result.desc)
-				window.location.replace("list.do");
-			} else {
-				alert(result.desc);
-			}
+$(document).ready(function() {
+	$('#ir1').summernote({
+		height: 300,                 // set editor height
+		lang: 'ko-KR',
+		placeholder: '내용을 입력해주세요.',
+		callbacks: {
+			onImageUpload: function(files) {
+                if (files && files.length > 0) {
+                    uploadFile(files[0]);
+                } else {
+                    alert("이미지를 선택해 주세요.");
+                }
+            }
 		}
 	});
+});
+
+// 이미지 업로드 함수
+function uploadFile(file) {
+	var formData = new FormData();
+	formData.append("file", file);
+
+	$.ajax({
+		url: '/uploadFile',  // 서버 파일 업로드 처리 경로
+		type: 'POST',
+		data: formData,
+		contentType: false,
+		processData: false,
+		success: function(response) {
+			if (response.success) {
+				$('#ir1').summernote('insertImage', response.fileLink);  // 이미지 삽입
+				// 성공한 파일 정보를 전역 변수에 저장
+				window.uploadedFile = {
+					originalFileName: response.originalFileName,
+					systemFileName: response.systemFileName,
+					fileLink: response.fileLink
+				};
+			} else {
+				alert(response.message);
+			}
+		},
+		error: function() {
+			alert("파일 업로드 중 오류가 발생했습니다.");
+		}
+	});
+}
+
+// 작성 완료 버튼 이벤트
+function submitPost() {
+    var content = $('#ir1').val();
+
+    // 필수 항목 검증
+	if ($('#bd_cate').val() === null) {
+		alert("카테고리를 선택해주세요.");
+		$('#bd_cate').focus();
+		return;
+	}
+    if ($('#bd_title').val().trim() === "") {
+        alert("제목을 입력해주세요.");
+        $('#bd_title').focus();
+        return;
+    }
+    if (content.trim() === "") {
+        alert("내용을 입력해주세요.");
+        return;
+    }
+
+    // FormData 객체 생성
+    $('#ir1').val($('#ir1').summernote('code'));
+    var formData = new FormData($('#write_form')[0]);
+
+    
+ 	// 업로드된 파일 정보를 추가
+    if (window.uploadedFile) {
+        formData.append("success", true);  // 파일 업로드 성공 여부
+        formData.append("originalFileName", window.uploadedFile.originalFileName);
+        formData.append("systemFileName", window.uploadedFile.systemFileName);
+        formData.append("fileLink", window.uploadedFile.fileLink);
+    }
+    
+    // 데이터 확인
+    for (var pair of formData.entries()) {
+	    console.log(pair[0]+ ': ' + pair[1]);
+	}
+
+    // Ajax 요청으로 게시글 데이터 전송
+    $.ajax({
+        url: '/writeOk.do',  // 게시글 저장을 위한 서버 경로
+        type: 'POST',
+        data: formData, 
+        dataType: 'json', // FormData 객체로 데이터 전송
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            console.log("응답 데이터:", response);
+            if (response.result === "success") {  // response.code -> response.result
+                alert("게시글 작성이 완료되었습니다.");
+                window.location.href = response.redirectUrl;  // 게시글 목록으로 이동
+            } else {
+                alert(response.message || "알 수 없는 오류가 발생했습니다.");  // response.message가 없을 경우 대비
+            }
+        },
+        error: function(xhr) {
+            console.error("AJAX 오류:", xhr);
+            alert("게시글 작성 중 오류가 발생했습니다.");
+        }
+    });
 }
 </script>
 </head>
@@ -50,39 +136,37 @@ function submit_ajax() {
 <div class="content">
 	<%@ include file="header.jsp" %>
 </div>
-<div class="container mt_15">
-	<table width="800" cellpadding="0" cellspacing="0" border="1">
-		<form id="write_form" name="write_form" action="write.do" method="post">
-			<tr>
-				<td>이름</td>
-				<td><input type="text" name="bName" size="50"></td>
-			</tr>
-			<tr>
-				<td>제목</td>
-				<td><input type="text" name="bTitle" size="50"></td>
-			</tr>
-			<tr>
-				<td>내용</td>
-				<td><textarea name="bContent" id="ir1" rows="10"></textarea></td>
-				
-				<script type="text/javascript">
-				var oEditors = [];
-				nhn.husky.EZCreator.createInIFrame({
-				    oAppRef: oEditors,
-				    elPlaceHolder: "ir1",
-				    sSkinURI: "./naver-editor/SmartEditor2Skin.html",
-				    fCreator: "createSEditor2"
-				});
-				</script>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<a href="JavaScript:form_check();">입력</a> &nbsp;&nbsp;
-					<a href="list.do">목록보기</a>
-				</td>
-			</tr>
-		</form>
-	</table>
+<div class="container write">
+	<form id="write_form" name="write_form" method="post" enctype="multipart/form-data">
+		<div class="form-group">
+			<select name="bd_cate" id="bd_cate" class="form-control">
+				<option value="" disabled selected>카테고리 선택</option>
+				<option value="f">자유</option>
+				<option value="q">질문</option>
+			</select>
+		</div>
+
+		<!-- 작성자 필드는 hidden으로 처리 -->
+		<input type="hidden" name="bd_writer" id="bd_writer" value="<%= (String)session.getAttribute("userNickname") %>">
+		<!-- 
+		<script>
+		    console.log("작성자 닉네임: " + document.getElementById('bd_writer').value);
+		</script>
+		 -->
+
+		<div class="form-group">
+			<input type="text" name="bd_title" id="bd_title" class="form-control" placeholder="제목">
+		</div>
+
+		<div class="form-group">
+			<textarea name="bd_content" id="ir1" class="form-control" rows="10" placeholder="내용을 입력하세요"></textarea>
+		</div>
+
+		<div class="form-group text-center">
+			<button type="button" class="btn btn-primary" onclick="submitPost()">작성 완료</button>
+			<a href="list.do" class="btn btn-secondary">목록 보기</a>
+		</div>
+	</form>
 	
 </div>
 

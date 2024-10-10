@@ -90,7 +90,14 @@ public class MbController {
         
         String jsonResponse;
         if (isValidUser) {
-        	session.setAttribute("userId", id); // 세션에 로그인한 아이디 저장
+        	// 로그인한 회원 정보를 가져옴
+            MemberDto member = memberDao.selectMember(id);
+            
+            // 세션에 로그인한 아이디와 닉네임 저장
+            session.setAttribute("userId", member.getMb_id()); 
+            session.setAttribute("userNickname", member.getMb_nickname()); // 닉네임 저장
+
+            
         	jsonResponse = "{\"code\": \"success\", \"desc\": \"로그인 되었습니다.\"}";
         } else {
         	jsonResponse = "{\"code\": \"error\", \"desc\": \"아이디 또는 비밀번호가 잘못되었습니다.\"}";
@@ -104,8 +111,9 @@ public class MbController {
         MemberDto dto = memberDao.findById(email);
         Map<String, String> response = new HashMap<>();
         if (dto != null) {
-            // SNS 계정으로 로그인된 경우 세션에 아이디 저장
+            // SNS 계정으로 로그인된 경우 세션에 아이디, 닉네임 저장
             session.setAttribute("userId", dto.getMb_id()); 
+            session.setAttribute("userNickname", dto.getMb_nickname()); // 닉네임 저장
             response.put("code", "exists");
             response.put("desc", "SNS 계정으로 로그인 되었습니다.");
         } else {
