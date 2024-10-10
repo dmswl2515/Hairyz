@@ -347,99 +347,100 @@
 				      <tbody>
 				      	<c:if test="${not empty qnaList}">
 				      	<c:forEach var="qDTO" items="${qnaList}">
-					        <script>
-				      			console.log()
-				      		</script>
-					            <tr>
-					                <td class="text-center align-middle">
-						                <c:choose>
-									        <c:when test="${qDTO.qna_rstate == 'N'}">
-									            미답변
-									        </c:when>
-									        <c:when test="${qDTO.qna_rstate == 'Y'}">
-									            답변 완료
-									        </c:when>
-									    </c:choose>
-									</td>        
-					                <td onclick="handleClick('${qDTO.qna_qstate}', '${qDTO.qna_content}', '${qDTO.qna_no}')" style="cursor: pointer;">
-			                            <div class="product-container">    
-			                                <c:choose>
-			                                    <c:when test="${qDTO.qna_qstate == '비공개'}">
-			                                        비밀글입니다
-			                                    </c:when>
-			                                    <c:when test="${qDTO.qna_qstate == '공개'}">
-			                                        ${qDTO.qna_content}
-			                                    </c:when>
-			                                </c:choose>&nbsp;&nbsp;
-			                                <div style="margin-top: 1px;">
-			                                    <c:if test="${qDTO.qna_qstate == '비공개'}">
-			                                        <i class="fas fa-lock"></i>&nbsp;&nbsp;
-			                                    </c:if>
-			                                    <c:if test="${qDTO.qna_qstate == '공개'}">
-			                                    </c:if>
-			                                    <c:if test="${qDTO.isNew()}">
-			                                        <span class="badge badge-secondary">New</span>
-			                                    </c:if>
-			                                </div>
-			                            </div>     
-			                        </td>
-			                        <td class="text-center align-middle">${qDTO.qna_name}</td>
-			                        <td class="text-center align-middle">
-			                            <fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />        
-			                        </td>
-			                    </tr>
-			                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
-			                    <c:choose>
-								    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
-								        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
-								            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
-								            <td colspan="3">${qDTO.qna_content}</td>    
-								        </tr>
-								        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
-									        <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
-									            <td colspan="1" class="text-center align-middle"></td>
-									            <td colspan="1" style="font-size: 14px;">
-									            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
-									            		${currentQnaRep.qrContent}
-									           	</td>
-									            <td colspan="1">
-									            	<c:choose>
-												        <c:when test="${currentQnaRep.qrId == 'admin'}">
-												            관리자
-												        </c:when>
-												        <c:otherwise>
-												            ${currentQnaRep.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
-												        </c:otherwise>
-												    </c:choose>
-									            </td>									            
-								            	<td class="text-center align-middle">
-						                            <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
-						                        </td>
-								            									                
-									        </tr>
-								        </c:if>		
-								    </c:when>
-								    <c:when test="${qDTO.qna_qstate == '공개'}">
-								        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+				      	<input type="hidden" id="loggedInUserId" value="${memberList.mb_id}" />
+				            <tr>
+				                <td class="text-center align-middle">
+					                <c:choose>
+								        <c:when test="${qDTO.qna_rstate == 'N'}">
+								            미답변
+								        </c:when>
+								        <c:when test="${qDTO.qna_rstate == 'Y'}">
+								            답변 완료
+								        </c:when>
+								    </c:choose>
+								</td>        
+				                <td onclick="handleClick('${qDTO.qna_authorId}','${qDTO.qna_qstate}', '${qDTO.qna_content}', '${qDTO.qna_no}')" style="cursor: pointer;">
+		                            <div class="product-container">  
+		                                <c:choose>
+		                                	<c:when test="${qDTO.qna_qstate == '비공개' && qDTO.qna_authorId == memberList.mb_id}">
+											    ${qDTO.qna_content}
+											</c:when>
+		                                    <c:when test="${qDTO.qna_qstate == '비공개' && (memberList.mb_id == null || qDTO.qna_authorId != memberList.mb_id)}">
+		                                        비밀글입니다
+		                                    </c:when>
+		                                    <c:when test="${qDTO.qna_qstate == '공개' || qDTO.qna_authorId == memberList.mb_id}">
+		                                        ${qDTO.qna_content}
+		                                    </c:when>
+		                                </c:choose>&nbsp;&nbsp;
+		                                <div style="margin-top: 1px;">
+		                                    <c:if test="${qDTO.qna_qstate == '비공개'}">
+		                                        <i class="fas fa-lock"></i>&nbsp;&nbsp;
+		                                    </c:if>
+		                                    <c:if test="${qDTO.qna_qstate == '공개'}">
+		                                    </c:if>
+		                                    <c:if test="${qDTO.isNew()}">
+		                                        <span class="badge badge-secondary">New</span>
+		                                    </c:if>
+		                                </div>
+		                            </div>     
+		                        </td>
+		                        <td class="text-center align-middle">${qDTO.qna_name}</td>
+		                        <td class="text-center align-middle">
+		                            <fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />        
+		                        </td>
+		                    </tr>
+		                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
+		                    <c:choose>
+							    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
+							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
+							            <td colspan="3">${qDTO.qna_content}</td>    
+							        </tr>
+							        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
+								        <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
 								            <td colspan="1" class="text-center align-middle"></td>
-								            <td colspan="3">${qDTO.qna_content}</td>    
+								            <td colspan="1" style="font-size: 14px;">
+								            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
+								            		${currentQnaRep.qrContent}
+								           	</td>
+								            <td colspan="1">
+								            	<c:choose>
+											        <c:when test="${currentQnaRep.qrId == 'admin'}">
+											            관리자
+											        </c:when>
+											        <c:otherwise>
+											            ${currentQnaRep.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
+											        </c:otherwise>
+											    </c:choose>
+								            </td>									            
+							            	<td class="text-center align-middle">
+					                            <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
+					                        </td>
+							            									                
 								        </tr>
-								    </c:when>
-								</c:choose>
-			                </c:forEach>
-			            </c:if>
+							        </c:if>		
+							    </c:when>
+							    <c:when test="${qDTO.qna_qstate == '공개'}">
+							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+							            <td colspan="1" class="text-center align-middle"></td>
+							            <td colspan="3">${qDTO.qna_content}</td>    
+							        </tr>
+							    </c:when>
+							</c:choose>
+		                </c:forEach>
+		            </c:if>
 
-						<c:if test="${empty qnaList}">
-						    <tr>
-						        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
-						    </tr>
-						</c:if>
-						
-				      </tbody>
-					</table> 		       
-			    </div>
-			</div>
-       	</div>
+					<c:if test="${empty qnaList}">
+					    <tr>
+					        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
+					    </tr>
+					</c:if>
+					
+			      </tbody>
+				</table> 		       
+		    </div>
+		</div>
+   	</div>
 
        	<!-- 페이지네이션 -->
 		<div class="director">
@@ -630,6 +631,11 @@
 	function submitQnA() {
 	    const content = document.getElementById('qnaContent').value;
 	    const visibility = document.querySelector('input[name="visibility"]:checked').value;
+	    const productNum = document.getElementById('productNum').value;
+	    
+	    console.log(productNum);
+	    console.log(visibility);
+	    console.log(content);
 	
 	    // 유효성 검사 (여기서 추가적인 검사를 할 수 있습니다)
 	    if (!content) {
@@ -643,17 +649,18 @@
 	        type: 'POST',
 	        data: {
 	            content: content,
-	            visibility: visibility
+	            visibility: visibility,
+	            productNum : productNum
 	        },
 	        success: function(response) {
-	            // 성공적으로 등록된 후 처리 (예: 알림, 리스트 갱신 등)
+	        	console.log('Response:', response);
 	            alert('문의가 등록되었습니다.');
 	            $('#qnaModal').modal('hide');
 	            document.getElementById('qnaForm').reset(); // 폼 초기화
-	            // 추가로 Q&A 리스트 갱신 코드를 작성할 수 있습니다
+	            
+	            window.location.href = "/p_details?pdNum=" + productNum; 
 	        },
 	        error: function(error) {
-	            // 오류 처리
 	            alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');
 	        }
 	    });
@@ -678,9 +685,25 @@
 	    });
 	});
 	
-	function handleClick(qnaQState, qnaContent, qnaNo) {
-	    if (qnaQState === '비공개') {
-	        alert("비밀글입니다");
+	var loggedInUserId = "${sessionScope.userId}";
+	
+	function handleClick(authorId, qnaQState, qnaContent, qnaNo) {
+		
+		
+		console.log("loggedInUserId : " + loggedInUserId);
+		console.log("authorId : " + authorId);
+		console.log("qnaQState :" + qnaQState);
+		console.log("qnaContent: " + qnaContent);
+		console.log("qnaNo :" + qnaNo);
+		
+		
+		
+		if (qnaQState === '비공개') {
+			if (authorId === loggedInUserId) {
+	            toggleContent(qnaNo); // 내용 토글
+	        } else {
+	            alert("비밀글입니다");
+	        }
 	    } else {
 	        toggleContent(qnaNo); // 공개글의 경우 toggleContent 호출
 	    }

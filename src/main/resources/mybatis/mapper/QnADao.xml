@@ -42,8 +42,8 @@
     </select>
 	
 	<insert id="insertQnA" parameterType="com.study.springboot.dto.QDto">
-        INSERT INTO qna (qna_pnum, qna_name, qna_date, qna_content, qna_qstate, qna_hide, qna_rstate)
-        VALUES (#{qna_pnum}, #{qna_name}, NOW(), #{qna_content}, #{qna_qstate}, #{qna_hide}, #{qna_rstate})
+        INSERT INTO qna (qna_no, qna_pnum, qna_name, qna_date, qna_content, qna_qstate, qna_hide, qna_rstate)
+        VALUES (QNA_NO_SEQ.NEXTVAL, #{qna_pnum}, #{qna_name}, SYSDATE, #{qna_content}, #{qna_qstate}, #{qna_hide}, #{qna_rstate})
     </insert>
     
     <update id="updateRstate">

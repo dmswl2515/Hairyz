@@ -21,4 +21,5 @@ public class QDto
         return qna_date != null && (System.currentTimeMillis() - qna_date.getTime()) < (3 * 24 * 60 * 60 * 1000);
     }
 
+	
 }
