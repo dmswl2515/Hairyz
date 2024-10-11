@@ -58,5 +58,126 @@
 	    SELECT mb_pw FROM member WHERE mb_id = #{id}
 	</select>
 	
+	<select id="memberPageList" resultType="com.study.springboot.dto.MemberDto">
+	SELECT *
+		FROM (
+			SELECT pr.*, ROWNUM AS rnum
+			FROM (
+				SELECT *
+				FROM member
+				ORDER BY mb_no DESC
+		) pr
+		WHERE ROWNUM &lt;= #{param1}
+	)
+	WHERE rnum &gt;= #{param2}
+
+	</select>
+	
+	<select id="memberAllSelectList" resultType="com.study.springboot.dto.MemberDto">
+	SELECT *
+		FROM (
+			SELECT pr.*, ROWNUM AS rnum
+			FROM (
+				SELECT *
+				FROM member
+				WHERE (mb_nickname LIKE #{param3}
+				OR mb_id LIKE #{param3}
+				OR mb_phone LIKE #{param3})
+				ORDER BY mb_no DESC
+		) pr
+		WHERE ROWNUM &lt;= #{param1}
+	)
+	WHERE rnum &gt;= #{param2}
+
+	</select>
+	
+	<select id="memberNickNameSelectList" resultType="com.study.springboot.dto.MemberDto">
+	SELECT *
+		FROM (
+			SELECT pr.*, ROWNUM AS rnum
+			FROM (
+				SELECT *
+				FROM member
+				WHERE (mb_nickname LIKE #{param3})
+				ORDER BY mb_no DESC
+		) pr
+		WHERE ROWNUM &lt;= #{param1}
+	)
+	WHERE rnum &gt;= #{param2}
+
+	</select>
+	
+	<select id="memberIdSelectList" resultType="com.study.springboot.dto.MemberDto">
+	SELECT *
+		FROM (
+			SELECT pr.*, ROWNUM AS rnum
+			FROM (
+				SELECT *
+				FROM member
+				WHERE (mb_id LIKE #{param3})
+				ORDER BY mb_no DESC
+		) pr
+		WHERE ROWNUM &lt;= #{param1}
+	)
+	WHERE rnum &gt;= #{param2}
+
+	</select>
+	
+	<select id="memberPhoneSelectList" resultType="com.study.springboot.dto.MemberDto">
+	SELECT *
+		FROM (
+			SELECT pr.*, ROWNUM AS rnum
+			FROM (
+				SELECT *
+				FROM member
+				WHERE (mb_phone LIKE #{param3})
+				ORDER BY mb_no DESC
+		) pr
+		WHERE ROWNUM &lt;= #{param1}
+	)
+	WHERE rnum &gt;= #{param2}
+
+	</select>
+	
+	<select id="memberStateSelectList" resultType="com.study.springboot.dto.MemberDto">
+	SELECT *
+		FROM (
+			SELECT pr.*, ROWNUM AS rnum
+			FROM (
+				SELECT *
+				FROM member
+				WHERE (mb_state = #{param3})
+				ORDER BY mb_no DESC
+		) pr
+		WHERE ROWNUM &lt;= #{param1}
+	)
+	WHERE rnum &gt;= #{param2}
+
+	</select>
+	
+	<select id="memberAllTotal" resultType="com.study.springboot.dto.PageDto">
+		SELECT COUNT(*) as total FROM member
+	</select>
+	
+	<select id="memberNickNameTotal" resultType="com.study.springboot.dto.PageDto">
+		SELECT COUNT(*) as total FROM member where mb_nickname like #{param1}
+	</select>
+	
+	<select id="memberIdTotal" resultType="com.study.springboot.dto.PageDto">
+		SELECT COUNT(*) as total FROM member where mb_id like #{param1}
+	</select>
+	
+	<select id="memberPhoneTotal" resultType="com.study.springboot.dto.PageDto">
+		SELECT COUNT(*) as total FROM member where mb_phone like #{param1}
+	</select>
+	
+	<select id="memberStateTotal" resultType="com.study.springboot.dto.PageDto">
+		SELECT COUNT(*) as total FROM member where mb_state = #{param1}
+	</select>
+	
+	<update id="updateNoState">
+		update member set mb_state = #{param2} where mb_no = #{param1}
+	</update>
+	
 	
 </mapper>
