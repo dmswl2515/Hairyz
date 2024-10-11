@@ -1,10 +1,12 @@
 package com.study.springboot.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import com.study.springboot.dto.MemberDto;
+import com.study.springboot.dto.PageDto;
 
 @Mapper
 public interface IMemberDao
@@ -27,5 +29,19 @@ public interface IMemberDao
 	// 아이디/비밀번호 찾기
 	public String findEmailByPhone(String phone);
 	public String findPwById(String id);
+	
+	//회원관리
+	public List<MemberDto> memberPageList(int endRow, int startRow);
+	public List<MemberDto> memberAllSelectList(int endRow, int startRow, String keyword);
+	public List<MemberDto> memberNickNameSelectList(int endRow, int startRow, String keyword);
+	public List<MemberDto> memberIdSelectList(int endRow, int startRow, String keyword);
+	public List<MemberDto> memberPhoneSelectList(int endRow, int startRow, String keyword);
+	public List<MemberDto> memberStateSelectList(int endRow, int startRow, int keyword);
+	public PageDto memberAllTotal();
+	public PageDto memberNickNameTotal(String nickName);
+	public PageDto memberIdTotal(String id);
+	public PageDto memberPhoneTotal(String phone);
+	public PageDto memberStateTotal(int state);
+	public int updateNoState(int id, int state);
 	
 }
