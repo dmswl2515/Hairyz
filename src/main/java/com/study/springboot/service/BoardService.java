@@ -15,4 +15,11 @@ public class BoardService {
         boardDao.insertPost(boardDto);
     }
 
+    // 특정 게시글 가져오기
+    public BoardDto getPostView(int bd_no) {
+        // 조회수 증가
+        boardDao.upHit(bd_no);
+        return boardDao.getPostView(bd_no);
+    }
+
 }

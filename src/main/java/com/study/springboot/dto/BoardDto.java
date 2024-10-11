@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardDto {
     private int bd_no;                // 게시글 고유 번호
-    private String bd_cate;          // 카테고리(자유 f / 질문 q)
+    private String bd_cate;           // 카테고리(자유 f / 질문 q)
+    private String mb_id;       	  // 작성자 아이디
     private String bd_writer;         // 작성자 닉네임
     private String bd_title;          // 글 제목
     private String bd_content;        // 본문 내용

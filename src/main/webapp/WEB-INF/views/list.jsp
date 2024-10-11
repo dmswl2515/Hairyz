@@ -3,18 +3,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<%@ include file="navbarStyle.jsp" %>
 <meta charset="UTF-8">
 <title>게시글 목록 | 커뮤니티</title>
 </head>
 <body>
 	<div class="content">
 		<%@ include file="header.jsp" %>
-	</div>
-	<div class="container list">
-		게시글 리스트 페이지
+		
+		<div class="container list">
+			게시글 리스트 페이지
+		</div>
 	</div>
 					
 	<%@ include file="footer.jsp" %>
