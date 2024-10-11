@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.study.springboot.dto.BoardDto;
+import com.study.springboot.dto.MemberDto;
+import com.study.springboot.dto.ReplyDto;
 import com.study.springboot.service.BoardService;
+import com.study.springboot.service.MemberService;
+import com.study.springboot.service.ReplyService;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -30,6 +37,12 @@ public class BdController {
 
     @Autowired
     private BoardService boardService;
+    
+    @Autowired
+    private ReplyService replyService;
+    
+    @Autowired
+    private MemberService memberService;
     
     @Autowired
     private ServletContext servletContext;
@@ -98,12 +111,14 @@ public class BdController {
     public Map<String, Object> writeOk(BoardDto boardDto, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         
-        // 세션에서 userNickname 가져오기
+        // 세션에서 userId와 userNickname 가져오기
         HttpSession session = request.getSession();
         String userNickname = (String) session.getAttribute("userNickname");
+        String userId = (String) session.getAttribute("userId");
 
         // 작성자 정보가 세션에서 정상적으로 가져왔는지 확인
         if (userNickname != null && !userNickname.isEmpty()) {
+            boardDto.setMb_id(userId);  // 작성자 ID 설정
             boardDto.setBd_writer(userNickname);  // 작성자 설정
         } else {
             response.put("result", "fail");
@@ -150,6 +165,26 @@ public class BdController {
         }
 
         return response;
+    }
+    
+    // 게시글 상세 페이지
+    @GetMapping("/post_view.do/{bd_no}")
+    public String viewPost(@PathVariable("bd_no") int bdNo, Model model, HttpServletRequest request) {
+    	// 게시글 정보 조회
+        BoardDto board = boardService.getPostView(bdNo);
+        // 작성자의 프로필 정보 조회
+        MemberDto profile = memberService.getMemberByMemberId(board.getMb_id());
+        // 세션에서 사용자 ID 가져오기
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+        
+        // 댓글 리스트 조회
+        List<ReplyDto> reply = replyService.getReplyByBoardId(bdNo);
+        model.addAttribute("board", board);
+        model.addAttribute("profile", profile); 
+        model.addAttribute("reply", reply);
+        model.addAttribute("userId", userId);
+        return "post_view";
     }
 
     @RequestMapping("/list.do")

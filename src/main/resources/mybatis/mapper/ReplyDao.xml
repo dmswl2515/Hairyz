@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.study.springboot.dao.IReplyDao">
+
+	 <!-- 특정 게시글의 댓글 목록 가져오기 -->
+    <select id="getReplyListByBoardId" parameterType="int" resultType="com.study.springboot.dto.ReplyDto">
+        SELECT * FROM reply
+        WHERE tb_no = #{bd_no} AND rp_state = 'Y'
+        ORDER BY rp_date ASC
+    </select>
+
+    <!-- 댓글 추가 -->
+    <insert id="insertReply" parameterType="com.study.springboot.dto.ReplyDto">
+        INSERT INTO reply (rp_no, tb_no, rp_writer, rp_content, rp_date, rp_state)
+        VALUES (reply_seq.NEXTVAL, #{tb_no}, #{rp_writer}, #{rp_content}, SYSDATE, #{rp_state})
+    </insert>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteReply" parameterType="int">
+        DELETE FROM reply
+        WHERE rp_no = #{rp_no}
+    </delete>
+
+    <!-- 댓글 개수 가져오기 -->
+    <select id="countReplies" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM reply
+        WHERE tb_no = #{tb_no}
+    </select>
+	
+	
+</mapper>

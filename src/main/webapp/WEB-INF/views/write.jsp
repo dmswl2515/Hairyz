@@ -147,6 +147,7 @@ function submitPost() {
 		</div>
 
 		<!-- 작성자 필드는 hidden으로 처리 -->
+		<input type="hidden" name="mb_id" id="mb_id" value="<%= (String)session.getAttribute("userId") %>">
 		<input type="hidden" name="bd_writer" id="bd_writer" value="<%= (String)session.getAttribute("userNickname") %>">
 		<!-- 
 		<script>
