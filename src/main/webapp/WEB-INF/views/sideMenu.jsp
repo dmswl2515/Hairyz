@@ -9,7 +9,7 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 200px; height: 100vh; position: fixed;">
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-            <a href="#" class="nav-link text-dark">
+            <a href="memberManagement.do" class="nav-link text-dark">
                 회원관리
             </a>
         </li>
@@ -29,7 +29,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-dark">
+            <a href="reviewManager.do" class="nav-link text-dark">
                 후기관리
             </a>
         </li>
