@@ -15,4 +15,10 @@ import com.study.springboot.dto.QnaReplyDto;
 public interface ICartDao
 {	
 	List<CartDto> getCartByMemberId(@Param("mbId") String mbId);
+	
+	void addToCart(CartDto sBagDto);
+
+	void deleteProducts(List<Integer> pdNums);
+
+	void deleteByPdNum(Integer pdNum);
 }

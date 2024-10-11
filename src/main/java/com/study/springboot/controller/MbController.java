@@ -84,7 +84,8 @@ public class MbController {
     
     @PostMapping("/loginOk.do")
     @ResponseBody
-    public String login(@RequestParam("id") String id, @RequestParam("pw") String pw, HttpSession session) {
+    public String login(@RequestParam("id") String id, @RequestParam("pw") String pw, @RequestParam(value = "redirect", required = false) String redirect, 
+    				    HttpSession session) {
     	
         boolean isValidUser = memberService.validateLogin(id, pw);
         
@@ -99,6 +100,15 @@ public class MbController {
 
             
         	jsonResponse = "{\"code\": \"success\", \"desc\": \"로그인 되었습니다.\"}";
+        	
+        	// redirect URL이 있을 경우 해당 URL로 리다이렉트
+            if (redirect != null && !redirect.isEmpty()) {
+            	session.removeAttribute("redirect");
+                return "{\"code\": \"redirect\", \"url\": \"" + redirect + "\"}"; // JSON 응답으로 URL 반환
+            } else {
+                return "{\"code\": \"redirect\", \"url\": \"main_view.do\"}"; // 기본 페이지 URL
+            }
+        	
         } else {
         	jsonResponse = "{\"code\": \"error\", \"desc\": \"아이디 또는 비밀번호가 잘못되었습니다.\"}";
         }

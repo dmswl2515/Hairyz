@@ -1,22 +1,25 @@
 package com.study.springboot.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.study.springboot.dao.ICartDao;
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dto.CartDto;
 import com.study.springboot.dto.MemberDto;
-import com.study.springboot.dto.OrderProductDto;
 import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.ProductReviewDto;
@@ -36,6 +39,9 @@ public class ShopController {
 	
 	@Autowired
     private IMemberDao memberDao;
+	
+	@Autowired
+    private ICartDao cartDao;
 	
 	@Autowired
 	private PRepository pRepository;
@@ -69,24 +75,25 @@ public class ShopController {
         // 페이지당 항목 수
         int pageSize = 16; 
         
-        // 총 상품 수를 데이터베이스에서 가져옵니다.
-        long totalProducts = pRepository.count(); // 총 상품 수를 세는 메서드
-
-        // 시작 행 번호 및 종료 행 번호를 계산합니다.
-        int startRow = (page - 1) * pageSize; 
-        int endRow = Math.min(startRow + pageSize, (int) totalProducts); 
-
-        // 데이터베이스에서 현재 페이지에 해당하는 상품을 가져옵니다.
-        List<PDto> products = pRepository.findPaginated(startRow, pageSize); // 시작 행 번호와 페이지 크기를 사용합니다.
+        // 필터링된 상품 수 계산
+        long totalProducts;
+        List<PDto> products;
         
-        // 카테고리 또는 동물 필터링 적용
-        if (pd_category != null && !pd_category.isEmpty()) {
-            products = pRepository.findByPdCategory(pd_category, startRow, pageSize);
+        // 동물 및 카테고리 필터링 적용
+        if (pd_category != null && !pd_category.isEmpty() && pd_animal != null && !pd_animal.isEmpty()) {
+            totalProducts = pRepository.countByPdAnimalAndCategory(pd_animal, pd_category);
+            products = pRepository.findByPdAnimalAndCategory(pd_animal, pd_category, (page - 1) * pageSize, pageSize);
         } else if (pd_animal != null && !pd_animal.isEmpty()) {
-            products = pRepository.findByPdAnimal(pd_animal, startRow, pageSize);
+            totalProducts = pRepository.countByPdAnimal(pd_animal);
+            products = pRepository.findByPdAnimal(pd_animal, (page - 1) * pageSize, pageSize);
+        } else if (pd_category != null && !pd_category.isEmpty()) {
+            totalProducts = pRepository.countByPdCategory(pd_category);
+            products = pRepository.findByPdCategory(pd_category, (page - 1) * pageSize, pageSize);
+        } else {
+            totalProducts = pRepository.count(); // 총 상품 수를 세는 메서드
+            products = pRepository.findPaginated((page - 1) * pageSize, pageSize);
         }
 
-        // 모델에 데이터 추가
         model.addAttribute("ProductItems", products); // 현재 페이지의 상품 리스트
         model.addAttribute("currentPage", page); // 현재 페이지 번호
         model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
@@ -99,8 +106,11 @@ public class ShopController {
     @RequestMapping("/p_details")    
     public String productDetail(@RequestParam(defaultValue = "1") int page,
 								@RequestParam("pdNum") int pdNum, 
-							 	@RequestParam(value = "qna_no", required = false, defaultValue = "0") int qna_no,
-    							Model model) {
+								@RequestParam(value = "qnaNo", defaultValue = "0") int qnaNo,
+    							HttpSession session,
+								Model model) {
+    	
+    	System.out.println(qnaNo);
     	
     	// pdNum에 해당하는 상품 정보를 DB에서 가져옴
         List<PDto> product = pRepository.findByPdNum(pdNum);
@@ -111,17 +121,30 @@ public class ShopController {
             
         }
         
+        //회원정보 가져오기
+	    String memberId = (String) session.getAttribute("userId");
+	    
+        if (memberId != null) {
+        	MemberDto memberList = mService.getMemberByMemberId(memberId);
+        	model.addAttribute("memberList", memberList);
+        	
+        	System.out.println("memberList :" + memberList);
+        } else {
+        	System.out.println("Member ID is null");
+        }
+        
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
         
-        //페이지 네이션 위한 용도
-        List<QnaReplyDto> qnaRepList1 = qnaService.getQnaReplyByQnaNo(qna_no);
+        //QnA 답변 가져오기
+        List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo);
+        System.out.println("qnaRepList: " + qnaRepList);
         
-        if (qna_no > 0) {
-        	List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qna_no);
+        if (qnaNo > 0) {
+        	
             model.addAttribute("qnaRepList", qnaRepList);
             model.addAttribute("currentQnaRep", qnaRepList.isEmpty() ? null : qnaRepList.get(0)); // 첫 번째 답변만 추가
-            System.out.println("qna_no: " + qna_no);
+            System.out.println("qna_no: " + qnaNo);
             System.out.println("qnaRepList: " + qnaRepList);
         } else {
             System.out.println("qna_no는 0입니다. Q&A 답변을 가져올 수 없습니다.");
@@ -129,7 +152,7 @@ public class ShopController {
         
 	        // 페이지네이션 설정
 	        int pageSize = 1; // 페이지당 항목 수
-	        int totalQnAs = qnaRepList1.size(); // 전체 상품 수
+	        int totalQnAs = qnaRepList.size(); // 전체 상품 수
 	        int startRow = (page - 1) * pageSize; // 시작 인덱스
 	        int endRow = Math.min(startRow + pageSize, totalQnAs);
 	        
@@ -137,8 +160,8 @@ public class ShopController {
 	        List<ProductReviewDto> reviews = PRService.getReviewsByProductId(pdNum);
 	        model.addAttribute("reviews", reviews);
 	        
-	        //QnA
-	        List<QnaReplyDto> paginatedQnAs = qnaRepList1.subList(startRow, endRow);
+	        //QnA 페이지네이션 
+	        List<QDto> paginatedQnAs = qnaList.subList(startRow, endRow);
 	        
 	        model.addAttribute("products", paginatedQnAs);
 	        model.addAttribute("currentPage", page); // 현재 페이지 번호
@@ -192,6 +215,15 @@ public class ShopController {
     	    return "s_purchase";       
     }
     
+    @PostMapping("/addProduct")
+    public ResponseEntity<String> addToCart(@RequestBody CartDto cartDto) {
+        // 장바구니에 추가
+    	cartDao.addToCart(cartDto);
+    	
+    	System.out.println(cartDto);
+        return ResponseEntity.ok("상품이 장바구니에 담겼습니다.");
+    }
+    
     @RequestMapping("/s_cart")    
     public String shoppingCart(HttpSession session, Model model) {
     		
@@ -232,10 +264,35 @@ public class ShopController {
     	
 	    oService.insertOrder(ordersDto);
 	    
-	    
-		
-	
         return "s_completeBuy";              
+    }
+    
+    @PostMapping("/DeleteCart")
+    @ResponseBody
+    public Map<String, Object> deleteSelectedItems(@RequestBody Map<String, Object> requestData) {
+    	
+    	List<Integer> pdNums = (List<Integer>) requestData.get("pdNums"); // Integer로 변환
+        Boolean eachCheckBox = (Boolean) requestData.get("eachCheckBox"); // Boolean으로 변환
+        Map<String, Object> response = new HashMap<>();
+        
+        System.out.println("pdNums : " + pdNums);
+        System.out.println("eachCheckBox : " + eachCheckBox);
+        System.out.println("response : " + response);
+        
+        
+        // 체크박스 값 처리
+        if (eachCheckBox != null && eachCheckBox) {
+            // 체크박스가 선택되었을 때 처리할 로직
+            System.out.println("Checkbox is selected");
+            boolean isDeleted = cartService.deleteSelectedProducts(pdNums);
+            response.put("success", isDeleted);
+        } else {
+            // 체크박스가 선택되지 않았을 때 처리할 로직
+            System.out.println("Checkbox is not selected");
+            response.put("success", false);
+        }
+
+        return response;
     }
     
     @RequestMapping("/test1")

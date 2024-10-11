@@ -18,4 +18,16 @@ public class CartService {
     public List<CartDto> getCartByMemberId(String memberId) {
         return cartDao.getCartByMemberId(memberId); 
     }
+	
+    public boolean deleteSelectedProducts(List<Integer> pdNums) {
+        try {
+            // Mapper 호출
+        	cartDao.deleteProducts(pdNums);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

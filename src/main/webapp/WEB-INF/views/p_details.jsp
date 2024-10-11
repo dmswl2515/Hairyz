@@ -32,171 +32,6 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-    	$(document).ready(function() {
-    	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
-    	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
-    	
-    	    function updateTotalPrice() {
-    	        let totalPrice = pricePerItem * quantity;
-    	        $('#total-price').text(totalPrice.toLocaleString() + '원');
-    	    }
-    	
-    	    $('#increase').on('click', function() {
-    	        quantity++;
-    	        $('#quantity-input').val(quantity);
-    	        updateTotalPrice();
-    	    });
-    	
-    	    $('#decrease').on('click', function() {
-    	        if (quantity > 1) {
-    	            quantity--;
-    	            $('#quantity-input').val(quantity);
-    	            updateTotalPrice();
-    	        }
-    	    });
-    	    
-    	    $('#quantity-input').on('focus', function() {
-    	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
-            });
-    	
-    	    $('#quantity-input').on('input', function() {
-    	        // 사용자가 입력한 값을 받아오기
-    	        let inputValue = $(this).val();
-    	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
-    	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
-    	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
-    	        } else {
-    	            quantity = 1; // 기본값 1 설정
-    	        }
-    	        $(this).val(quantity); // 입력란의 값을 업데이트
-    	        updateTotalPrice(); // 총 가격 업데이트
-    	    });
-    	
-    	    // 초기 총 가격 업데이트
-    	    updateTotalPrice();
-    	});
-    	
-    	//구매버튼 클릭 이벤트
-    	function goToPurchase() {
-    	    let ProductNum = document.getElementById('productNum').value;
-    	    let ProductName = document.getElementById('productName').innerText;
-    	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
-    	    let Productquantity = document.getElementById('quantity-input').value;
-    	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
-    	    
-    		console.log(ProductNum)    
-    	    console.log(ProductName)
-    	    console.log(ProductImage)
-    	    console.log(Productquantity)
-    	    console.log(Productprice)
-    	    
-    	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
-                  '&productName=' + encodeURIComponent(ProductName) +
-                  '&productImage=' + encodeURIComponent(ProductImage) +
-                  '&productQuantity=' + encodeURIComponent(Productquantity) +
-                  '&productPrice=' + encodeURIComponent(Productprice);
-    	    
-    	    console.log(url)
-    	    
-    	    window.location.href = url;
-    	}
-
-        // 장바구니에 담기 버튼 클릭 이벤트
-        function goToCart() {
-            alert('상품이 장바구니에 담겼습니다.'); // 실제 장바구니 로직으로 대체
-        }
-        
-     	// 모달 열기
-        var userId = "${sessionScope.userId != null ? sessionScope.userId : ''}";
-        
-        function getUserId() {
-            return userId; 
-        }
-        
-        function openModal() {
-        	if (!getUserId()) { // 로그인 안된 상태
-                alert("로그인이 필요한 서비스입니다.");
-                window.location.href = "/login.do"; // 로그인 페이지로 이동
-                return;
-            } else{        	
-	            $('#qnaModal').modal('show');
-            }
-        }
-
-
-        function openModal() {
-            
-
-            // AJAX 요청으로 회원 정보 가져오기
-            $.ajax({
-            	url: `/getMemberInfo/${userId}`, // 회원 정보 가져올 URL (서버에 설정된 경로에 따라 수정)
-                type: 'GET',
-                success: function(memberInfo) {
-                    console.log(memberInfo);
-                    $('#qnaModal').modal('show');
-                },
-                error: function(error) {
-                    // 오류 처리
-                    alert('회원 정보를 가져오는 데 실패했습니다.');
-                }
-            });
-        }
-
-        // Q&A 제출
-        function submitQnA() {
-            const content = document.getElementById('qnaContent').value;
-            const visibility = document.querySelector('input[name="visibility"]:checked').value;
-
-            // 유효성 검사 (여기서 추가적인 검사를 할 수 있습니다)
-            if (!content) {
-                alert('문의 내용을 입력하세요.');
-                return;
-            }
-
-            // 서버에 데이터를 전송 (예시: AJAX 사용)
-            $.ajax({
-                url: '/submitQnA', // Q&A를 제출할 URL
-                type: 'POST',
-                data: {
-                    content: content,
-                    visibility: visibility
-                },
-                success: function(response) {
-                    // 성공적으로 등록된 후 처리 (예: 알림, 리스트 갱신 등)
-                    alert('문의가 등록되었습니다.');
-                    $('#qnaModal').modal('hide');
-                    document.getElementById('qnaForm').reset(); // 폼 초기화
-                    // 추가로 Q&A 리스트 갱신 코드를 작성할 수 있습니다
-                },
-                error: function(error) {
-                    // 오류 처리
-                    alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');
-                }
-            });
-        }
-        
-    	document.querySelectorAll('.tab-button').forEach(button => {
-    	    button.addEventListener('click', function() {
-    	        // 모든 버튼에서 'active' 클래스 제거
-    	        document.querySelectorAll('.tab-button').forEach(btn => {
-    	            btn.classList.remove('active');
-    	        });
-    	        
-    	        // 클릭한 버튼에 'active' 클래스 추가
-    	        this.classList.add('active');
-    	        
-    	     	// 해당 섹션으로 스크롤
-                const targetId = this.id.replace('-tab', '-content'); // ID 변환
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' }); // 부드럽게 스크롤
-                }
-    	    });
-    	});
-    });
-</script>
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -274,7 +109,71 @@
     }
     .star-empty {
         color: lightgray; /* 비어 있는 별 색상 */
-    }	
+    }
+    
+    .modal {
+    	display: none; /* 기본적으로 숨김 */
+	    position: fixed; /* 고정 위치 */
+	    z-index: 1; /* 가장 위에 표시 */
+	    left: 0;
+	    top: 0;
+	    width: 100%; /* 전체 너비 */
+	    height: 100%; /* 전체 높이 */
+	    background-color: rgb(0, 0, 0); /* 배경색 */
+	    background-color: rgba(0, 0, 0, 0.4); /* 배경 투명도 */
+    }
+    
+    .modal-content {
+    	position: relative;
+	    background-color: #ffffe0;
+	    border-radius: 5px;
+	    margin: 15% auto; /* 중앙 정렬 */
+	    padding: 20px;
+	    border: 1px solid #888;
+	    width: 20%; /* 모달 너비 */
+	    text-align: center;
+	}
+	
+	.cart-icon {
+	    font-size: 40px; /* 장바구니 아이콘 크기 */
+	    margin-bottom: 10px;
+	}
+	
+	.button-container {
+	    display: flex;
+	    justify-content: space-between; /* 버튼들을 한 줄로 정렬하고 사이에 공간 배분 */
+	    margin-top: 20px;
+	}
+	
+	.cartbtn{
+		background-color: #ffc107; /* 버튼 색상 */
+    	border: none;
+    	border-radius: 20px;
+    	flex: 1; /* 버튼의 너비를 동일하게 만듦 */
+   		margin: 0 5px; /* 버튼 사이에 약간의 간격 */
+	}
+	
+	.cartbtn:hover {
+	    background-color: #e0a800; /* 호버 시 조금 더 어두운 색 */
+	}
+	
+	
+	.close {
+	    color: #ffc107; /* 닫기 버튼 색상 */
+	    position: absolute;
+	    top: 10px;
+	    right: 10px;
+	    font-size: 28px;
+	    font-weight: bold;
+	}
+	
+	.close:hover,
+	.close:focus {
+	    color: black;
+	    text-decoration: none;
+	    cursor: pointer;
+	}
+	
 
         
 </style>
@@ -329,6 +228,23 @@
     							<button onclick="goToPurchase()" id="buy-now" class="btn btn-warning" style="width: 200px; margin-left: 10px;">구매하기</button>
 		              	   		<button onclick="goToCart()" id="add-to-cart" class="btn btn-outline-warning" style="width: 200px; color: black;">장바구니</button>
 		              	   	</div>
+	              	   		<!-- 모달 -->
+							<div id="cartModal" class="modal">
+							    <div class="modal-content">
+							        <span class="close" onclick="closeModal()">&times;</span>
+							        
+							        <!-- 장바구니 아이콘 추가 -->
+							        <div class="cart-icon">
+							            &#128722; <!-- 유니코드 장바구니 아이콘 -->
+							        </div>
+							        
+							        <p>상품이 장바구니에 담겼습니다.</p>
+							        <div class="button-container">
+								        <button class="cartbtn" onclick="continueShopping()">쇼핑 계속하기</button>
+								        <button class="cartbtn" onclick="goToCartPage()">장바구니로 이동</button>
+							    	</div>
+							    </div>
+							</div>
 	              </div>
               </div> 
 		</div>
@@ -459,7 +375,7 @@
 			    <div id="qna-content" class="">
 			        <h3><strong>Q&A</strong></h3>
 			        <p>구매하시려는 상품에 대해 궁금한 점이 있으면 문의 주세요.</p>
-										<div class="container d-flex justify-content-end">
+					<div class="container d-flex justify-content-end">
 				        <input type="button" class="btn btn-warning custom-width mb-3" value="Q&A 작성"  onclick="openModal()"/>
 			       	</div>
 			       	<!-- 모달 -->
@@ -511,97 +427,132 @@
 					  </thead>
 				      <tbody>
 				      	<c:if test="${not empty qnaList}">
-					        <c:forEach var="qDTO" items="${qnaList}">
-					            <tr>
-					                <td class="text-center align-middle">
-						                <c:choose>
-									        <c:when test="${qDTO.qna_rstate == 'N'}">
-									            미답변
-									        </c:when>
-									        <c:when test="${qDTO.qna_rstate == 'Y'}">
-									            답변 완료
-									        </c:when>
-									    </c:choose>
-									</td>        
-					                <td onclick="handleClick('${qDTO.qna_qstate}', '${qDTO.qna_content}', '${qDTO.qna_no}')" style="cursor: pointer;">
-			                            <div class="product-container">    
-			                                <c:choose>
-			                                    <c:when test="${qDTO.qna_qstate == '비공개'}">
-			                                        비밀글입니다
-			                                    </c:when>
-			                                    <c:when test="${qDTO.qna_qstate == '공개'}">
-			                                        ${qDTO.qna_content}
-			                                    </c:when>
-			                                </c:choose>&nbsp;&nbsp;
-			                                <div style="margin-top: 1px;">
-			                                    <c:if test="${qDTO.qna_qstate == '비공개'}">
-			                                        <i class="fas fa-lock"></i>&nbsp;&nbsp;
-			                                    </c:if>
-			                                    <c:if test="${qDTO.qna_qstate == '공개'}">
-			                                    </c:if>
-			                                    <c:if test="${qDTO.isNew()}">
-			                                        <span class="badge badge-secondary">New</span>
-			                                    </c:if>
-			                                </div>
-			                            </div>     
-			                        </td>
-			                        <td class="text-center align-middle">${qDTO.qna_name}</td>
-			                        <td class="text-center align-middle">
-			                            <fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />        
-			                        </td>
-			                    </tr>
-			                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
-			                    <c:choose>
-								    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
-								        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
-								            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
-								            <td colspan="3">${qDTO.qna_content}</td>    
-								        </tr>
-								        <c:if test="${currentQnaRep != null && currentQnaRep.qnaNo == qDTO.qna_no}">
-									        <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
-									            <td colspan="1" class="text-center align-middle"></td>
-									            <td colspan="1" style="font-size: 14px;">
-									            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
-									            		${currentQnaRep.qrContent}
-									           	</td>
-									            <td colspan="1">
-									            	<c:choose>
-												        <c:when test="${currentQnaRep.qrId == 'admin'}">
-												            관리자
-												        </c:when>
-												        <c:otherwise>
-												            ${currentQnaRep.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
-												        </c:otherwise>
-												    </c:choose>
-									            </td>									            
-								            	<td class="text-center align-middle">
-						                            <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
-						                        </td>
-								            									                
-									        </tr>
-								        </c:if>		
-								    </c:when>
-								    <c:when test="${qDTO.qna_qstate == '공개'}">
-								        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+				      	<c:forEach var="qDTO" items="${qnaList}">
+				      	<input type="hidden" id="loggedInUserId" value="${memberList.mb_id}" />
+				            <tr>
+				                <td class="text-center align-middle">
+					                <c:choose>
+								        <c:when test="${qDTO.qna_rstate == 'N'}">
+								            미답변
+								        </c:when>
+								        <c:when test="${qDTO.qna_rstate == 'Y'}">
+								            답변 완료
+								        </c:when>
+								    </c:choose>
+								</td>        
+				                <td onclick="handleClick('${qDTO.qna_authorId}','${qDTO.qna_qstate}', '${qDTO.qna_content}', '${qDTO.qna_no}')" style="cursor: pointer;">
+		                            <div class="product-container">  
+		                                <c:choose>
+		                                	<c:when test="${qDTO.qna_qstate == '비공개' && qDTO.qna_authorId == memberList.mb_id}">
+											    ${qDTO.qna_content}
+											</c:when>
+		                                    <c:when test="${qDTO.qna_qstate == '비공개' && (memberList.mb_id == null || qDTO.qna_authorId != memberList.mb_id)}">
+		                                        비밀글입니다
+		                                    </c:when>
+		                                    <c:when test="${qDTO.qna_qstate == '공개' || qDTO.qna_authorId == memberList.mb_id}">
+		                                        ${qDTO.qna_content}
+		                                    </c:when>
+		                                </c:choose>&nbsp;&nbsp;
+		                                <div style="margin-top: 1px;">
+		                                    <c:if test="${qDTO.qna_qstate == '비공개'}">
+		                                        <i class="fas fa-lock"></i>&nbsp;&nbsp;
+		                                    </c:if>
+		                                    <c:if test="${qDTO.qna_qstate == '공개'}">
+		                                    </c:if>
+		                                    <c:if test="${qDTO.isNew()}">
+		                                        <span class="badge badge-secondary">New</span>
+		                                    </c:if>
+		                                </div>
+		                            </div>     
+		                        </td>
+		                        <td class="text-center align-middle">${qDTO.qna_name}</td>
+		                        <td class="text-center align-middle">
+		                            <fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />        
+		                        </td>
+		                    </tr>
+		                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
+		                    <c:choose>
+							    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
+							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
+							            <td colspan="3">${qDTO.qna_content}</td>    
+							        </tr>
+							        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
+								        <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
 								            <td colspan="1" class="text-center align-middle"></td>
-								            <td colspan="3">${qDTO.qna_content}</td>    
+								            <td colspan="1" style="font-size: 14px;">
+								            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
+								            		${currentQnaRep.qrContent}
+								           	</td>
+								            <td colspan="1">
+								                <!--  비공개 글인데 자신이 작성자 일 경우 -->
+								                
+								            	<c:choose>
+											        <c:when test="${currentQnaRep.qrId == 'admin'}">
+											            관리자
+											        </c:when>
+											        <c:otherwise>
+											            ${currentQnaRep.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
+											        </c:otherwise>
+											    </c:choose>
+								            </td>									            
+							            	<td class="text-center align-middle">
+					                            <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
+					                        </td>
+							            									                
 								        </tr>
-								    </c:when>
-								</c:choose>
-			                </c:forEach>
-			            </c:if>
+							        </c:if>		
+							    </c:when>
+							    <c:when test="${qDTO.qna_qstate == '공개'}">
+							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+							            <td colspan="1" class="text-center align-middle"></td>
+							            <td colspan="3">${qDTO.qna_content}</td>    
+							        </tr>
+							    </c:when>
+							    <c:when test="${qDTO.qna_qstate == '비공개' && qDTO.qna_authorId == memberList.mb_id}">
+							        <!-- 비공개 글이고 작성자인 경우 -->
+							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
+							            <td colspan="3">${qDTO.qna_content}</td>    
+							        </tr>
+							        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
+							            <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
+							                <td colspan="1" class="text-center align-middle"></td>
+							                <td colspan="1" style="font-size: 14px;">
+							                    <i class="fas fa-angle-right" style="margin-right: 5px;"></i>
+							                    ${currentQnaRep.qrContent}
+							                </td>
+							                <td colspan="1">
+							                    <c:choose>
+							                        <c:when test="${currentQnaRep.qrId == 'admin'}">
+							                            관리자
+							                        </c:when>
+							                        <c:otherwise>
+							                            ${currentQnaRep.qrId}
+							                        </c:otherwise>
+							                    </c:choose>
+							                </td>
+							                <td class="text-center align-middle">
+							                    <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
+							                </td>
+							            </tr>
+							        </c:if>
+							    </c:when>
+							</c:choose>
+		                </c:forEach>
+		            </c:if>
 
-						<c:if test="${empty qnaList}">
-						    <tr>
-						        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
-						    </tr>
-						</c:if>
-						
-				      </tbody>
-					</table> 		       
-			    </div>
-			</div>
-       	</div>
+					<c:if test="${empty qnaList}">
+					    <tr>
+					        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
+					    </tr>
+					</c:if>
+					
+			      </tbody>
+				</table> 		       
+		    </div>
+		</div>
+   	</div>
 
        	<!-- 페이지네이션 -->
 		<div class="director">
@@ -612,7 +563,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?page=1&pdNum=${pdNum}&qna_no=${qna_no}'">&lt;&lt;</button>
+	            		onclick="location.href='p_details?page=1&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -623,7 +574,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?page=${currentPage - 1}&pdNum=${pdNum}&qna_no=${qna_no}'">&lt;</button>
+	            		onclick="location.href='p_details?page=${currentPage - 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -635,7 +586,7 @@
 	            </c:when>
 	            <c:otherwise>
 	                <button type="button" class="btn page-button" style="color:gray;" 
-	                		onclick="location.href='p_details?page=${i}&pdNum=${pdNum}&qna_no=${qna_no}'">${i}</button>
+	                		onclick="location.href='p_details?page=${i}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -647,7 +598,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	                    onclick="location.href='p_details?page=${currentPage + 1}&pdNum=${pdNum}&qna_no=${qna_no}'">&gt;</button>
+	                    onclick="location.href='p_details?page=${currentPage + 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -658,7 +609,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?page=${totalPages}&pdNum=${pdNum}&qna_no=${qna_no}'">&gt;&gt;</button>
+	            		onclick="location.href='p_details?page=${totalPages}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
@@ -693,9 +644,238 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
-	function handleClick(qnaQState, qnaContent, qnaNo) {
-	    if (qnaQState === '비공개') {
-	        alert("비밀글입니다");
+	$(document).ready(function() {
+	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
+	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
+	
+	    function updateTotalPrice() {
+	        let totalPrice = pricePerItem * quantity;
+	        $('#total-price').text(totalPrice.toLocaleString() + '원');
+	    }
+	
+	    $('#increase').on('click', function() {
+	        quantity++;
+	        $('#quantity-input').val(quantity);
+	        updateTotalPrice();
+	    });
+	
+	    $('#decrease').on('click', function() {
+	        if (quantity > 1) {
+	            quantity--;
+	            $('#quantity-input').val(quantity);
+	            updateTotalPrice();
+	        }
+	    });
+	    
+	    $('#quantity-input').on('focus', function() {
+	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
+	    });
+	
+	    $('#quantity-input').on('input', function() {
+	        // 사용자가 입력한 값을 받아오기
+	        let inputValue = $(this).val();
+	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
+	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
+	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
+	        } else {
+	            quantity = 1; // 기본값 1 설정
+	        }
+	        $(this).val(quantity); // 입력란의 값을 업데이트
+	        updateTotalPrice(); // 총 가격 업데이트
+	    });
+	
+	    // 초기 총 가격 업데이트
+	    updateTotalPrice();
+	});
+	
+	//구매버튼 클릭 이벤트
+	function goToPurchase() {
+	    let ProductNum = document.getElementById('productNum').value;
+	    let ProductName = document.getElementById('productName').innerText;
+	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
+	    let Productquantity = document.getElementById('quantity-input').value;
+	    let Productprice = document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''); // 숫자만 가져오기
+	    
+		console.log(ProductNum)    
+	    console.log(ProductName)
+	    console.log(ProductImage)
+	    console.log(Productquantity)
+	    console.log(Productprice)
+	    
+	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
+	          '&productName=' + encodeURIComponent(ProductName) +
+	          '&productImage=' + encodeURIComponent(ProductImage) +
+	          '&productQuantity=' + encodeURIComponent(Productquantity) +
+	          '&productPrice=' + encodeURIComponent(Productprice);
+	    
+	    console.log(url)
+	    
+	    window.location.href = url;
+	}
+	
+	// 장바구니에 담기 버튼 클릭 이벤트
+	function goToCart() {
+		 if (!getUserId()) { // 로그인 안된 상태
+		        alert("로그인이 필요한 서비스입니다.");
+		        const redirectUrl = window.location.href;
+		        
+		        sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
+		        window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+		        return; // 더 이상 진행하지 않음
+		    }
+		 
+	    var productNum = document.getElementById('productNum').value;
+	    var quantity = document.getElementById('quantity-input').value;
+	    var price = parseInt(document.getElementById('total-price').innerText.replace('원', '').replace(',', ''));
+	
+	    console.log(userId);
+	    console.log(productNum);
+	    console.log(quantity);
+	    console.log(price);
+	    
+	    var sbagData = {
+	        mbId: userId, 
+	        pdNum: productNum,
+	        sbagAmount: quantity,
+	        sbagPrice: price
+	    };
+	
+	    fetch('/addProduct', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json'
+	        },
+	        body: JSON.stringify(sbagData)
+	    })
+	    .then(response => response.text())
+	    .then(data => {
+	        console.log(data);
+	        // 모달 표시
+	        document.getElementById('cartModal').style.display = 'block';
+	    })
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
+	}
+	
+	// 모달열기
+	function showModal() {
+	    const modal = document.getElementById("cartModal");
+	    modal.style.display = "block"; // 모달 보이기
+	}
+	
+	function closeModal() {
+	    // 모달닫기
+	    document.getElementById("cartModal").style.display = "none";
+	}
+	
+	function continueShopping() {
+	    closeModal(); // 모달 닫기
+	 
+	}
+
+	function goToCartPage() {
+	    window.location.href = "s_cart"; // 장바구니 페이지로 이동
+	}
+	
+		// 모달 열기
+	var userId = "${sessionScope.userId}";
+	console.log(userId);
+	
+	function getUserId() {
+	    return userId; 
+	}
+	
+	function openModal() {
+		if (!getUserId()) { // 로그인 안된 상태
+	        alert("로그인이 필요한 서비스입니다.");
+	        const redirectUrl = window.location.href;
+	        
+	        sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
+	        window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+	        return;
+	    } else{        	
+	        $('#qnaModal').modal('show');
+	    }
+	}
+	
+	// Q&A 제출
+	function submitQnA() {
+	    const content = document.getElementById('qnaContent').value;
+	    const visibility = document.querySelector('input[name="visibility"]:checked').value;
+	    const productNum = document.getElementById('productNum').value;
+	    
+	    console.log(productNum);
+	    console.log(visibility);
+	    console.log(content);
+	
+	    // 유효성 검사 (여기서 추가적인 검사를 할 수 있습니다)
+	    if (!content) {
+	        alert('문의 내용을 입력하세요.');
+	        return;
+	    }
+	
+	    // 서버에 데이터를 전송 (예시: AJAX 사용)
+	    $.ajax({
+	        url: '/submitQnA', // Q&A를 제출할 URL
+	        type: 'POST',
+	        data: {
+	            content: content,
+	            visibility: visibility,
+	            productNum : productNum
+	        },
+	        success: function(response) {
+	        	console.log('Response:', response);
+	            alert('문의가 등록되었습니다.');
+	            $('#qnaModal').modal('hide');
+	            document.getElementById('qnaForm').reset(); // 폼 초기화
+	            
+	            window.location.href = "/p_details?pdNum=" + productNum; 
+	        },
+	        error: function(error) {
+	            alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');
+	        }
+	    });
+	}
+	
+	document.querySelectorAll('.tab-button').forEach(button => {
+	    button.addEventListener('click', function() {
+	        // 모든 버튼에서 'active' 클래스 제거
+	        document.querySelectorAll('.tab-button').forEach(btn => {
+	            btn.classList.remove('active');
+	        });
+	        
+	        // 클릭한 버튼에 'active' 클래스 추가
+	        this.classList.add('active');
+	        
+	     	// 해당 섹션으로 스크롤
+	        const targetId = this.id.replace('-tab', '-content'); // ID 변환
+	        const targetElement = document.getElementById(targetId);
+	        if (targetElement) {
+	            targetElement.scrollIntoView({ behavior: 'smooth' }); // 부드럽게 스크롤
+	        }
+	    });
+	});
+	
+	var loggedInUserId = "${sessionScope.userId}";
+	
+	function handleClick(authorId, qnaQState, qnaContent, qnaNo) {
+		
+		
+		console.log("loggedInUserId : " + loggedInUserId);
+		console.log("authorId : " + authorId);
+		console.log("qnaQState :" + qnaQState);
+		console.log("qnaContent: " + qnaContent);
+		console.log("qnaNo :" + qnaNo);
+		
+		
+		
+		if (qnaQState === '비공개') {
+			if (authorId === loggedInUserId) {
+	            toggleContent(qnaNo); // 내용 토글
+	        } else {
+	            alert("비밀글입니다");
+	        }
 	    } else {
 	        toggleContent(qnaNo); // 공개글의 경우 toggleContent 호출
 	    }
@@ -710,7 +890,9 @@
 	    
 	    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
 	        contentDiv.style.display = "table-row"; // 내용을 보이게 함
-	        detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
+	        if (detailsRow) { // detailsRow가 존재할 때만 display 조정
+	            detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
+	        }
 	    } else {
 	        contentDiv.style.display = "none"; // 내용을 숨김
 	        detailsRow.style.display = "none";

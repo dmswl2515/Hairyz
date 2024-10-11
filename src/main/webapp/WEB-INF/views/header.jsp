@@ -59,7 +59,7 @@
 				if (id == null)
 				{
 				%>
-                 	<a href="login.do" class="btn btn-outline-warning">로그인</a>
+                 	<a href="login.do" class="btn btn-outline-warning" onclick="redirectToLogin()">로그인</a>
                  <%}else{%>
                  	<a href="#" class="btn btn-outline-warning">마이페이지</a>
                  	<a href="s_cart" class="btn btn-outline-warning">장바구니</a>
@@ -90,3 +90,11 @@
              </ul>
          </div>
      </nav>
+     
+     <script>
+	    function redirectToLogin() {
+	        const redirectUrl = window.location.href; // 현재 페이지 URL을 가져옴
+	        sessionStorage.setItem('redirect', redirectUrl); // 세션 스토리지에 저장
+	        window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl); // 로그인 페이지로 이동
+	    }
+	</script>
