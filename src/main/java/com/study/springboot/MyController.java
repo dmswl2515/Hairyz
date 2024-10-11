@@ -683,7 +683,7 @@ public class MyController {
 		}
 
 	}
-	
+	// 동물병원
 	@RequestMapping("/hospitalMap.do")
 	public String hospitalMap(Model model, HttpServletRequest request)
 	{
@@ -692,7 +692,7 @@ public class MyController {
 
 	    return "hospitalMap";
 	}
-	
+	// 애견카페
 	@RequestMapping("/cafeMap.do")
 	public String cafeMap(Model model, HttpServletRequest request)
 	{
@@ -701,12 +701,159 @@ public class MyController {
 
 	    return "cafeMap";
 	}
-	
+	// 캠페인
 	@RequestMapping("/petAdoption.do")
 	public String petAdoption(Model model, HttpServletRequest request)
 	{
 		
 	    return "petAdoption";
+	}
+	// 회원 관리
+	@RequestMapping("/memberManagement.do")
+	public String memberManagement(Model model, HttpServletRequest request)
+	{
+		
+		// 한 페이지에 보여줄 항목 수
+	    int pageSize = 5;
+
+	    // 현재 페이지 - request에서 page 파라미터를 가져옴
+	    String pageParam = request.getParameter("page");
+	    int currentPage = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
+	    if(currentPage < 1) {
+	    	currentPage = 1;
+	    }
+
+	    // 총 항목 수 계산
+	    PageDto pDto = memberDao.memberAllTotal();
+	    int totalCount = pDto.getTotal();
+	    // 총 페이지 수 계산
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+	    // MyBatis 쿼리에 필요한 offset 계산
+	    int startRow = (currentPage - 1) * pageSize + 1; // 시작 행
+	    int endRow = startRow + pageSize - 1; // 끝 행
+	    
+	    // 데이터 가져오기
+	    List<MemberDto> memberAll = memberDao.memberPageList(endRow, startRow);
+
+	    // JSP에 값 전달
+	    model.addAttribute("memberManage", memberAll);
+	    model.addAttribute("currentPage", currentPage);
+	    model.addAttribute("totalPages", totalPages);
+		
+		
+	    return "memberManagement";
+	}
+	
+	// 회원관리 - 강퇴,정지
+	@PostMapping("/updateMemberState.do")
+	@ResponseBody
+	public ResponseEntity<String> updateMemberState(Model model, HttpServletRequest request)
+	{
+		String[] memberList = request.getParameterValues("memberList");
+		String action = request.getParameter("action");
+		try
+		{
+			if(action.equals("expel")) {
+				for (String memberId : memberList) {
+					int mbNo = Integer.parseInt(memberId);
+					//회원강퇴
+					memberDao.updateNoState(mbNo, 3);
+				}
+			}else  if(action.equals("suspend")) {
+				for (String memberId : memberList) {
+					int mbNo = Integer.parseInt(memberId);
+					//회원정지
+					memberDao.updateNoState(mbNo, 4);
+				}
+			}
+			return ResponseEntity.ok().body("success");
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+
+	}
+	// 회원관리 - 카테고리 검색
+	@RequestMapping("/keywordMemberManagement.do")
+	public String keywordMemberManagement(Model model, HttpServletRequest request)
+	{
+		
+		// 한 페이지에 보여줄 항목 수
+	    int pageSize = 5;
+
+	    // 현재 페이지 - request에서 page 파라미터를 가져옴
+	    String pageParam = request.getParameter("page");
+	    String category = request.getParameter("category");
+	    String keyword = request.getParameter("keyword");
+	    int currentPage = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
+	    if(currentPage < 1) {
+	    	currentPage = 1;
+	    }
+	    //카테고리 구분
+	    PageDto pDto = null;
+	    if(category.equals("all")) {
+	    	pDto = memberDao.memberAllTotal();
+	    }else if(category.equals("nickname")) {
+	    	pDto = memberDao.memberNickNameTotal("%" + keyword + "%");
+	    }else if(category.equals("id")) {
+	    	pDto = memberDao.memberIdTotal("%" + keyword + "%");
+	    }else if(category.equals("phone")) {
+	    	pDto = memberDao.memberPhoneTotal("%" + keyword + "%");
+	    }else if(category.equals("status")) {
+	    	if(keyword.equals("정상")) {
+	    		pDto = memberDao.memberStateTotal(1);
+	    	}else if(keyword.equals("탈퇴")) {
+	    		pDto = memberDao.memberStateTotal(2);
+	    	}else if(keyword.equals("강퇴")) {
+	    		pDto = memberDao.memberStateTotal(3);
+	    	}else if(keyword.equals("정지")) {
+	    		pDto = memberDao.memberStateTotal(4);
+	    	}
+	    }
+	    
+	    
+	    // 총 항목 수 계산
+	    int totalCount = pDto.getTotal();
+	    // 총 페이지 수 계산
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+	    // MyBatis 쿼리에 필요한 offset 계산
+	    int startRow = (currentPage - 1) * pageSize + 1; // 시작 행
+	    int endRow = startRow + pageSize - 1; // 끝 행
+	    
+	    // 데이터 가져오기
+	    List<MemberDto> memberDtos = null;
+	    
+	    if(category.equals("all")) {
+	    	memberDtos = memberDao.memberAllSelectList(endRow, startRow, "%" + keyword + "%");
+	    }else if(category.equals("nickname")) {
+	    	memberDtos = memberDao.memberNickNameSelectList(endRow, startRow, "%" + keyword + "%");
+	    }else if(category.equals("id")) {
+	    	memberDtos = memberDao.memberIdSelectList(endRow, startRow, "%" + keyword + "%");
+	    }else if(category.equals("phone")) {
+	    	memberDtos = memberDao.memberPhoneSelectList(endRow, startRow, "%" + keyword + "%");
+	    }else if(category.equals("status")) {
+	    	if(keyword.equals("정상")) {
+	    		memberDtos = memberDao.memberStateSelectList(endRow, startRow, 1);
+	    	}else if(keyword.equals("탈퇴")) {
+	    		memberDtos = memberDao.memberStateSelectList(endRow, startRow, 2);
+	    	}else if(keyword.equals("강퇴")) {
+	    		memberDtos = memberDao.memberStateSelectList(endRow, startRow, 3);
+	    	}else if(keyword.equals("정지")) {
+	    		memberDtos = memberDao.memberStateSelectList(endRow, startRow, 4);
+	    	}
+	    }
+
+	    // JSP에 값 전달
+	    model.addAttribute("memberManage", memberDtos);
+	    model.addAttribute("currentPage", currentPage);
+	    model.addAttribute("totalPages", totalPages);
+		
+		
+	    return "memberManagement";
 	}
 
 	// uuid 생성할 메서드 선언

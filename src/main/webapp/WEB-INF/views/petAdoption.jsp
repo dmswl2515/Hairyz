@@ -43,6 +43,47 @@ body {
     margin-bottom: 20px; /* 이미지와 텍스트 사이에 여백 추가 */
 }
 
+/* 이미지 섹션 스타일 */
+.campaign-section {
+    margin-top: 40px;
+}
+
+.campaign-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.image-wrapper {
+    text-align: center; /* 텍스트와 이미지를 중앙에 배치 */
+    margin-bottom: 20px;
+}
+
+/* 이미지 설명 텍스트 */
+.image-caption {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* 이미지 스타일 수정 */
+.image-wrapper img {
+    width: 100%; /* 이미지를 가득 채우도록 설정 */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* 이미지가 양 옆에 배치되도록 설정 */
+.campaign-image {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* 이미지 간격 조절 */
+}
+
 /* 이미지 스타일 */
 .campaign-image img {
     width: 100%;
@@ -67,12 +108,30 @@ hr {
 
         <!-- 캠페인 이미지 섹션 -->
         <div class="custom-container">
-        	 <!-- 텍스트를 이미지 위쪽에 배치 -->
-			<div class="campaign-text">유기동물에게 새 삶을!</div>
-
-			<div class="campaign-image">
-                <img src="images/petAdoption.png" alt="유기동물 입양 캠페인">
+            <div class="campaign-section">
+                <div class="campaign-title">유기동물 현황</div>
+                <div class="campaign-image">
+                    <img src="images/originalgraph.png" alt="유기동물 입양 캠페인">
+                    <img src="images/bargraph.png" alt="유기동물 입양 캠페인">
+                </div>
             </div>
+
+            <!-- 두 번째 이미지 섹션 -->
+            <div class="campaign-section">
+                <div class="campaign-title">지자체 유기동물 통계</div>
+                
+                <!-- 설명 텍스트 추가 -->
+				<div class="image-wrapper">
+					<div class="image-caption">입양률(%)</div>
+					<img src="images/adoptionratesbyregion.png" alt="입양률 그래프">
+				</div>
+
+				<!-- 두 번째 이미지 섹션 (안락사율) -->
+				<div class="image-wrapper">
+					<div class="image-caption">안락사율(%)</div>
+					<img src="images/AutonomousRegion.png" alt="안락사율 그래프">
+				</div>
+			</div>
         </div>
     </div>
 
