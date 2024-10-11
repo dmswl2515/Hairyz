@@ -86,27 +86,36 @@
         </div>
         
         <script>
-	    $(document).ready(function() {
-	        let liked = false; // 좋아요 상태
-	
-	        $('#likeIcon').click(function() {
-	            liked = !liked; // 클릭 시 좋아요 상태 토글
-	
-	            // 좋아요 수 업데이트
-	            let currentCount = parseInt($('#likeCount').text());
-	            if (liked) {
-	                currentCount += 1; // 좋아요 수 증가
-	                $(this).css('color', 'red'); // 아이콘 색상 변경
-	            } else {
-	                currentCount -= 1; // 좋아요 수 감소
-	                $(this).css('color', 'lightgray'); // 아이콘 색상 변경
-	            }
-	
-	            // 변경된 수를 DOM에 업데이트
-	            $('#likeCount').text(currentCount);
-	        });
-	    });
-	</script>
+		    $(document).ready(function() {
+		        let liked = false; // 좋아요 상태
+		        const boardId = ${board.bd_no}; // 현재 게시글 ID
+		
+		        $('#likeIcon').click(function() {
+		            liked = !liked; // 클릭 시 좋아요 상태 토글
+		
+		            // AJAX 요청
+		            $.ajax({
+		                url: '/upLike', // 서버 메서드 URL
+		                type: 'POST',
+		                data: {
+		                    boardId: boardId,
+		                    likeStatus: liked
+		                },
+		                success: function(response) {
+		                    // 서버에서 성공적으로 응답 받음
+		                    const result = JSON.parse(response);
+		                    $('#likeCount').text(result.likes); // 업데이트된 좋아요 수 표시
+		
+		                    // 아이콘 색상 변경
+		                    $('#likeIcon').css('color', liked ? 'red' : 'black');
+		                },
+		                error: function() {
+		                    alert("좋아요 업데이트 중 오류가 발생했습니다.");
+		                }
+		            });
+		        });
+		    });
+		</script>
 
 
         <!-- 댓글 목록 -->
@@ -123,11 +132,11 @@
 
         <!-- 댓글 입력창 -->
         <div class="mt-3">
-            <form action="/comment/add" method="post">
+            <form action="/addReply" method="post">
                 <input type="hidden" name="tb_no" value="${board.bd_no}">
                 <div class="d-flex">
                     <textarea name="rp_content" class="form-control" rows="2" placeholder="댓글을 입력하세요"></textarea>
-                    <button type="submit" class="btn btn-primary ms-2">등록</button>
+                    <button type="submit" class="btn btn-primary ms-2" style="width:8%;">등록</button>
                 </div>
             </form>
         </div>
