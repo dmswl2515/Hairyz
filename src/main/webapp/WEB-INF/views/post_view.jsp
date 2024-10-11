@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,13 +41,20 @@
             <c:if test="${userId == board.mb_id}">
                 <div class="ed_area">
                     <a href="edit.do?bd_no=${board.bd_no}" class="text-muted">수정</a> &nbsp; | &nbsp;
-                    <a href="delete.do?bd_no=${board.bd_no}" class="text-muted">삭제</a>
+                    <a href="javascript:void(0);" onclick="confirmDelete(${board.bd_no})" class="text-muted">삭제</a>
                 </div>
             </c:if>
         </div>
+        <script>
+		function confirmDelete(bd_no) {
+		    if (confirm("이 글을 삭제하시겠습니까?")) {
+		        window.location.href = "/delete.do?bd_no=" + bd_no; // 사용자가 '예'를 클릭하면 삭제 요청
+		    }
+		}
+		</script>
 
         <!-- 작성자 정보 및 조회수 -->
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center mb-3">
 	        <c:choose>
 		        <c:when test="${not empty profile.mb_imgpath}">
 		            <img class="rounded-circle" src="${pageContext.request.contextPath}/upload/${profile.mb_orgname}" alt="프로필 사진" width="40" height="40">
@@ -79,10 +87,10 @@
         <hr>
 
         <!-- 좋아요 및 댓글 수 -->
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center mb-3">
             <i id="likeIcon" class="fas fa-heart" style="color:lightgray;cursor:pointer;"></i>&nbsp;
     		<span id="likeCount" class="ms-1">${likeCount}</span> <!-- 좋아요 수 -->&nbsp;&nbsp;&nbsp;
-            <i class="fas fa-comment ms-3"></i>&nbsp;<span class="ms-1">${reply.size()}</span> <!-- 댓글 수 -->
+            <i class="fas fa-comment ms-3"></i>&nbsp;<span id="replyCount" class="ms-1">${replyCount}</span> <!-- 댓글 수 -->
         </div>
         
         <script>
@@ -129,33 +137,101 @@
 	        });
 		</script>
 
-
         <!-- 댓글 목록 -->
-        <c:forEach var="reply" items="${replies}">
-            <div class="d-flex mb-3">
-                <img src="/images/profile/${reply.rp_writer}" alt="프로필 이미지" class="rounded-circle" width="40" height="40">
-                <div class="ms-2">
-                    <strong>${reply.rp_writer}</strong> <!-- 댓글 작성자 닉네임 -->
-                    <p>${reply.rp_content}</p> <!-- 댓글 내용 -->
-                    <small class="text-muted">${reply.rp_date}</small> <!-- 댓글 작성 날짜 -->
-                </div>
-            </div>
-        </c:forEach>
-
+        <div id="replyList" class="replyList_area">
+		    <c:forEach var="reply" items="${replyList}" varStatus="status">
+			    <div class="d-flex mb-1">
+			        <c:choose>
+			            <c:when test="${not empty replyProfiles[status.index].mb_orgname}">
+					        <!-- 로컬 경로를 제거하고 상대 경로로 설정 -->
+					        <img class="rounded-circle flex-shrink-0" 
+					             src="${pageContext.request.contextPath}/upload/${replyProfiles[status.index].mb_orgname}" 
+					             width="40" height="40" />
+					    </c:when>
+					    <c:otherwise>
+					        <img class="rounded-circle flex-shrink-0" 
+					             src="${pageContext.request.contextPath}/images/logo.png" 
+					             width="40" height="40" />
+					    </c:otherwise>
+			        </c:choose>
+			        <div class="ml-2">
+			        	<span>${reply.rp_writer}</span>
+				        <span class="text-muted ml-2">
+				            <fmt:formatDate value="${reply.rp_date}" pattern="yyyy-MM-dd HH:mm"/>
+				        </span>
+				        <p>${reply.rp_content}</p>
+			        </div>
+			    </div>
+			</c:forEach>
+		</div>
+        
+        
         <!-- 댓글 입력창 -->
-        <div class="mt-3">
-            <form action="/addReply" method="post">
-                <input type="hidden" name="tb_no" value="${board.bd_no}">
-                <div class="d-flex">
-                    <textarea name="rp_content" class="form-control" rows="2" placeholder="댓글을 입력하세요"></textarea>
-                    <button type="submit" class="btn btn-primary ms-2" style="width:8%;">등록</button>
-                </div>
-            </form>
-        </div>
+        <div class="mt-3 replyInput_area">
+		    <form id="replyForm">
+		        <input type="hidden" name="bd_no" value="${board.bd_no}">
+		        <input type="hidden" name="mb_id" value="${board.mb_id}">
+		        <div class="d-flex">
+		            <textarea name="rp_content" class="form-control" rows="2" placeholder="댓글을 입력하세요" required></textarea>
+		            <button type="submit" class="btn btn-warning ms-2" style="width:8%;">등록</button>
+		        </div>
+		    </form>
+		</div>
+		
+		<script>
+		$(document).ready(function() {
+		    $('#replyForm').on('submit', function(event) {
+		        event.preventDefault(); // 기본 제출 이벤트 방지
+		
+		        const formData = $(this).serialize(); // 폼 데이터 직렬화
+		
+		        $.ajax({
+		            url: '/addReply', // 댓글 추가 요청을 처리하는 URL
+		            type: 'POST',
+		            data: formData,
+		            success: function(response) {
+		                console.log(response); // 응답 확인
+		                // 서버에서의 응답 처리
+		                if (response.success) {
+		                    // 변수 선언
+		                    const writerImg = response.writerImg;
+		                    const writer = response.writer;
+		                    const date = response.date;
+		                    const content = response.content;
+		
+		                    // 댓글 목록 갱신
+		                    const newReply = '<div class="d-flex mb-1">' +
+		                        '<img src="' + writerImg + '" alt="프로필 이미지" class="rounded-circle flex-shrink-0" width="40" height="40">' +
+		                        '<div class="ml-2">' +
+		                        '<span>' + writer + '</span>' +
+		                        '<span class="text-muted ml-2">' + date + '</span>' +
+		                        '<p>' + content + '</p>' +
+		                        '</div>' +
+		                        '</div>';
+		                        
+		                    // 댓글 목록 앞에 새로운 댓글 추가
+		                    $('.replyList_area').before(newReply);
+		                    // 텍스트 에어리어 초기화
+		                    $('textarea[name="rp_content"]').val('');
+		                    
+		                	 // 댓글 수 갱신
+		                    const currentReplyCount = parseInt($('#replyCount').text());
+		                    $('#replyCount').text(currentReplyCount + 1); // 댓글 수 +1
+		                } else {
+		                	alert(response.message || '댓글 추가에 실패했습니다. 다시 시도하세요.');
+		                }
+		            },
+		            error: function() {
+		                alert("댓글 추가 중 오류가 발생했습니다.");
+		            }
+		        });
+		    });
+		});
+		</script>
 
         <!-- 목록으로 돌아가기 버튼 -->
         <div class="mt-4">
-            <a href="/board/list" class="btn btn-secondary">목록</a>
+            <a href="/list.do" class="btn btn-secondary" style="width:5rem;">목록</a>
         </div>
     </div>
 	</div>

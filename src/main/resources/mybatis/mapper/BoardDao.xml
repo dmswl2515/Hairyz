@@ -46,6 +46,10 @@
     <select id="checkUserLike" resultType="int">
         SELECT COUNT(*) FROM likes WHERE mb_id = #{userId, jdbcType=VARCHAR} AND bd_no = #{boardId}
     </select>
+    
+    <delete id="deletePost" parameterType="int">
+        UPDATE board SET bd_state = 'N' WHERE bd_no = #{bd_no}
+    </delete>
 	
 	
 </mapper>

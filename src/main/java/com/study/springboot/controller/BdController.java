@@ -4,10 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.springboot.dto.BoardDto;
 import com.study.springboot.dto.MemberDto;
@@ -47,6 +53,8 @@ public class BdController {
     
     @Autowired
     private ServletContext servletContext;
+    
+    private static final Logger logger = LoggerFactory.getLogger(BdController.class); // Logger 생성
 
     @RequestMapping("/write.do")
     public String write(Model model) {
@@ -170,9 +178,9 @@ public class BdController {
     
     // 게시글 상세 페이지
     @GetMapping("/post_view.do/{bd_no}")
-    public String viewPost(@PathVariable("bd_no") int bdNo, Model model, HttpServletRequest request) {
+    public String viewPost(@PathVariable("bd_no") int bd_no, Model model, HttpServletRequest request) {
     	// 게시글 정보 조회
-        BoardDto board = boardService.getPostView(bdNo);
+        BoardDto board = boardService.getPostView(bd_no);
         // 작성자의 프로필 정보 조회
         MemberDto profile = memberService.getMemberByMemberId(board.getMb_id());
         // 세션에서 사용자 ID 가져오기
@@ -180,12 +188,25 @@ public class BdController {
         String userId = (String) session.getAttribute("userId");
         
         // 댓글 리스트 조회
-        List<ReplyDto> reply = replyService.getReplyByBoardId(bdNo);
+        List<ReplyDto> replyList = replyService.getRepliesByBdNo(bd_no);
+        
+        // 댓글 작성자의 프로필 정보를 조회하여 모델에 추가
+        List<MemberDto> replyProfiles = new ArrayList<>();
+        for (ReplyDto reply : replyList) {
+            // 댓글 작성자의 프로필 정보 조회
+            MemberDto replyProfile = memberService.getMemberByMemberId(reply.getMb_id());
+            replyProfiles.add(replyProfile);
+        }
         model.addAttribute("board", board);
         model.addAttribute("profile", profile); 
-        model.addAttribute("reply", reply);
+        model.addAttribute("replyList", replyList);
+        model.addAttribute("replyProfiles", replyProfiles); // 댓글 작성자 프로필 리스트
         model.addAttribute("userId", userId);
-        model.addAttribute("likeCount", boardService.getLikeCount(bdNo)); // 좋아요 수
+        model.addAttribute("likeCount", boardService.getLikeCount(bd_no)); // 좋아요 수
+        model.addAttribute("replyCount", replyList.size()); // 댓글 수
+        // 게시글 ID를 모델에 추가 (AJAX에서 사용할 수 있도록)
+        model.addAttribute("bd_no", bd_no);
+        
         return "post_view";
     }
     
@@ -227,12 +248,87 @@ public class BdController {
         
         return ResponseEntity.ok(response);
     }
+    
+    // 댓글 입력
+    @PostMapping("/addReply")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> addReply(@RequestParam("bd_no") int bd_no, 
+    													@RequestParam("rp_content") String rp_content, 
+    													HttpServletRequest request) 
+    {
+        Map<String, Object> response = new HashMap<>();
 
+        // 세션에서 사용자 ID와 닉네임 가져오기
+        HttpSession session = request.getSession();
+        String writerId = (String) session.getAttribute("userId");
+        String writerNickname = (String) session.getAttribute("userNickname");
+        
+        // 사용자 ID 또는 닉네임이 없는 경우 처리
+        if (writerId == null || writerNickname == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.ok(response);
+        }
+        
+        // ReplyDto 객체 생성
+        ReplyDto replyDto = new ReplyDto();
+        replyDto.setBd_no(bd_no);
+        replyDto.setMb_id(writerId);
+        replyDto.setRp_writer(writerNickname);
+        replyDto.setRp_content(rp_content);
+        
+        // 댓글 추가 로직 (데이터베이스에 저장)
+        boolean success = replyService.addReply(replyDto);
+
+        if (success) {
+            // 댓글 추가 후 응답 데이터 생성
+            response.put("success", true);
+            response.put("writerId", writerId);
+            response.put("writer", writerNickname);
+            response.put("date", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+            response.put("content", rp_content);
+            
+            // 댓글 작성자의 프로필 이미지 경로 가져오기
+            MemberDto writerProfile = memberService.getMemberByMemberId(writerId); // 작성자의 MemberDto 가져오기
+            String writerImgPath = (writerProfile != null) ? writerProfile.getMb_imgpath() : null; // 프로필 이미지 경로
+            
+            // 기본 프로필 이미지 경로
+            String defaultProfileImgPath = request.getContextPath() + "/images/logo.png"; // 기본 프로필 이미지 경로 설정
+            
+            // 웹에서 접근할 수 있는 경로로 변환
+            if (writerImgPath != null) {
+                // mb_imgpath에서 "/upload/"를 포함한 경로로 변환
+                writerImgPath = request.getContextPath() + "/upload/" + writerImgPath.substring(writerImgPath.lastIndexOf("\\") + 1);
+            }
+
+            // 응답에 프로필 이미지 경로 추가
+            response.put("writerImg", (writerImgPath != null) ? writerImgPath : defaultProfileImgPath); // 프로필 이미지 설정
+        } else {
+            response.put("success", false);
+            response.put("message", "댓글 추가에 실패했습니다. 다시 시도하세요.");
+        }
+
+        return ResponseEntity.ok(response);
+    }
 
     @RequestMapping("/list.do")
     public String list(Model model) {
     	
         return "list"; // list.jsp를 반환
+    }
+    
+    @GetMapping("/delete.do")
+    public String deletePost(@RequestParam("bd_no") int bd_no, RedirectAttributes redirectAttributes) {
+    	// 게시글 상태를 'N'으로 변경
+        boolean isDeleted = boardService.deletePost(bd_no);
+
+        if (isDeleted) {
+            redirectAttributes.addFlashAttribute("message", "게시글이 삭제되었습니다.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "게시글 삭제에 실패했습니다.");
+        }
+
+        return "redirect:/list.do"; // 삭제 후 게시글 목록으로 리다이렉트
     }
 
 

@@ -50,4 +50,8 @@ public class BoardService {
         return boardDao.checkUserLike(userId, boardId) > 0;
     }
 
+	public boolean deletePost(int bd_no) {
+		return boardDao.deletePost(bd_no) > 0; // DAO 호출하여 삭제 성공 여부 반환
+	}
+
 }

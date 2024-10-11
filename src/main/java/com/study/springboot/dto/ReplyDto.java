@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReplyDto {
 	private int rp_no;
-    private int tb_no;
+    private int bd_no;
+    private String mb_id;
     private String rp_writer;
     private String rp_content;
     private Date rp_date;
