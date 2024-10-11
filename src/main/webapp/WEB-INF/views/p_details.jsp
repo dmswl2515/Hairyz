@@ -747,15 +747,29 @@
 	        },
 	        body: JSON.stringify(sbagData)
 	    })
-	    .then(response => response.text())
+	    .then(response => {
+		    if (response.status === 200) {
+		        return response.text();
+		    } else {
+		        throw new Error("Conflict");
+		    }
+		})
+	    
 	    .then(data => {
-	        console.log(data);
+		    console.log(data);
+		    // 모달 표시
+		    showModal(); // 상품이 장바구니에 추가된 경우에만 모달을 표시합니다.
+		})
 	        // 모달 표시
-	        document.getElementById('cartModal').style.display = 'block';
-	    })
+	        //document.getElementById('cartModal').style.display = 'block';
+	    //})
 	    .catch((error) => {
-	        console.error('Error:', error);
-	    });
+		    if (error.message === "Conflict") {
+		        alert("이미 장바구니에 담겨있는 상품입니다."); // 충돌 처리 메시지 표시
+		    } else {
+		        console.error('Error:', error);
+		    }
+		});
 	}
 	
 	// 모달열기

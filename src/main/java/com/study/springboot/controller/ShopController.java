@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.springboot.dao.ICartDao;
 import com.study.springboot.dao.IMemberDao;
@@ -216,11 +218,28 @@ public class ShopController {
     }
     
     @PostMapping("/addProduct")
-    public ResponseEntity<String> addToCart(@RequestBody CartDto cartDto) {
-        // 장바구니에 추가
-    	cartDao.addToCart(cartDto);
+    public ResponseEntity<String> addToCart(@RequestBody CartDto cartDto,
+    										HttpSession session) {
+        
+    	String memberId = cartDto.getMbId();
+    	int pdNum = cartDto.getPdNum();
     	
-    	System.out.println(cartDto);
+    	System.out.println(memberId + pdNum);
+    	
+        if (memberId != null) {
+        	// 장바구니에 해당 상품이 있는지 확인
+        	List<CartDto> existingCartItems = cartService.findCartItemByMemberIdAndProductId(memberId, pdNum);
+        	if (existingCartItems != null && !existingCartItems.isEmpty()) {
+                // 이미 장바구니에 상품이 있는 경우 경고 메시지 추가
+        		return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 장바구니에 담겨있는 상품입니다.");
+            } else {
+                // 장바구니에 상품이 없으면 추가
+            	cartDao.addToCart(cartDto);
+            	System.out.println(cartDto);
+            }	
+        	
+        } 
+        
         return ResponseEntity.ok("상품이 장바구니에 담겼습니다.");
     }
     

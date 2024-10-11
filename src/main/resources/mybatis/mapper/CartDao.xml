@@ -31,4 +31,8 @@
 	    </foreach>
     </delete>
     
+    <select id="findCartItemByMemberIdAndProductId" parameterType="com.study.springboot.dto.CartDto">
+    	SELECT * FROM shopbag
+		 WHERE mb_id = #{mbId} AND pd_num = #{pdNum}
+    </select>
 </mapper>

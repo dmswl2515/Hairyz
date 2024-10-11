@@ -121,7 +121,7 @@
 			  </thead>
 				<tbody>
 				    <c:forEach var="item" items="${products}">
-				        <input type="hidden" name="pdNum" value="${item.pdNum}" />
+				        <input type="hidden" id="pdNum" name="pdNum" value="${item.pdNum}" />
 				        <tr>
 				            <!-- 체크박스 열 -->
 				            <td class="text-center align-middle">
@@ -129,9 +129,8 @@
 				                    <input class="form-check-input selectEach" type="checkbox" name="eachCheckBox" value="${item.pdNum}">
 				                </div>
 <script>
-  // 'selectAll' 체크박스 이벤트 리스너 추가
+  // 'selectAll' 체크박스를 통해 개별 체크박스를 모두 선택하거나 해제
   document.getElementById('selectAll').addEventListener('change', function() {
-    // 모든 개별 체크박스를 선택하거나 해제
     const isChecked = this.checked;
     const checkboxes = document.querySelectorAll('.selectEach');
     
@@ -160,12 +159,12 @@
 				            <!-- 수량 -->
 				            <td class="text-center align-middle">
 					            <div>
-					                <span id="quantity-text">${item.sbagAmount}개</span>
+					                <span id="quantity-text" data-pdnum="${item.pdNum}">${item.sbagAmount}개</span>
 					            </div>
 					            <br>
 					            <div class="btn-group" role="group" aria-label="Default button group">
-	                             <button type="button" id="decrease" class="btn btn-outline-secondary">-</button>
-	                             <button type="button" id="increase" class="btn btn-outline-secondary">+</button>
+	                             <button type="button" id="decrease" class="btn btn-outline-secondary" data-pdnum="${item.pdNum}">-</button>
+	                             <button type="button" id="increase" class="btn btn-outline-secondary" data-pdnum="${item.pdNum}">+</button>
 	                         </div>	
 					        </td>
 				            <!-- 주문 금액 -->
@@ -229,124 +228,24 @@
 	</div>
 	
 <script>
-$(document).ready(function() {
-	let pricePerItem = parseInt(document.getElementById('total-price').textContent.replace(/[^0-9]/g, ''));
-	let quantity = parseInt(document.getElementById('quantity-text').textContent.replace(/[^0-9]/g, ''));
-    
-    // 초기 값 확인
-    console.log("초기 개별 가격:", pricePerItem);
-    console.log("초기 수량:", quantity);
-    console.log("초기 item.pdNum:", ${item.pdNum});
-    
-    function updateTotalPrice() {
-        let totalPrice = pricePerItem * quantity;
-        $('#total-price').text(totalPrice.toLocaleString() + '원');
-        $('#quantity-text').text(quantity + '개');
-
-        // 체크박스가 체크되어 있는지 확인
-        let isChecked = $('.selectEach').is(":checked");
-        
-        
-        if (isChecked) {
-            $('#total-price2').text(totalPrice.toLocaleString() + '원');
-            $('#total-price3').text(totalPrice.toLocaleString() + '원');
-        } else {
-            $('#total-price2').text('0원');
-            $('#total-price3').text('0원');
-        }
-
-        console.log("업데이트된 총 가격:", totalPrice);
-        console.log("업데이트된 수량:", quantity);
-    }
-
-    // 동적으로 생성된 버튼과 입력 필드에 이벤트 바인딩
-    $(document).on('click', '#increase', function() {
-        console.log("increase 버튼 클릭됨");
-        quantity++;
-        $('#quantity-text').val(quantity);
-        updateTotalPrice();
-    });
-
-    $(document).on('click', '#decrease', function() {
-        if (quantity > 1) {
-            console.log("decrease 버튼 클릭됨");
-            quantity--;
-            $('#quantity-text').val(quantity);
-            updateTotalPrice();
-        }
-    });
-
-    // 입력 필드에 값 변경 감지
-    $(document).on('input', '#quantity-text', function() {
-        let inputValue = $(this).val();
-        console.log("입력값 변경됨:", inputValue);
-        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
-            quantity = parseInt(inputValue);
-        } else {
-            quantity = 1;
-        }
-        $(this).val(quantity);
-        updateTotalPrice();
-    });
-
-    // 초기 총 가격 업데이트
-    updateTotalPrice();
-});
-
-
-
-$(document).ready(function() {
-    // 금액 업데이트 함수
-    function updatePrices(isChecked, sbagPrice) {
-        if (isChecked) {
-            $('#total-price2').text(sbagPrice.toLocaleString() + '원');
-            $('#total-price3').text(sbagPrice.toLocaleString() + '원');
-        } else {
-            $('#total-price2').text('0원');
-            $('#total-price3').text('0원');
-        }
-    }
-    
- 	// selectAll 체크박스 상태 변화 이벤트
-    $('#selectAll').on('change', function() {
-        let isChecked = $(this).is(":checked");  // selectAll 체크 여부 확인
-        
-        $('.selectEach').prop('checked', isChecked);  // selectEach 체크박스 모두 체크/해제
-        
-        if (isChecked) {
-            // selectAll이 해제되면 total-price2와 total-price3 값 0으로 설정
-            $('#total-price2').text('0원');
-            $('#total-price3').text('0원');
-        } else {
-        	$('#total-price2').text(totalPrice.toLocaleString() + '원');
-            $('#total-price3').text(totalPrice.toLocaleString() + '원');
-        }
-    });
-
-    // 체크박스 상태 변화 이벤트
-    $(document).on('change', '.selectEach', function() {
-        const sbagPrice = parseInt($('#total-price').text().replace(/[^0-9]/g, '')); // 상품 가격 가져오기
-        const isChecked = $(this).is(":checked"); // 체크 여부 확인
-
-        updatePrices(isChecked, sbagPrice);
-    });
-
-    // 페이지 로드 시 초기 값 설정 (체크박스 해제 상태로 초기화)
-    $('#total-price2').text('0원');
-    $('#total-price3').text('0원');
-});
-
 	//"선택상품 삭제" 버튼 클릭 시 체크된 항목을 서버로 전송
 	document.getElementById("remove-selected").addEventListener("click", function() {
 	    const selectedItems = [];
-	    let eachCheckBox = document.getElementById("selectAll") ? document.getElementById("selectAll").checked : false; // 전체 선택 체크박스의 상태
-	    console.log(eachCheckBox);
 	    
+	    // 전체 선택 체크박스의 상태
+	    const isSelectAllChecked = document.getElementById("selectAll") ? document.getElementById("selectAll").checked : false;
+	    const checkboxes = document.querySelectorAll(".selectEach:checked");
+	    console.log(isSelectAllChecked);
+	    console.log(checkboxes);
 	    
-	    document.querySelectorAll(".selectEach:checked").forEach(checkbox => {
-	    	selectedItems.push(parseInt(checkbox.value)); // 체크된 상품 번호를 배열에 추가
+	    checkboxes.forEach(checkbox => {
+	        selectedItems.push(parseInt(checkbox.value)); // 체크된 상품 번호를 배열에 추가
 	    });
-	
+	    
+	 	// 개별 체크박스가 하나라도 선택된 경우
+	    const eachCheckBox = selectedItems.length > 0; 
+		
+	 	
 	    if (selectedItems.length > 0) {
 	        // AJAX 요청으로 서버에 삭제할 상품들 전달
 	        fetch('/DeleteCart', {
