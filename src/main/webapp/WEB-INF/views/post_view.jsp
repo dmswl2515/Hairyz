@@ -81,40 +81,52 @@
         <!-- 좋아요 및 댓글 수 -->
         <div class="d-flex align-items-center">
             <i id="likeIcon" class="fas fa-heart" style="color:lightgray;cursor:pointer;"></i>&nbsp;
-    		<span id="likeCount" class="ms-1">${board.bd_like}</span> <!-- 좋아요 수 -->&nbsp;&nbsp;&nbsp;
+    		<span id="likeCount" class="ms-1">${likeCount}</span> <!-- 좋아요 수 -->&nbsp;&nbsp;&nbsp;
             <i class="fas fa-comment ms-3"></i>&nbsp;<span class="ms-1">${reply.size()}</span> <!-- 댓글 수 -->
         </div>
         
         <script>
-		    $(document).ready(function() {
-		        let liked = false; // 좋아요 상태
-		        const boardId = ${board.bd_no}; // 현재 게시글 ID
-		
-		        $('#likeIcon').click(function() {
-		            liked = !liked; // 클릭 시 좋아요 상태 토글
-		
-		            // AJAX 요청
-		            $.ajax({
-		                url: '/upLike', // 서버 메서드 URL
-		                type: 'POST',
-		                data: {
-		                    boardId: boardId,
-		                    likeStatus: liked
-		                },
-		                success: function(response) {
-		                    // 서버에서 성공적으로 응답 받음
-		                    const result = JSON.parse(response);
-		                    $('#likeCount').text(result.likes); // 업데이트된 좋아요 수 표시
-		
-		                    // 아이콘 색상 변경
-		                    $('#likeIcon').css('color', liked ? 'red' : 'black');
-		                },
-		                error: function() {
-		                    alert("좋아요 업데이트 중 오류가 발생했습니다.");
-		                }
-		            });
-		        });
-		    });
+	        $(document).ready(function() {
+	            let liked = false; // 기본 상태는 좋아요 안 누름
+	            const boardId = ${board.bd_no}; // 게시글 ID 가져오기
+	
+	            // 좋아요 상태 초기화 AJAX 요청 (선택 사항)
+	            $.ajax({
+	                url: '/getLikeStatus',
+	                type: 'GET',
+	                data: { boardId: boardId },
+	                success: function(response) {
+	                    if (response.liked) {
+	                        liked = true;
+	                        $('#likeIcon').css('color', 'red'); // 이미 좋아요 상태면 빨간색으로 표시
+	                    }
+	                },
+	                error: function() {
+	                    console.error("좋아요 상태 조회 중 오류가 발생했습니다.");
+	                }
+	            });
+	
+	            $('#likeIcon').click(function() {
+	                // AJAX 요청으로 좋아요 토글
+	                $.ajax({
+	                    url: '/upLike',
+	                    type: 'POST',
+	                    data: { boardId: boardId },
+	                    success: function(response) {
+	                        if (response.success) {
+	                            $('#likeCount').text(response.likes); // 좋아요 수 갱신
+	                            liked = !liked; // 좋아요 상태 토글
+	                            $('#likeIcon').css('color', liked ? 'red' : 'lightgray'); // 아이콘 색상 변경
+	                        } else {
+	                            alert(response.message); // 로그인 필요 메시지 등 처리
+	                        }
+	                    },
+	                    error: function() {
+	                        alert("좋아요 처리 중 오류가 발생했습니다.");
+	                    }
+	                });
+	            });
+	        });
 		</script>
 
 

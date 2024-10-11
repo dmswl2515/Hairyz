@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ResourceUtils;
@@ -184,8 +185,49 @@ public class BdController {
         model.addAttribute("profile", profile); 
         model.addAttribute("reply", reply);
         model.addAttribute("userId", userId);
+        model.addAttribute("likeCount", boardService.getLikeCount(bdNo)); // 좋아요 수
         return "post_view";
     }
+    
+    // 좋아요 토글 처리
+    @PostMapping("/upLike")
+    @ResponseBody
+    public Map<String, Object> toggleLike(@RequestParam("boardId") int boardId, HttpSession session) {
+        // 세션에서 사용자 ID 가져오기 (로그인 필수)
+        String userId = (String) session.getAttribute("userId");
+
+        // 반환할 결과 맵
+        Map<String, Object> result = new HashMap<>();
+
+        if (userId == null) {
+            // 로그인하지 않은 경우 처리
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+        } else {
+            // 좋아요 상태를 토글하고 현재 좋아요 수 리턴
+            int updatedLikeCount = boardService.toggleLike(userId, boardId);
+            result.put("success", true);
+            result.put("likes", updatedLikeCount);
+        }
+
+        return result;
+    }
+    
+    // 좋아요 상태 확인
+    @GetMapping("/getLikeStatus")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLikeStatus(@RequestParam("boardId")int boardId, HttpSession session) {
+        // 세션에서 사용자 ID 가져오기
+        String userId = (String) session.getAttribute("userId");
+        boolean liked = boardService.checkUserLike(userId, boardId); // 사용자가 좋아요를 누른 상태인지 확인
+        
+        // 응답 맵 생성
+        Map<String, Object> response = new HashMap<>();
+        response.put("liked", liked);
+        
+        return ResponseEntity.ok(response);
+    }
+
 
     @RequestMapping("/list.do")
     public String list(Model model) {

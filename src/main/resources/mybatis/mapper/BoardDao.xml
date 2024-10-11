@@ -22,10 +22,30 @@
 	<!-- 게시글 조회수 증가 -->
     <update id="upHit" parameterType="int">
         UPDATE board
-        SET bd_hit = bd_hit + 1
-        WHERE bd_no = #{bd_no}
+           SET bd_hit = bd_hit + 1
+         WHERE bd_no = #{bd_no}
     </update>
 	
+	<!-- 좋아요 추가 -->
+    <insert id="insertLike">
+        INSERT INTO likes (lk_no, mb_id, bd_no, lk_date)
+        VALUES (likes_seq.NEXTVAL, #{userId, jdbcType=VARCHAR}, #{boardId}, SYSDATE)
+    </insert>
+
+    <!-- 좋아요 삭제 -->
+    <delete id="deleteLike">
+        DELETE FROM likes WHERE mb_id = #{userId, jdbcType=VARCHAR} AND bd_no = #{boardId}
+    </delete>
+
+    <!-- 특정 게시글의 좋아요 수 조회 -->
+    <select id="getLikeCount" resultType="int">
+        SELECT COUNT(*) FROM likes WHERE bd_no = #{boardId}
+    </select>
+
+    <!-- 사용자가 특정 게시글에 대해 이미 좋아요를 눌렀는지 확인 -->
+    <select id="checkUserLike" resultType="int">
+        SELECT COUNT(*) FROM likes WHERE mb_id = #{userId, jdbcType=VARCHAR} AND bd_no = #{boardId}
+    </select>
 	
 	
 </mapper>
