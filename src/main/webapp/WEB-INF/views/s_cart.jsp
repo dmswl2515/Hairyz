@@ -159,18 +159,115 @@
 				            <!-- 수량 -->
 				            <td class="text-center align-middle">
 					            <div>
-					                <span id="quantity-text" data-pdnum="${item.pdNum}">${item.sbagAmount}개</span>
+					                <span id="quantity-text-${item.pdNum}" data-pdnum="${item.pdNum}">${item.sbagAmount}개</span>
 					            </div>
 					            <br>
 					            <div class="btn-group" role="group" aria-label="Default button group">
-	                             <button type="button" id="decrease" class="btn btn-outline-secondary" data-pdnum="${item.pdNum}">-</button>
-	                             <button type="button" id="increase" class="btn btn-outline-secondary" data-pdnum="${item.pdNum}">+</button>
+	                             <button type="button" class="btn btn-outline-secondary decrease" data-pdnum="${item.pdNum}">-</button>
+        						 <button type="button" class="btn btn-outline-secondary increase" data-pdnum="${item.pdNum}">+</button>
 	                         </div>	
 					        </td>
 				            <!-- 주문 금액 -->
 				            <td class="text-center align-middle" id="price-${item.pdNum}">
 				            	<span id="total-price">${item.sbagPrice}원</span>
 				            </td>
+				            
+				            <script>
+					            document.addEventListener("DOMContentLoaded", function() {
+					                // 수량 증가 버튼 클릭 이벤트
+					                document.querySelectorAll('.increase').forEach(button => {
+					                	
+					                	// 각 버튼에 대해 클릭 이벤트 리스너 추가
+					                    button.addEventListener('click', handleIncrease);
+					                });
+					                
+					             	// 수량 감소 버튼 클릭 이벤트
+					                document.querySelectorAll('.decrease').forEach(button => {
+					                    // 각 버튼에 대해 클릭 이벤트 리스너 추가
+					                    button.addEventListener('click', handleDecrease);
+					                });
+					            });
+					            
+					            function handleIncrease() {
+			                        const pdNum = this.getAttribute('data-pdnum');
+			                        console.log("pdNum : " + pdNum);
+			                        
+			                        //변수 선언
+			                        const quantityTextId = `quantity-text-` + pdNum;
+       								const totalPriceId = `price-` + pdNum;
+       								console.log("quantityTextId : " + quantityTextId)
+       								console.log("totalPriceId : " + totalPriceId)
+       								
+       								
+       								const quantityText = document.getElementById(quantityTextId);
+       					            console.log("quantityText : " + quantityText);
+       					            console.log("Current quantity: " + quantityText.textContent); // 현재 수량 출력
+       					            
+       					         	// quantityText가 null인지 확인
+       					            if (!quantityText) {
+       					                console.error(`Element with id ${quantityTextId} not found`);
+       					                return; // 종료
+       					            }
+       					            
+       					            const totalPriceElement = document.getElementById(totalPriceId);
+       					            console.log("totalPriceElement : " + totalPriceElement);
+                        
+       					         	// totalPriceElement가 null인지 확인
+       					            if (!totalPriceElement) {
+       					                console.error(`Element with id ${totalPriceId} not found`);
+       					                return; // 종료
+       					            }
+                        
+       					         	// 현재 수량과 가격
+       					            let currentQuantity = parseInt(quantityText.textContent); // 현재 수량
+       					            console.log("currentQuantity : " + currentQuantity);
+       					            const pricePerItem = parseInt(totalPriceElement.textContent) / currentQuantity; // 각 상품 가격
+
+       					         	// 수량 증가
+       					            currentQuantity++;
+       					            quantityText.textContent = currentQuantity + '개'; // 수량 업데이트
+
+       					            // 총 가격 업데이트
+       					            totalPriceElement.textContent = (pricePerItem * currentQuantity) + '원'; // 총 가격 업데이트
+					            }
+	
+					            function handleDecrease() {    
+					            // 수량 감소 버튼 클릭 이벤트
+		                        const pdNum = this.getAttribute('data-pdnum');
+		                        const totalPriceId = `price-` + pdNum;
+		                        
+		                        const quantityText = document.getElementById(`quantity-text-` + pdNum);
+		                        console.log(quantityText);
+		                        
+		                     	// quantityText가 null인지 확인
+					            if (!quantityText) {
+					                console.error(`Element with id ${quantityTextId} not found`);
+					                return; // 종료
+					            }
+		                        
+		                        const totalPriceElement = document.getElementById(totalPriceId);
+		                        console.log("totalPriceElement : " + totalPriceElement);
+		                        
+					         	// totalPriceElement가 null인지 확인
+					            if (!totalPriceElement) {
+					                console.error(`Element with id ${totalPriceId} not found`);
+					                return; // 종료
+					            }
+		                        
+		                        // 현재 수량과 가격
+		                        let currentQuantity = parseInt(quantityText.textContent);
+		                        const pricePerItem = parseInt(totalPriceElement.textContent) / currentQuantity;
+
+		                        // 수량 감소 (0 이하로는 감소하지 않음)
+		                        if (currentQuantity > 1) {
+		                            currentQuantity--;
+		                            quantityText.textContent = currentQuantity + '개';
+
+		                            // 총 가격 업데이트
+		                            totalPriceElement.textContent = (pricePerItem * currentQuantity) + '원';
+		                        }
+		                    }
+				            </script>
 				            <!-- 배송비 -->
 				            <td class="text-center align-middle" style="background-color:#ffe282;">
 				                <span>무료</span>        
@@ -183,6 +280,52 @@
 				<button id="remove-selected" class="btn btn-outline-warning removeBtn">
 					선택상품 삭제
 				</button>
+				
+				<script>
+					//"선택상품 삭제" 버튼 클릭 시 체크된 항목을 서버로 전송
+					document.getElementById("remove-selected").addEventListener("click", function() {
+					    const selectedItems = [];
+					    
+					    // 전체 선택 체크박스의 상태
+					    const isSelectAllChecked = document.getElementById("selectAll") ? document.getElementById("selectAll").checked : false;
+					    const checkboxes = document.querySelectorAll(".selectEach:checked");
+					    console.log(isSelectAllChecked);
+					    console.log(checkboxes);
+					    
+					    checkboxes.forEach(checkbox => {
+					        selectedItems.push(parseInt(checkbox.value)); // 체크된 상품 번호를 배열에 추가
+					    });
+					    
+					 	// 개별 체크박스가 하나라도 선택된 경우
+					    const eachCheckBox = selectedItems.length > 0; 
+						
+					 	
+					    if (selectedItems.length > 0) {
+					        // AJAX 요청으로 서버에 삭제할 상품들 전달
+					        fetch('/DeleteCart', {
+					            method: 'POST',
+					            headers: {
+					                'Content-Type': 'application/json',
+					            },
+					            body: JSON.stringify({ pdNums: selectedItems, eachCheckBox: eachCheckBox }), // 체크박스 상태 추가
+					        })
+					        .then(response => response.json())
+					        .then(data => {
+					            if (data.success) {
+					                alert('선택된 상품이 삭제되었습니다.');
+					                location.reload(); // 페이지 새로고침
+					            } else {
+					                alert('상품 삭제에 실패했습니다.');
+					            }
+					        })
+					        .catch(error => {
+					            console.error('Error:', error);
+					        });
+					    } else {
+					        alert('삭제할 상품을 선택하세요.');
+					    }
+					});
+				</script>
 	   	   		<button id="remove-soldout" class="btn btn-outline-warning removeBtn">
 	   	   			품절상품 삭제
 	   	   		</button>
@@ -226,53 +369,6 @@
        	   	</div>
 		</div>
 	</div>
-	
-<script>
-	//"선택상품 삭제" 버튼 클릭 시 체크된 항목을 서버로 전송
-	document.getElementById("remove-selected").addEventListener("click", function() {
-	    const selectedItems = [];
-	    
-	    // 전체 선택 체크박스의 상태
-	    const isSelectAllChecked = document.getElementById("selectAll") ? document.getElementById("selectAll").checked : false;
-	    const checkboxes = document.querySelectorAll(".selectEach:checked");
-	    console.log(isSelectAllChecked);
-	    console.log(checkboxes);
-	    
-	    checkboxes.forEach(checkbox => {
-	        selectedItems.push(parseInt(checkbox.value)); // 체크된 상품 번호를 배열에 추가
-	    });
-	    
-	 	// 개별 체크박스가 하나라도 선택된 경우
-	    const eachCheckBox = selectedItems.length > 0; 
-		
-	 	
-	    if (selectedItems.length > 0) {
-	        // AJAX 요청으로 서버에 삭제할 상품들 전달
-	        fetch('/DeleteCart', {
-	            method: 'POST',
-	            headers: {
-	                'Content-Type': 'application/json',
-	            },
-	            body: JSON.stringify({ pdNums: selectedItems, eachCheckBox: eachCheckBox }), // 체크박스 상태 추가
-	        })
-	        .then(response => response.json())
-	        .then(data => {
-	            if (data.success) {
-	                alert('선택된 상품이 삭제되었습니다.');
-	                location.reload(); // 페이지 새로고침
-	            } else {
-	                alert('상품 삭제에 실패했습니다.');
-	            }
-	        })
-	        .catch(error => {
-	            console.error('Error:', error);
-	        });
-	    } else {
-	        alert('삭제할 상품을 선택하세요.');
-	    }
-	});
-</script>
-
 
 					
 <%@ include file="footer.jsp" %>
