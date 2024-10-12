@@ -19,10 +19,11 @@
     </insert>
 
     <!-- 댓글 삭제 -->
-    <delete id="deleteReply" parameterType="int">
-        DELETE FROM reply
-        WHERE rp_no = #{rp_no}
-    </delete>
+    <update id="updateRpState" parameterType="int">
+         UPDATE reply
+            SET rp_state = 'N'
+          WHERE rp_no = #{rp_no}
+    </update>
 
     <!-- 댓글 개수 가져오기 -->
     <select id="countReplies" parameterType="int" resultType="int">

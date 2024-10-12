@@ -18,6 +18,7 @@
 .ed_area { font-size:0.9rem; }
 .writerInfo { line-height:1.2; }
 .writerInfo div { font-size:0.8rem; }
+.del_reply { font-size:0.8rem; text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -159,11 +160,23 @@
 				        <span class="text-muted ml-2">
 				            <fmt:formatDate value="${reply.rp_date}" pattern="yyyy-MM-dd HH:mm"/>
 				        </span>
+				        <!-- 댓글 작성자와 로그인한 사용자가 동일할 경우에만 삭제 버튼 노출 -->
+		                <c:if test="${userId == reply.mb_id}">
+		                    <a href="javascript:void(0);" onclick="confirmReplyDelete(${reply.rp_no}, ${reply.bd_no})" class="text-muted ml-2 del_reply">삭제</a>
+		                </c:if>
 				        <p>${reply.rp_content}</p>
 			        </div>
 			    </div>
 			</c:forEach>
 		</div>
+		
+		<script>
+		function confirmReplyDelete(rp_no, bd_no) {
+		    if (confirm("이 댓글을 삭제하시겠습니까?")) {
+		        window.location.href = "/deleteReply.do?rp_no=" + rp_no + "&bd_no=" + bd_no; // 댓글 삭제 요청
+		    }
+		}
+		</script>
         
         
         <!-- 댓글 입력창 -->

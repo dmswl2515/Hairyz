@@ -330,6 +330,24 @@ public class BdController {
 
         return "redirect:/list.do"; // 삭제 후 게시글 목록으로 리다이렉트
     }
+    
+    @GetMapping("/deleteReply.do")
+    public String deleteReply(@RequestParam("rp_no") int rp_no, 
+                              @RequestParam("bd_no") int bd_no, 
+                              RedirectAttributes redirectAttributes) {
+        // 댓글 삭제 로직 처리 (댓글을 실제로 삭제하거나 상태를 변경)
+        boolean isDeleted = replyService.deleteReply(rp_no);
+
+        if (isDeleted) {
+            redirectAttributes.addFlashAttribute("message", "댓글이 삭제되었습니다.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "댓글 삭제에 실패했습니다.");
+        }
+
+        // 삭제 후 댓글이 있던 게시글로 리다이렉트
+        return "redirect:/post_view.do/" + bd_no;
+    }
+
 
 
 }

@@ -14,7 +14,7 @@ public interface IReplyDao
     int insertReply(ReplyDto reply);
 
     // 댓글 삭제
-    int deleteReply(int rp_no);
+    int updateRpState(int rp_no);
 
     // 댓글 개수 가져오기
     int countReplies(int tb_no);

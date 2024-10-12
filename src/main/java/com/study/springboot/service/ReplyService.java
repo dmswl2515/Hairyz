@@ -28,7 +28,8 @@ public class ReplyService {
 
     // 댓글 삭제
     public boolean deleteReply(int rp_no) {
-        return replyDao.deleteReply(rp_no) > 0;
+    	int result = replyDao.updateRpState(rp_no);
+        return result > 0;
     }
 
     // 게시글의 댓글 개수 가져오기
