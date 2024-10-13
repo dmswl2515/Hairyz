@@ -393,36 +393,39 @@
 			    <tbody>
 			        <c:forEach var="item" items="${reviews}">
 			            <tr class="table-white text-left">
-			                <td colspan="4">
-			                	<span style="font-weight: bold;">
-				                    <c:forEach var="i" begin="1" end="5">
-				                        <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
-				                    </c:forEach>
-			                		${item.pr_rating}
-				                </span>
+			                <td colspan="3">
+			                    <span style="font-weight: bold;">
+			                        <c:forEach var="i" begin="1" end="5">
+			                            <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
+			                        </c:forEach>
+			                        ${item.pr_rating}
+			                    </span>
 			                </td>
-			             </tr>
-			             <tr>
-			                <td colspan="4">
+			            </tr>
+			            <tr>
+			                <td colspan="3">
 			                    <span style="font-weight:bold; margin-right:15px;">${item.pr_MbNnme}</span>
-			                    <span>${item.pr_reviewDate}</span>
+			                    <span>
+			                        <fmt:formatDate value="${item.pr_reviewDate}" pattern="yyyy-MM-dd" />
+			                    </span>
 			                </td>
-			             </tr>
-			             <td colspan="3" class="table-bottom-border">${item.pr_reviewText}</td>
-			             <c:if test="${not empty item.pr_modName}">
-				                <td colspan="1"></td>
-				                <td class="table-bottom-border" style="width:300px;">
-				                    <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" alt="상품 이미지" style="width:100px; height:auto;"> <!-- item.productImage로 이미지 URL을 가져옵니다. --> 	
-				                </td>
-			             </c:if>
-			             <c:if test="${!not empty item.pr_modName}">
-				                <td colspan="1"></td>
-				                <td class="table-bottom-border"></td>
-			             </c:if>
+			            </tr>
+			            <tr>
+			                <td colspan="2" class="table-bottom-border" style="vertical-align: top;">
+			                    ${item.pr_reviewText}
+			                </td>
+			                <c:if test="${not empty item.pr_modName}">
+			                    <td colspan="1" class="table-bottom-border" style="width:200px; vertical-align: top;">
+			                        <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" alt="상품 이미지" style="width:100%; height:auto;">
+			                    </td>
+			                </c:if>
+			                <c:if test="${empty item.pr_modName}">
+			                    <td colspan="1" class="table-bottom-border"></td>
+			                </c:if>
+			            </tr>
 			        </c:forEach>
 			    </tbody>
 			</table>
-						 
 			    
 			<hr class="product-hr">
 			    <div id="qna-content" class="">
@@ -772,7 +775,7 @@
         // pd_amount가 0인지 확인
         if (productAmount == 0) {
             alert("품절된 상품으로 구매 불가합니다."); // 알림창 표시
-            return; // 함수 종료
+            return; 
         }
         
 	    let ProductNum = document.getElementById('productNum').value;
