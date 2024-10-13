@@ -14,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.springboot.dto.BoardDto;
@@ -164,9 +167,9 @@ public class BdController {
 
         // 게시글 작성 서비스 호출
         try {
-            boardService.writePost(boardDto);
+        	int bd_no = boardService.writePost(boardDto);
             response.put("result", "success");
-            response.put("redirectUrl", "/list.do"); // 성공 시 목록 페이지로 이동하도록 URL 반환
+            response.put("redirectUrl", "/post_view.do/" + bd_no); // 성공 시 해당 글로 리디렉션
         } catch (Exception e) {
             e.printStackTrace();
             response.put("result", "fail");
@@ -348,6 +351,69 @@ public class BdController {
         return "redirect:/post_view.do/" + bd_no;
     }
 
+    @GetMapping("/post_edit.do/{bd_no}")
+    public String editPost(@PathVariable("bd_no") int bd_no, Model model) {
+        BoardDto board = boardService.getPostById(bd_no);
+        model.addAttribute("board", board);
+        return "post_edit";  // 수정 페이지 JSP
+    }
+    
+    // 게시글 수정 처리
+    @PostMapping("/editOk.do")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> editPost(BoardDto boardDto, MultipartHttpServletRequest multiRequest, HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // 기존 게시글 정보 가져오기
+            BoardDto existingPost = boardService.getPostById(boardDto.getBd_no());
 
+            // 세션에서 userId 가져오기
+            HttpSession session = request.getSession();
+            String userId = (String) session.getAttribute("userId");
+
+            // 작성자 아이디와 세션 아이디 비교
+            if (!existingPost.getMb_id().equals(userId)) {
+                response.put("result", "fail");
+                response.put("message", "작성자만 게시글을 수정할 수 있습니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+
+            // 파일 처리 (새로 업로드된 파일)
+            MultipartFile file = multiRequest.getFile("uploadFile");
+            if (file != null && !file.isEmpty()) {
+                // 기존 파일 삭제
+                if (existingPost.getBd_orgname() != null) {
+                    File delFile = new File(request.getServletContext().getRealPath("/") + "uploads/" + existingPost.getBd_modname());
+                    if (delFile.exists()) {
+                        delFile.delete();  // 기존 파일 삭제
+                    }
+                }
+
+                // 새로운 파일 업로드
+                String originalFileName = file.getOriginalFilename();
+                String systemFileName = System.currentTimeMillis() + "_" + originalFileName;
+                String uploadDir = request.getServletContext().getRealPath("/") + "uploads/";
+                File newFile = new File(uploadDir + systemFileName);
+                file.transferTo(newFile);
+
+                // 파일 정보 갱신
+                boardDto.setBd_orgname(originalFileName);
+                boardDto.setBd_modname(systemFileName);
+            }
+
+            // 게시글 수정 처리
+            boardService.updatePost(boardDto);
+
+            response.put("result", "success");
+            response.put("redirectUrl", "/post_view.do/" + boardDto.getBd_no());  // 수정된 게시글로 이동
+        } catch (Exception e) {
+            response.put("result", "fail");
+            response.put("message", "게시글 수정 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok(response);
+    }
 
 }

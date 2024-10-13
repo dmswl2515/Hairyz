@@ -35,5 +35,10 @@ public interface IBoardDao
     int checkUserLike(@Param("userId") String userId, @Param("boardId") int boardId);
 
 	int deletePost(int bd_no);
+
+	// 수정할 게시글 조회
+	BoardDto getPostById(int bd_no);
+
+	int updatePost(BoardDto boardDto);
     
 }

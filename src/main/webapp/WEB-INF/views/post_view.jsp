@@ -41,7 +41,7 @@
             <input type="hidden" id="writerId" value="${board.mb_id}" />
             <c:if test="${userId == board.mb_id}">
                 <div class="ed_area">
-                    <a href="edit.do?bd_no=${board.bd_no}" class="text-muted">수정</a> &nbsp; | &nbsp;
+                    <a href="${pageContext.request.contextPath}/post_edit.do/${board.bd_no}" class="text-muted">수정</a> &nbsp; | &nbsp;
                     <a href="javascript:void(0);" onclick="confirmDelete(${board.bd_no})" class="text-muted">삭제</a>
                 </div>
             </c:if>

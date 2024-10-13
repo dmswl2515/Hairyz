@@ -11,8 +11,9 @@ public class BoardService {
     @Autowired
     private IBoardDao boardDao;
 
-    public void writePost(BoardDto boardDto) {
+    public int writePost(BoardDto boardDto) {
         boardDao.insertPost(boardDto);
+        return boardDto.getBd_no();
     }
 
     // 특정 게시글 가져오기
@@ -44,7 +45,7 @@ public class BoardService {
         return boardDao.getLikeCount(boardId);
     }
     
- // 사용자가 특정 게시글에 대해 좋아요를 눌렀는지 확인
+    // 사용자가 특정 게시글에 대해 좋아요를 눌렀는지 확인
     public boolean checkUserLike(String userId, int boardId) {
         // 사용자 좋아요 수를 조회하여 0보다 큰지 확인
         return boardDao.checkUserLike(userId, boardId) > 0;
@@ -52,6 +53,14 @@ public class BoardService {
 
 	public boolean deletePost(int bd_no) {
 		return boardDao.deletePost(bd_no) > 0; // DAO 호출하여 삭제 성공 여부 반환
+	}
+	
+	public BoardDto getPostById(int bd_no) {
+        return boardDao.getPostById(bd_no);
+    }
+
+	public int updatePost(BoardDto boardDto) {
+        return boardDao.updatePost(boardDto);
 	}
 
 }

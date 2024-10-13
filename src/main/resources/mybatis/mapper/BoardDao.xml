@@ -5,7 +5,7 @@
 	
 <mapper namespace="com.study.springboot.dao.IBoardDao">
 
-	<insert id="insertPost" parameterType="com.study.springboot.dto.BoardDto">
+	<insert id="insertPost" parameterType="com.study.springboot.dto.BoardDto" useGeneratedKeys="true" keyProperty="bd_no"  keyColumn="BD_NO">
 	    INSERT INTO board 
     	  (bd_no, bd_cate, mb_id, bd_writer, bd_title, bd_content, bd_date, 
     	  	bd_imgpath, bd_orgname, bd_modname, bd_state)
@@ -50,6 +50,21 @@
     <delete id="deletePost" parameterType="int">
         UPDATE board SET bd_state = 'N' WHERE bd_no = #{bd_no}
     </delete>
-	
+    
+    <!-- 수정할 게시글 조회 -->
+    <select id="getPostById" parameterType="int" resultType="com.study.springboot.dto.BoardDto">
+        SELECT * FROM board WHERE bd_no = #{bd_no}
+    </select>
+    
+    <!-- 게시글 수정 -->
+    <update id="updatePost" parameterType="com.study.springboot.dto.BoardDto">
+        UPDATE board
+        SET bd_title = #{bd_title, jdbcType=VARCHAR},
+            bd_content = #{bd_content, jdbcType=VARCHAR},
+            bd_cate = #{bd_cate, jdbcType=CHAR},
+            bd_orgname = #{bd_orgname, jdbcType=VARCHAR},  <!-- 파일 이름 -->
+            bd_modname = #{bd_modname, jdbcType=VARCHAR}   <!-- 시스템 파일 이름 -->
+        WHERE bd_no = #{bd_no}
+    </update>
 	
 </mapper>
