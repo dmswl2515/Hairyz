@@ -706,7 +706,8 @@
 	          '&productName=' + encodeURIComponent(ProductName) +
 	          '&productImage=' + encodeURIComponent(ProductImage) +
 	          '&productQuantity=' + encodeURIComponent(Productquantity) +
-	          '&productPrice=' + encodeURIComponent(Productprice);
+	          '&productPrice=' + encodeURIComponent(Productprice) +
+	          '&totalPrice=' + encodeURIComponent(Productprice);
 	    
 	    console.log(url)
 	    

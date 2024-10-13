@@ -1,6 +1,7 @@
 package com.study.springboot.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,25 +177,41 @@ public class ShopController {
     
     
     @RequestMapping("/s_purchase")    
-    public String productPhrchase(@RequestParam("productNum") int productNum,
-					              @RequestParam("productName") String productName,
-					              @RequestParam("productImage") String productImage,
-					              @RequestParam("productQuantity") int productQuantity,
-					              @RequestParam("productPrice") int productPrice,
+    public String productPhrchase(@RequestParam("productNum") List<Integer> productNums,
+					              @RequestParam("productName") List<String> productNames,
+					              @RequestParam("productImage") List<String> productImages,
+					              @RequestParam("productQuantity") List<Integer> productQuantities,
+					              @RequestParam("productPrice") List<Integer> productPrices,
+					              @RequestParam("totalPrice") Integer totalPrice,
 					              HttpSession session,
 					              Model model) throws SQLException {
-    		System.out.println("Product Number: " + productNum);
-    		System.out.println("Product Name: " + productName);
-    		System.out.println("Product Image: " + productImage);
-    		System.out.println("Product Quantity: " + productQuantity);
-    		System.out.println("Product Price: " + productPrice);
+    	
+    		List<Map<String, Object>> productDetails = new ArrayList<>();
     		
-    		// 요청된 파라미터를 모델에 추가
-    	    model.addAttribute("productNum", productNum);
-    	    model.addAttribute("productName", productName);
-    	    model.addAttribute("productImage", productImage);
-    	    model.addAttribute("productQuantity", productQuantity);
-    	    model.addAttribute("productPrice", productPrice);
+    		for (int i = 0; i < productNums.size(); i++) {
+    	        Map<String, Object> productInfo = new HashMap<>();
+    	        productInfo.put("productNum", productNums.get(i));
+    	        productInfo.put("productName", productNames.get(i));
+    	        productInfo.put("productImage", productImages.get(i));
+    	        productInfo.put("productQuantity", productQuantities.get(i));
+    	        productInfo.put("productPrice", productPrices.get(i));
+    	        
+    	        productDetails.add(productInfo);
+    	    }
+    		
+    	    model.addAttribute("productDetails", productDetails);
+    	    model.addAttribute("totalPrice", totalPrice);  // 단일 총 가격
+	        
+	        // 각 상품의 정보 출력 (디버깅용)
+	        for (int i = 0; i < productNums.size(); i++) {
+	            System.out.println("Product Number: " + productNums.get(i));
+	            System.out.println("Product Name: " + productNames.get(i));
+	            System.out.println("Product Image: " + productImages.get(i));
+	            System.out.println("Product Quantity: " + productQuantities.get(i));
+	            System.out.println("Product Price: " + productPrices.get(i));
+	        }
+	        System.out.println("total Price: " + totalPrice);
+	       
     	    
     	    //회원정보 가져오기
     	    String memberId = (String) session.getAttribute("userId");
