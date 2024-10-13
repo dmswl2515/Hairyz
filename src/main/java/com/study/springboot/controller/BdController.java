@@ -314,10 +314,61 @@ public class BdController {
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping("/list.do")
-    public String list(Model model) {
-    	
-        return "list"; // list.jsp를 반환
+    @GetMapping("/list.do")
+    public String getBoardList(
+        @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+
+        int pageSize = 5; // 한 페이지에 보여줄 게시글 수
+        int totalCount = boardService.getBoardCount(null, null, null); // 총 게시글 수
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize); // 전체 페이지 수
+
+        // 페이지에 따른 startRow와 endRow 계산
+        int startRow = (page - 1) * pageSize + 1; // 시작 행 번호
+        int endRow = page * pageSize; // 끝 행 번호
+
+        List<BoardDto> boardList = boardService.getBoardList(startRow, endRow, null, null, null);
+        System.out.println("게시글 리스트: " + boardList);
+        System.out.println("startRow: " + startRow);
+        System.out.println("endRow: " + endRow);
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageSize", pageSize);
+
+        return "list"; // list.jsp 반환
+    }
+    
+    @GetMapping("/boardSearch")
+    public String searchBoard(
+        @RequestParam(value = "category", defaultValue = "all") String category,
+        @RequestParam(value = "condition", defaultValue = "") String condition,
+        @RequestParam(value = "keyword", defaultValue = "") String keyword,
+        @RequestParam(value = "page", defaultValue = "1") int page,
+        Model model) {
+
+        int pageSize = 5; // 한 페이지에 보여줄 게시글 수
+        int totalCount = boardService.getBoardCount(category, condition, keyword); // 총 게시글 수
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize); // 전체 페이지 수
+
+        // 페이지에 따른 startRow와 endRow 계산
+        int startRow = (page - 1) * pageSize + 1; // 시작 행 번호
+        int endRow = page * pageSize; // 끝 행 번호
+
+        List<BoardDto> boardList = boardService.getBoardList(startRow, endRow, category, condition, keyword);
+        System.out.println("게시글 리스트: " + boardList);
+        System.out.println("startRow: " + startRow);
+        System.out.println("endRow: " + endRow);
+        System.out.println("category: " + category);
+        System.out.println("condition: " + condition);
+        System.out.println("keyword: " + keyword);
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageSize", pageSize);
+
+        return "list"; // list.jsp 반환
     }
     
     @GetMapping("/delete.do")

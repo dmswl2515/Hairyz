@@ -40,5 +40,12 @@ public interface IBoardDao
 	BoardDto getPostById(int bd_no);
 
 	int updatePost(BoardDto boardDto);
+
+	// 게시글 검색
+	int getBoardCount(@Param("category") String category, @Param("condition") String condition, @Param("keyword") String keyword);
+
+	// 게시글 목록 조회
+    List<BoardDto> getBoardList(@Param("startRow") int startRow, @Param("endRow") int endRow, @Param("pageSize") int pageSize, 
+                                @Param("category") String category, @Param("condition") String condition, @Param("keyword") String keyword);
     
 }

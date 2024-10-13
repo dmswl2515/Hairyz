@@ -1,9 +1,12 @@
 package com.study.springboot.service;
 
-import com.study.springboot.dao.IBoardDao;
-import com.study.springboot.dto.BoardDto;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.study.springboot.dao.IBoardDao;
+import com.study.springboot.dto.BoardDto;
 
 @Service
 public class BoardService {
@@ -62,5 +65,50 @@ public class BoardService {
 	public int updatePost(BoardDto boardDto) {
         return boardDao.updatePost(boardDto);
 	}
+
+	public int getBoardCount(String category, String condition, String keyword) {
+		return boardDao.getBoardCount(category, condition, keyword);
+	}
+	
+	public List<BoardDto> getBoardList(int page, int pageSize, String category, String condition, String keyword) {
+        int startRow = (page - 1) * pageSize;
+        int endRow = startRow + pageSize - 1;
+        
+        // 파라미터 값 출력
+        System.out.println("Page: " + page);
+        System.out.println("Page Size: " + pageSize);
+        System.out.println("Category: " + category);
+        System.out.println("Condition: " + condition);
+        System.out.println("Keyword: " + keyword);
+        
+        if (condition == null || condition.trim().isEmpty()) {
+            condition = null;
+        }
+        if (keyword == null || keyword.trim().isEmpty()) {
+            keyword = null;
+        }
+        
+     // DAO를 통해 게시글 리스트를 가져옴
+        List<BoardDto> boardList = boardDao.getBoardList(startRow, endRow, pageSize, category, condition, keyword);
+
+        // 이미지 태그 제거 로직 추가
+        for (BoardDto board : boardList) {
+            String content = board.getBd_content();
+            String contentWithoutImages = removeImgTags(content);  // 이미지 태그 제거
+            board.setBd_content(contentWithoutImages);  // 수정된 내용을 다시 설정
+        }
+
+        return boardDao.getBoardList(startRow, endRow, pageSize, category, condition, keyword);
+    }
+	
+	// 정규식을 사용해 <img> 태그를 제거하는 메서드
+    private String removeImgTags(String content) {
+        if (content == null) {
+            return null;
+        }
+
+        // <img> 태그를 정규식으로 모두 제거
+        return content.replaceAll("(?i)<img[^>]*>", "<!--IMG_REMOVED-->");
+    }
 
 }
