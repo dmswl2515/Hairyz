@@ -191,7 +191,8 @@
 	              </div>
 	              <div class="product-text">
 	              	  <input type="hidden" id="productNum" name="productNum" value="${product.pdNum}" />
-		              <span class="product-name" id='productName'>${product.pdName}</span><br>
+	              	  <input type="hidden" id="productAmount" name="productAmount" value="${product.pd_amount}" />
+		              <span class="product-name" id='productName'>${product.pdName} ${product.pd_amount == 0 ? '(품절)' : ''}</span><br>
 		              <span class="product-price">
 		              	<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
 		              </span>
@@ -765,6 +766,15 @@
 	
 	//구매버튼 클릭 이벤트
 	function goToPurchase() {
+		
+		let productAmount = document.getElementById('productAmount').value;
+        
+        // pd_amount가 0인지 확인
+        if (productAmount == 0) {
+            alert("품절된 상품으로 구매 불가합니다."); // 알림창 표시
+            return; // 함수 종료
+        }
+        
 	    let ProductNum = document.getElementById('productNum').value;
 	    let ProductName = document.getElementById('productName').innerText;
 	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
