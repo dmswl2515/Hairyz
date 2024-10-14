@@ -509,7 +509,7 @@
 					        }
 							
 							//HTML에서 값 가져오기
-							var totalPrice = document.getElementById('totalPrice').value;
+							//var totalPrice = document.getElementById('totalPrice').value;
 							var orderNumber = document.getElementById('odNo').value;
 							var customerId = document.getElementById('memberId').value;
 							var customerName = document.getElementById('odMname').value;
@@ -517,13 +517,44 @@
 							var customerEmail = document.getElementById('odMemail').value;
 							
 							
-							console.log(totalPrice)
-							console.log(orderNumber)
-							console.log(customerId)
-							console.log(customerName)
-							console.log(customerPhone)
-							console.log(customerEmail)
+							//console.log("totalPrice: "  + totalPrice)
+							console.log("orderNumber: "  + orderNumber)
+							console.log("customerId: "  + customerId)
+							console.log("customerName: "  + customerName)
+							console.log("customerPhone: "  + customerPhone)
+							console.log("customerEmail: "  + customerEmail)
 							
+							let totalPrice = 0; //금액 초기화
+							
+							// 상품 정보를 가져오는 부분
+							const items = Array.from(document.querySelectorAll('[id^="odNum-"]')).map(input => {
+						    const productNum = input.value;
+						    const qty = parseInt(document.getElementById(`odAmount-` + productNum).value) || 0; // 수량
+						    const price = parseInt(document.getElementById(`productPrice-` + productNum).value.replace(/[^0-9]/g, '')) || 0; // 가격
+						
+						    // 유효성 검사: 수량과 가격이 유효한지 확인
+						    if (qty > 0 && price > 0) {
+						        totalPrice += price; // 가격을 총 금액에 추가
+						    }
+							
+							    
+							
+							    console.log("productNum : " + productNum);
+							    console.log("qty : " + qty);
+							    console.log("price : " + price);
+							    console.log("totalPrice : " + totalPrice);
+							    
+							    
+							    return {
+							        "id": productNum,
+							        "name": document.getElementById(`productName-` + productNum).value,
+							        "qty": qty,
+							        "price": price
+							    };
+							});
+							
+							// 최종적으로 계산된 총 금액을 사용
+							console.log("Calculated totalPrice: " + totalPrice);
 							
 							Bootpay.requestPayment({
 					            "application_id": "6703330ccc5274a3ac3fc385",
@@ -539,23 +570,7 @@
 					                "phone": customerPhone,
 					                "email": customerEmail
 					            },
-					            "items": Array.from(document.querySelectorAll('[id^="odNum-"]')).map(input => {
-					                const productNum = input.value;
-					                const qty = document.getElementById(`odAmount-` + productNum).value; // 수량
-					                const price = parseInt(document.getElementById(`productPrice-` + productNum).value.replace(/[^0-9]/g, '')); // 가격
-					                
-					                console.log("productNum : " + productNum);
-					                console.log("qty : " + qty);
-					                console.log("price : " + price);
-					                
-					                
-					                return {
-					                    "id": productNum,
-					                    "name": document.getElementById(`productName-` + productNum).value,
-					                    "qty": qty,
-					                    "price": price
-					                };
-					            }),
+					            "items": items,
 					            "extra": {
 					                "open_type": "iframe",
 					                "card_quota": "0,2,3",
