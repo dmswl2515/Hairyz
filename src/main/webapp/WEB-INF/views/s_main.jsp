@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <% 
     String pdAnimal = (String) request.getParameter("pd_animal");
@@ -213,23 +214,28 @@
 		    <div class="container">
 		    	<div class="row">
 		    		<c:forEach var="item" items="${ProductItems}">
-		                <div class="col-md-3 mb-3">
-		                    <div class="product-box">
-		                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
-		                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" class="product-img" style="width:100%; height:100%; object-fit:cover;">
-		                    </a>
-		                    </div>
-		                    
-		                    <div class="product-text">
-		                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
-		                        <h6 class="product-name">${item.pdName}</h6>
-		                    </a>    
-		                        <p class="product-price">
-		                        	<fmt:formatNumber value="${item.pd_price}" pattern="#,##0원" />
-		                        </p>
-		                    </div>
-		                </div>
-	            </c:forEach>
+		    			<!-- pd_selling 값이 'N'이 아닐 때만 노출 -->
+           				<c:choose>
+    						<c:when test="${fn:contains(item.pd_selling, 'Y')}">
+				                <div class="col-md-3 mb-3">
+				                    <div class="product-box">
+				                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
+				                        <img src="${pageContext.request.contextPath}/upload/${item.pd_chng_fname}" alt="${item.pdName}" class="product-img" style="width:100%; height:100%; object-fit:cover;">
+				                    </a>
+				                    </div>
+				                    
+				                    <div class="product-text">
+				                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
+				                    	<h6 class="product-name">${item.pdName} ${item.pd_amount == 0 ? '(품절)' : ''}</h6>
+				                    </a>    
+				                        <p class="product-price">
+				                        	<fmt:formatNumber value="${item.pd_price}" pattern="#,##0원" />
+				                        </p>
+				                    </div>
+				                </div>
+			                </c:when>
+		                </c:choose>  
+	                </c:forEach>
 		    	</div>
 		    </div>
 		</div>

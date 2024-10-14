@@ -1,6 +1,7 @@
 package com.study.springboot.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -108,11 +110,9 @@ public class ShopController {
     @RequestMapping("/p_details")    
     public String productDetail(@RequestParam(defaultValue = "1") int page,
 								@RequestParam("pdNum") int pdNum, 
-								@RequestParam(value = "qnaNo", defaultValue = "0") int qnaNo,
     							HttpSession session,
 								Model model) {
     	
-    	System.out.println(qnaNo);
     	
     	// pdNum에 해당하는 상품 정보를 DB에서 가져옴
         List<PDto> product = pRepository.findByPdNum(pdNum);
@@ -138,63 +138,82 @@ public class ShopController {
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
         
-        //QnA 답변 가져오기
-        List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo);
-        System.out.println("qnaRepList: " + qnaRepList);
+        // 페이지네이션 설정
+        int pageSize = 1; // 페이지당 항목 수
+        int totalQnAs = qnaList.size(); // 전체 상품 수
+        int startRow = (page - 1) * pageSize; // 시작 인덱스
+        int endRow = Math.min(startRow + pageSize, totalQnAs);
         
-        if (qnaNo > 0) {
-        	
-            model.addAttribute("qnaRepList", qnaRepList);
-            model.addAttribute("currentQnaRep", qnaRepList.isEmpty() ? null : qnaRepList.get(0)); // 첫 번째 답변만 추가
-            System.out.println("qna_no: " + qnaNo);
-            System.out.println("qnaRepList: " + qnaRepList);
-        } else {
-            System.out.println("qna_no는 0입니다. Q&A 답변을 가져올 수 없습니다.");
-        }
+        //구매평
+        List<ProductReviewDto> reviews = PRService.getReviewsByProductId(pdNum);
+        model.addAttribute("reviews", reviews);
         
-	        // 페이지네이션 설정
-	        int pageSize = 1; // 페이지당 항목 수
-	        int totalQnAs = qnaRepList.size(); // 전체 상품 수
-	        int startRow = (page - 1) * pageSize; // 시작 인덱스
-	        int endRow = Math.min(startRow + pageSize, totalQnAs);
-	        
-	        //구매평
-	        List<ProductReviewDto> reviews = PRService.getReviewsByProductId(pdNum);
-	        model.addAttribute("reviews", reviews);
-	        
-	        //QnA 페이지네이션 
-	        List<QDto> paginatedQnAs = qnaList.subList(startRow, endRow);
-	        
-	        model.addAttribute("products", paginatedQnAs);
-	        model.addAttribute("currentPage", page); // 현재 페이지 번호
-	        model.addAttribute("totalPages", (int) Math.ceil((double) totalQnAs / pageSize)); // 전체 페이지 수
-	        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
-	        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalQnAs / pageSize), page + 2)); // 끝 페이지
+        //QnA 페이지네이션 
+        List<QDto> paginatedQnAs = qnaList.subList(startRow, endRow);
         
-            return "p_details";              
+        model.addAttribute("products", paginatedQnAs);
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
+        model.addAttribute("totalPages", (int) Math.ceil((double) totalQnAs / pageSize)); // 전체 페이지 수
+        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
+        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalQnAs / pageSize), page + 2)); // 끝 페이지
+    
+        return "p_details";              
     }
+    
+    @GetMapping("/selectQnANo")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> fetchQnaReply(@RequestParam(value = "qnaNo") int qnaNo) {
+        // qnaNo로 답변 가져오는 로직
+    	System.out.println("qnaNo: " + qnaNo);
+    	
+    	List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo); // qnaNo에 해당하는 답변 목록 가져오기
+        String replyContent = qnaRepList.isEmpty() ? "답변이 없습니다." : qnaRepList.get(0).getQrContent(); // 첫 번째 답변 내용 가져오기
+        
+        System.out.println("replaycontent : " + replyContent);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("replyContent", replyContent);
+        return ResponseEntity.ok(response);
+    }
+
     
     
     @RequestMapping("/s_purchase")    
-    public String productPhrchase(@RequestParam("productNum") int productNum,
-					              @RequestParam("productName") String productName,
-					              @RequestParam("productImage") String productImage,
-					              @RequestParam("productQuantity") int productQuantity,
-					              @RequestParam("productPrice") int productPrice,
+    public String productPhrchase(@RequestParam("productNum") List<Integer> productNums,
+					              @RequestParam("productName") List<String> productNames,
+					              @RequestParam("productImage") List<String> productImages,
+					              @RequestParam("productQuantity") List<Integer> productQuantities,
+					              @RequestParam("productPrice") List<Integer> productPrices,
+					              @RequestParam("totalPrice") Integer totalPrice,
 					              HttpSession session,
 					              Model model) throws SQLException {
-    		System.out.println("Product Number: " + productNum);
-    		System.out.println("Product Name: " + productName);
-    		System.out.println("Product Image: " + productImage);
-    		System.out.println("Product Quantity: " + productQuantity);
-    		System.out.println("Product Price: " + productPrice);
+    	
+    		List<Map<String, Object>> productDetails = new ArrayList<>();
     		
-    		// 요청된 파라미터를 모델에 추가
-    	    model.addAttribute("productNum", productNum);
-    	    model.addAttribute("productName", productName);
-    	    model.addAttribute("productImage", productImage);
-    	    model.addAttribute("productQuantity", productQuantity);
-    	    model.addAttribute("productPrice", productPrice);
+    		for (int i = 0; i < productNums.size(); i++) {
+    	        Map<String, Object> productInfo = new HashMap<>();
+    	        productInfo.put("productNum", productNums.get(i));
+    	        productInfo.put("productName", productNames.get(i));
+    	        productInfo.put("productImage", productImages.get(i));
+    	        productInfo.put("productQuantity", productQuantities.get(i));
+    	        productInfo.put("productPrice", productPrices.get(i));
+    	        
+    	        productDetails.add(productInfo);
+    	    }
+    		
+    	    model.addAttribute("productDetails", productDetails);
+    	    model.addAttribute("totalPrice", totalPrice);  // 단일 총 가격
+	        
+	        // 각 상품의 정보 출력 (디버깅용)
+	        for (int i = 0; i < productNums.size(); i++) {
+	            System.out.println("Product Number: " + productNums.get(i));
+	            System.out.println("Product Name: " + productNames.get(i));
+	            System.out.println("Product Image: " + productImages.get(i));
+	            System.out.println("Product Quantity: " + productQuantities.get(i));
+	            System.out.println("Product Price: " + productPrices.get(i));
+	        }
+	        System.out.println("total Price: " + totalPrice);
+	       
     	    
     	    //회원정보 가져오기
     	    String memberId = (String) session.getAttribute("userId");

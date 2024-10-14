@@ -191,7 +191,8 @@
 	              </div>
 	              <div class="product-text">
 	              	  <input type="hidden" id="productNum" name="productNum" value="${product.pdNum}" />
-		              <span class="product-name" id='productName'>${product.pdName}</span><br>
+	              	  <input type="hidden" id="productAmount" name="productAmount" value="${product.pd_amount}" />
+		              <span class="product-name" id='productName'>${product.pdName} ${product.pd_amount == 0 ? '(품절)' : ''}</span><br>
 		              <span class="product-price">
 		              	<fmt:formatNumber value="${product.pd_price}" pattern="#,##0원" />
 		              </span>
@@ -226,6 +227,58 @@
 	              	   <hr class="product-hr">
 	              	   		<div>
     							<button onclick="goToPurchase()" id="buy-now" class="btn btn-warning" style="width: 200px; margin-left: 10px;">구매하기</button>
+		              	   		
+		              	   		<script>
+				              	   	//수량 변화 이벤트
+				              	  	$(document).ready(function() {
+				              	  	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
+				              	  	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
+				              	  	    
+				              	  	    console.log("pricePerITem : " + pricePerItem)
+				              	  	    console.log("quantity : " + quantity)
+				              	  	
+				              	  	    function updateTotalPrice() {
+				              	  	        let totalPrice = pricePerItem * quantity;
+				              	  	        $('#total-price').text(totalPrice.toLocaleString() + '원');
+				              	  	    }
+				              	  	
+				              	  	    $('#increase').on('click', function() {
+				              	  	        quantity++;
+				              	  	        $('#quantity-input').val(quantity);
+				              	  	        updateTotalPrice();
+				              	  	    });
+				              	  	
+				              	  	    $('#decrease').on('click', function() {
+				              	  	        if (quantity > 1) {
+				              	  	            quantity--;
+				              	  	            $('#quantity-input').val(quantity);
+				              	  	            updateTotalPrice();
+				              	  	        }
+				              	  	    });
+				              	  	    
+				              	  	    $('#quantity-input').on('focus', function() {
+				              	  	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
+				              	  	    });
+				              	  	
+				              	  	    $('#quantity-input').on('input', function() {
+				              	  	        // 사용자가 입력한 값을 받아오기
+				              	  	        let inputValue = $(this).val();
+				              	  	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
+				              	  	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
+				              	  	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
+				              	  	        } else {
+				              	  	            quantity = 1; // 기본값 1 설정
+				              	  	        }
+				              	  	        $(this).val(quantity); // 입력란의 값을 업데이트
+				              	  	        updateTotalPrice(); // 총 가격 업데이트
+				              	  	    });
+				              	  	
+				              	  	    // 초기 총 가격 업데이트
+				              	  	    updateTotalPrice();
+				              	  	});
+		              	   		</script>
+		              	   		
+		              	   		
 		              	   		<button onclick="goToCart()" id="add-to-cart" class="btn btn-outline-warning" style="width: 200px; color: black;">장바구니</button>
 		              	   	</div>
 	              	   		<!-- 모달 -->
@@ -340,36 +393,39 @@
 			    <tbody>
 			        <c:forEach var="item" items="${reviews}">
 			            <tr class="table-white text-left">
-			                <td colspan="4">
-			                	<span style="font-weight: bold;">
-				                    <c:forEach var="i" begin="1" end="5">
-				                        <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
-				                    </c:forEach>
-			                		${item.pr_rating}
-				                </span>
+			                <td colspan="3">
+			                    <span style="font-weight: bold;">
+			                        <c:forEach var="i" begin="1" end="5">
+			                            <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
+			                        </c:forEach>
+			                        ${item.pr_rating}
+			                    </span>
 			                </td>
-			             </tr>
-			             <tr>
-			                <td colspan="4">
+			            </tr>
+			            <tr>
+			                <td colspan="3">
 			                    <span style="font-weight:bold; margin-right:15px;">${item.pr_MbNnme}</span>
-			                    <span>${item.pr_reviewDate}</span>
+			                    <span>
+			                        <fmt:formatDate value="${item.pr_reviewDate}" pattern="yyyy-MM-dd" />
+			                    </span>
 			                </td>
-			             </tr>
-			             <td colspan="3" class="table-bottom-border">${item.pr_reviewText}</td>
-			             <c:if test="${not empty item.pr_modName}">
-				                <td colspan="1"></td>
-				                <td class="table-bottom-border" style="width:300px;">
-				                    <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" alt="상품 이미지" style="width:100px; height:auto;"> <!-- item.productImage로 이미지 URL을 가져옵니다. --> 	
-				                </td>
-			             </c:if>
-			             <c:if test="${!not empty item.pr_modName}">
-				                <td colspan="1"></td>
-				                <td class="table-bottom-border"></td>
-			             </c:if>
+			            </tr>
+			            <tr>
+			                <td colspan="2" class="table-bottom-border" style="vertical-align: top;">
+			                    ${item.pr_reviewText}
+			                </td>
+			                <c:if test="${not empty item.pr_modName}">
+			                    <td colspan="1" class="table-bottom-border" style="width:200px; vertical-align: top;">
+			                        <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" alt="상품 이미지" style="width:100%; height:auto;">
+			                    </td>
+			                </c:if>
+			                <c:if test="${empty item.pr_modName}">
+			                    <td colspan="1" class="table-bottom-border"></td>
+			                </c:if>
+			            </tr>
 			        </c:forEach>
 			    </tbody>
 			</table>
-						 
 			    
 			<hr class="product-hr">
 			    <div id="qna-content" class="">
@@ -426,7 +482,6 @@
 					    </tr>
 					  </thead>
 				      <tbody>
-				      	<c:if test="${not empty qnaList}">
 				      	<c:forEach var="qDTO" items="${qnaList}">
 				      	<input type="hidden" id="loggedInUserId" value="${memberList.mb_id}" />
 				            <tr>
@@ -473,80 +528,141 @@
 		                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
 		                    <c:choose>
 							    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
+							        <!-- 문의상태가 공개이고 관리자가 답변을 달아준 경 -->
 							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
 							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
 							            <td colspan="3">${qDTO.qna_content}</td>    
 							        </tr>
-							        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
-								        <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
+							        <c:if test="${not empty qnaRepList}">
+							        	<input type="hidden" id=qrNo name=qrNo value="${qnaRepList[0].qr_no}">
+								        <tr id="details-${qnaRepList[0].qr_no}" class="details-content" style="display: none; background-color: #fff9c4;">
+								            
 								            <td colspan="1" class="text-center align-middle"></td>
 								            <td colspan="1" style="font-size: 14px;">
 								            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
-								            		${currentQnaRep.qrContent}
+								            		${qnaRepList[0].qrContent}
 								           	</td>
 								            <td colspan="1">
-								                <!--  비공개 글인데 자신이 작성자 일 경우 -->
-								                
 								            	<c:choose>
-											        <c:when test="${currentQnaRep.qrId == 'admin'}">
-											            관리자
-											        </c:when>
-											        <c:otherwise>
-											            ${currentQnaRep.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
-											        </c:otherwise>
+											        <c:when test="${qnaRepList[0].qrId == 'admin'}">
+							                            관리자
+							                        </c:when>
+							                        <c:otherwise>
+							                            ${qnaRepList[0].qrId}
+							                        </c:otherwise>
 											    </c:choose>
 								            </td>									            
 							            	<td class="text-center align-middle">
-					                            <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
-					                        </td>
-							            									                
+					                            <fmt:formatDate value="${qnaRepList[0].qrDate}" pattern="yyyy-MM-dd" />     
+					                        </td>						                
 								        </tr>
 							        </c:if>		
 							    </c:when>
-							    <c:when test="${qDTO.qna_qstate == '공개'}">
-							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
-							            <td colspan="1" class="text-center align-middle"></td>
-							            <td colspan="3">${qDTO.qna_content}</td>    
-							        </tr>
-							    </c:when>
 							    <c:when test="${qDTO.qna_qstate == '비공개' && qDTO.qna_authorId == memberList.mb_id}">
-							        <!-- 비공개 글이고 작성자인 경우 -->
+							        <!-- 비공개 글이고 자신이 작성자인 경우 -->
 							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
 							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
 							            <td colspan="3">${qDTO.qna_content}</td>    
 							        </tr>
-							        <c:if test="${currentQnaRep != null && currentQnaRep.qna_no == qDTO.qna_no}">
-							            <tr id="details-${qDTO.qna_no}" class="details-content" style="display: none; background-color: #fff9c4;">
+							        <c:if test="${not empty qnaRepList}">
+							            <tr id="details-${qnaRepList[0].qr_no}" class="details-content" style="display: none; background-color: #fff9c4;">
 							                <td colspan="1" class="text-center align-middle"></td>
 							                <td colspan="1" style="font-size: 14px;">
 							                    <i class="fas fa-angle-right" style="margin-right: 5px;"></i>
-							                    ${currentQnaRep.qrContent}
+							                    ${qnaRepList[0].qrContent} <!-- 첫 번째 답변의 내용을 출력 -->
 							                </td>
 							                <td colspan="1">
 							                    <c:choose>
-							                        <c:when test="${currentQnaRep.qrId == 'admin'}">
+							                        <c:when test="${qnaRepList[0].qrId == 'admin'}">
 							                            관리자
 							                        </c:when>
 							                        <c:otherwise>
-							                            ${currentQnaRep.qrId}
+							                            ${qnaRepList[0].qrId}
 							                        </c:otherwise>
 							                    </c:choose>
 							                </td>
 							                <td class="text-center align-middle">
-							                    <fmt:formatDate value="${currentQnaRep.qrDate}" pattern="yyyy-MM-dd" />        
+							                    <fmt:formatDate value="${qnaRepList[0].qrDate}" pattern="yyyy-MM-dd" /> 
 							                </td>
 							            </tr>
 							        </c:if>
 							    </c:when>
 							</c:choose>
 		                </c:forEach>
-		            </c:if>
-
 					<c:if test="${empty qnaList}">
 					    <tr>
 					        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
 					    </tr>
 					</c:if>
+					
+					<script>
+						var loggedInUserId = "${sessionScope.userId}";
+						var currentQnaNo = null;
+						
+						function handleClick(authorId, qnaQState, qnaContent, qnaNo) {
+							
+							
+							console.log("loggedInUserId : " + loggedInUserId);
+							console.log("authorId : " + authorId);
+							console.log("qnaQState :" + qnaQState);
+							console.log("qnaContent: " + qnaContent);
+							console.log("qnaNo :" + qnaNo);
+							
+							currentQnaNo = qnaNo;
+							
+							if (qnaQState === '비공개') {
+								if (authorId === loggedInUserId) {
+									fetchQnaReply(); // 내용 토글
+						        } else {
+						            alert("비밀글입니다");
+						        }
+						    } else {
+						    	fetchQnaReply(); // 공개글의 경우 toggleContent 호출
+						    }
+						}
+						
+						function fetchQnaReply() {
+						    fetch('/selectQnANo?qnaNo=' + currentQnaNo) // 컨트롤러의 URL을 설정
+							    .then(response => {
+						            if (!response.ok) {
+						                throw new Error('네트워크 응답이 좋지 않습니다: ' + response.statusText);
+						            }
+						            return response.json();
+						        })
+						        .then(data => {
+						        	console.log("Fetched data:", data); 
+						            // 답변 데이터를 사용하여 DOM 업데이트
+						            const detailsRow = document.getElementById("details-" + currentQnaNo);
+						            console.log("detailsRow : " + detailsRow)
+						            
+						            if (detailsRow) { // detailsRow가 null이 아닐 경우
+						                detailsRow.innerHTML = data.replyContent; // 서버에서 가져온 답변 내용을 삽입
+						                toggleContent(); // 내용 토글
+						            } else {
+						                console.error('Details row not found for qnaNo:', currentQnaNo);
+						            }
+						        })
+						}
+						
+						function toggleContent() {
+							
+						    var contentDiv = document.getElementById("content-" + currentQnaNo);
+						    var detailsRow = document.getElementById("details-" + currentQnaNo);
+						    
+						    console.log(contentDiv)
+						    console.log(detailsRow)
+						    
+						    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
+						        contentDiv.style.display = "table-row"; // 내용을 보이게 함
+						        if (detailsRow) { // detailsRow가 존재할 때만 display 조정
+						            detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
+						        }
+						    } else {
+						        contentDiv.style.display = "none"; // 내용을 숨김
+						        detailsRow.style.display = "none";
+						    }
+						}
+					</script>
 					
 			      </tbody>
 				</table> 		       
@@ -644,52 +760,24 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script>
-	$(document).ready(function() {
-	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
-	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
+	var userId = "${sessionScope.userId}";
+	console.log(userId);
 	
-	    function updateTotalPrice() {
-	        let totalPrice = pricePerItem * quantity;
-	        $('#total-price').text(totalPrice.toLocaleString() + '원');
-	    }
-	
-	    $('#increase').on('click', function() {
-	        quantity++;
-	        $('#quantity-input').val(quantity);
-	        updateTotalPrice();
-	    });
-	
-	    $('#decrease').on('click', function() {
-	        if (quantity > 1) {
-	            quantity--;
-	            $('#quantity-input').val(quantity);
-	            updateTotalPrice();
-	        }
-	    });
-	    
-	    $('#quantity-input').on('focus', function() {
-	    	$(this).val(''); // 입력란 클릭 시 모든 내용 선택
-	    });
-	
-	    $('#quantity-input').on('input', function() {
-	        // 사용자가 입력한 값을 받아오기
-	        let inputValue = $(this).val();
-	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
-	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
-	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
-	        } else {
-	            quantity = 1; // 기본값 1 설정
-	        }
-	        $(this).val(quantity); // 입력란의 값을 업데이트
-	        updateTotalPrice(); // 총 가격 업데이트
-	    });
-	
-	    // 초기 총 가격 업데이트
-	    updateTotalPrice();
-	});
+	function getUserId() {
+	    return userId; 
+	}
 	
 	//구매버튼 클릭 이벤트
 	function goToPurchase() {
+		
+		let productAmount = document.getElementById('productAmount').value;
+        
+        // pd_amount가 0인지 확인
+        if (productAmount == 0) {
+            alert("품절된 상품으로 구매 불가합니다."); // 알림창 표시
+            return; 
+        }
+        
 	    let ProductNum = document.getElementById('productNum').value;
 	    let ProductName = document.getElementById('productName').innerText;
 	    let ProductImage = document.getElementById('productImg').src; // 이미지의 src 속성 값을 가져옵니다.
@@ -706,7 +794,8 @@
 	          '&productName=' + encodeURIComponent(ProductName) +
 	          '&productImage=' + encodeURIComponent(ProductImage) +
 	          '&productQuantity=' + encodeURIComponent(Productquantity) +
-	          '&productPrice=' + encodeURIComponent(Productprice);
+	          '&productPrice=' + encodeURIComponent(Productprice) +
+	          '&totalPrice=' + encodeURIComponent(Productprice);
 	    
 	    console.log(url)
 	    
@@ -757,12 +846,9 @@
 	    
 	    .then(data => {
 		    console.log(data);
-		    // 모달 표시
 		    showModal(); // 상품이 장바구니에 추가된 경우에만 모달을 표시합니다.
 		})
-	        // 모달 표시
-	        //document.getElementById('cartModal').style.display = 'block';
-	    //})
+	        
 	    .catch((error) => {
 		    if (error.message === "Conflict") {
 		        alert("이미 장바구니에 담겨있는 상품입니다."); // 충돌 처리 메시지 표시
@@ -772,19 +858,18 @@
 		});
 	}
 	
-	// 모달열기
+	// 장바구니 모달열기
 	function showModal() {
 	    const modal = document.getElementById("cartModal");
 	    modal.style.display = "block"; // 모달 보이기
 	}
 	
 	function closeModal() {
-	    // 모달닫기
 	    document.getElementById("cartModal").style.display = "none";
 	}
 	
 	function continueShopping() {
-	    closeModal(); // 모달 닫기
+	    closeModal(); 
 	 
 	}
 
@@ -792,14 +877,7 @@
 	    window.location.href = "s_cart"; // 장바구니 페이지로 이동
 	}
 	
-		// 모달 열기
-	var userId = "${sessionScope.userId}";
-	console.log(userId);
-	
-	function getUserId() {
-	    return userId; 
-	}
-	
+	// Q&A 모달 열기
 	function openModal() {
 		if (!getUserId()) { // 로그인 안된 상태
 	        alert("로그인이 필요한 서비스입니다.");
@@ -852,6 +930,7 @@
 	    });
 	}
 	
+	//상세정보,구매평, 문의 버튼 클릭시 스크롤 이벤
 	document.querySelectorAll('.tab-button').forEach(button => {
 	    button.addEventListener('click', function() {
 	        // 모든 버튼에서 'active' 클래스 제거
@@ -870,48 +949,6 @@
 	        }
 	    });
 	});
-	
-	var loggedInUserId = "${sessionScope.userId}";
-	
-	function handleClick(authorId, qnaQState, qnaContent, qnaNo) {
-		
-		
-		console.log("loggedInUserId : " + loggedInUserId);
-		console.log("authorId : " + authorId);
-		console.log("qnaQState :" + qnaQState);
-		console.log("qnaContent: " + qnaContent);
-		console.log("qnaNo :" + qnaNo);
-		
-		
-		
-		if (qnaQState === '비공개') {
-			if (authorId === loggedInUserId) {
-	            toggleContent(qnaNo); // 내용 토글
-	        } else {
-	            alert("비밀글입니다");
-	        }
-	    } else {
-	        toggleContent(qnaNo); // 공개글의 경우 toggleContent 호출
-	    }
-	}
-	
-	function toggleContent(qnaNo) {
-	    var contentDiv = document.getElementById("content-" + qnaNo);
-	    var detailsRow = document.getElementById("details-" + qnaNo);
-	    
-	    console.log(contentDiv)
-	    console.log(detailsRow)
-	    
-	    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
-	        contentDiv.style.display = "table-row"; // 내용을 보이게 함
-	        if (detailsRow) { // detailsRow가 존재할 때만 display 조정
-	            detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
-	        }
-	    } else {
-	        contentDiv.style.display = "none"; // 내용을 숨김
-	        detailsRow.style.display = "none";
-	    }
-	}
 </script>
 </body>
 </html>

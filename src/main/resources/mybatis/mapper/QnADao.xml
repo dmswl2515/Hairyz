@@ -24,7 +24,7 @@
 	    SELECT 
 	        q.qna_no, 
 	        q.qna_pnum,
-	        q.qna_authorId
+	        q.qna_authorId,
 	        q.qna_content, 
 	        q.qna_qstate, 
 	        q.qna_rstate,
