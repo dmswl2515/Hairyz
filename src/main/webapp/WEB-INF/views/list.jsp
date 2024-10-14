@@ -11,38 +11,40 @@
 <meta charset="UTF-8">
 <title>커뮤니티 | 털뭉치즈</title>
  <style>
-    .board-item {
-        display: flex;
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        align-items: center;
-    }
-    .board-item h5 { font-size: 1.15rem; }
-    .board-item .content {
-        flex: 1;
-    }
-    .board-item img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        margin-left: 15px;
-    }
-    .board-body p { margin-bottom:0 !important; }
-    .ellipsis {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-    }
-    .board-footer {
-        font-size: 0.875rem;
-        color: #666;
-    }
-    .category-btn {
-        margin-right: 5px;
-    }
+.searchWrap * { border-color: #ffc107; }
+.board-item {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #ffc107;
+    align-items: center;
+}
+.boardList .board-item:first-child { border-top: 1px solid #ffc107; }
+.board-item h5 { font-size: 1.15rem; }
+.board-item .content { flex: 1; }
+.board-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-left: 15px;
+    border-radius: .25rem;
+}
+.board-body { margin-bottom:.5rem; }
+.board-body p { margin-bottom:0 !important; }
+.ellipsis {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+.board-footer {
+    font-size: 0.85rem;
+    color: #6c757d!important;
+}
+.category-btn { margin-right: 5px; border-radius:1.25rem; border-color:#fff; color: #212529; }
+.category-btn.selected { background-color: #ffc107; }
+
 </style>
 </head>
 <body>
@@ -51,35 +53,76 @@
 		
 		<div class="container list my-4">
 			<!-- 게시글 검색 -->
-		    <div class="input-group mb-4">
+		    <div class="input-group searchWrap mb-4 mx-auto col-md-6">
 		        <select class="custom-select" id="searchCondition">
-		            <option value="all">전체</option>
+		            <option value="all" selected>전체</option>
 		            <option value="title">제목</option>
 		            <option value="content">내용</option>
 		            <option value="writer">작성자</option>
 		        </select>
 		        <input type="text" class="form-control" id="searchKeyword" placeholder="검색어 입력">
 		        <div class="input-group-append">
-		            <button class="btn btn-outline-secondary" type="button" onclick="searchPosts()">검색</button>
+		            <button class="btn btn-outline-warning" type="button" onclick="searchPosts()">검색</button>
 		        </div>
 		    </div>
 		
 		    <!-- 카테고리 -->
-		    <div class="mb-4">
-		        <button class="btn btn-outline-primary category-btn" onclick="filterCategory('all')">전체</button>
-		        <button class="btn btn-outline-primary category-btn" onclick="filterCategory('f')">자유</button>
-		        <button class="btn btn-outline-primary category-btn" onclick="filterCategory('q')">질문</button>
-		    </div>
+			<div class="mb-4">
+			    <button class="btn btn-outline-warning category-btn" data-category="all"># 전체</button>
+			    <button class="btn btn-outline-warning category-btn" data-category="f"># 자유</button>
+			    <button class="btn btn-outline-warning category-btn" data-category="q"># 질문</button>
+			</div>
+			
+			<script>
+			$(document).ready(function() {
+			    // URL에서 카테고리 값을 가져오기
+			    const urlParams = new URLSearchParams(window.location.search);
+			    const category = urlParams.get('category') || 'all'; // 기본값은 'all'
+			
+			    // 페이지 로드 시 선택된 카테고리에 해당하는 버튼에 'selected' 클래스 추가
+			    setCurrentButton(category);
+			
+			    $('.category-btn').click(function(event) {
+			        event.preventDefault(); // 기본 동작 방지
+			        
+			        // 현재 페이지와 선택된 카테고리를 가져옴
+			        const currentPage = urlParams.get('page') || 1; // 현재 페이지 가져오기
+			        const category = $(this).data('category'); // 클릭된 버튼의 category 값 가져오기
+			
+			        // URL 변경
+			        changeURL(currentPage, category);
+			    });
+			
+			    function setCurrentButton(category) {
+			        // 모든 버튼에서 'selected' 클래스 제거
+			        $('.category-btn').removeClass('selected');
+			        
+			        // URL에서 가져온 카테고리에 해당하는 버튼에 'selected' 클래스 추가
+			        $('.category-btn[data-category="' + category + '"]').addClass('selected');
+			    }
+			
+			    function changeURL(page, category) {
+			        // URL 변경
+			        console.log('Navigating to /list.do?page=' + page + '&category=' + category);
+			        
+			        // URL 변경
+			        window.location.href = '/list.do?page=' + page + '&category=' + category;
+			    }
+			});
+			</script>
+
 		    
-		    <hr>
-		
 		    <!-- 게시글 리스트 -->
 		    <div id="boardList" class="boardList">
 		        <!-- 반복되는 게시글 항목 -->
 		        <c:forEach var="board" items="${boardList}">
 		            <div class="board-item">
 		                <div class="content">
-		                    <h5>${board.bd_title}</h5>
+		                    <h5>
+		                    	<a href="/post_view.do/${board.bd_no}" class="text-dark">
+			                        ${board.bd_title}
+			                    </a>
+							</h5>
 		                    <div class="board-body ellipsis">
 							    ${board.bd_content}
 							</div>
@@ -95,19 +138,31 @@
 		    </div>
 		
 		    <!-- 글쓰기 버튼 -->
-		    <div class="mt-4 text-right">
-		        <a href="/board/write" class="btn btn-primary">글쓰기</a>
+		    <div class="mt-4">
+		        <a href="/write.do" class="btn btn-warning">글쓰기</a>
 		    </div>
 		
 		    <!-- 페이징 -->
 		    <nav class="mt-4">
-		        <ul class="pagination justify-content-center">
-		            <c:forEach var="i" begin="1" end="${totalPages}">
-		                <li class="page-item <c:if test='${currentPage == i}'>active</c:if>'">
-		                    <a class="page-link" href="?page=${i}">${i}</a>
-		                </li>
-		            </c:forEach>
-		        </ul>
+		        <nav class="mt-4">
+				    <ul class="pagination justify-content-center">
+				        <c:if test="${currentPage > 1}">
+				            <li class="page-item">
+				                <a class="page-link" href="?page=${currentPage - 1}">이전</a>
+				            </li>
+				        </c:if>
+				        <c:forEach var="i" begin="1" end="${totalPages}">
+				            <li class="page-item <c:if test='${currentPage == i}'>active</c:if>'">
+				                <a class="page-link" href="?page=${i}">${i}</a>
+				            </li>
+				        </c:forEach>
+				        <c:if test="${currentPage < totalPages}">
+				            <li class="page-item">
+				                <a class="page-link" href="?page=${currentPage + 1}">다음</a>
+				            </li>
+				        </c:if>
+				    </ul>
+				</nav>
 		    </nav>
 		    
 		</div>
@@ -116,11 +171,8 @@
 	    function searchPosts() {
 	        var condition = $('#searchCondition').val();
 	        var keyword = $('#searchKeyword').val();
-	        window.location.href = `/list.do?condition=${condition}&keyword=${keyword}`;
-	    }
-	
-	    function filterCategory(category) {
-	        window.location.href = `/list.do?category=${category}`;
+	        var url = '/list.do?condition=' + encodeURIComponent(condition) + '&keyword=' + encodeURIComponent(keyword);
+	        window.location.href = url;
 	    }
 	</script>
 					

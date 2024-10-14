@@ -316,25 +316,28 @@ public class BdController {
 
     @GetMapping("/list.do")
     public String getBoardList(
-        @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        @RequestParam(value = "page", defaultValue = "1") int page,
+        @RequestParam(value = "category", required = false) String category,
+        Model model) {
 
-        int pageSize = 5; // 한 페이지에 보여줄 게시글 수
-        int totalCount = boardService.getBoardCount(null, null, null); // 총 게시글 수
-        int totalPages = (int) Math.ceil((double) totalCount / pageSize); // 전체 페이지 수
+        int pageSize = 3; // 한 페이지에 보여줄 게시글 수
+        int totalCount;
 
-        // 페이지에 따른 startRow와 endRow 계산
-        int startRow = (page - 1) * pageSize + 1; // 시작 행 번호
-        int endRow = page * pageSize; // 끝 행 번호
+        if ("all".equals(category)) {
+            category = null;
+        }
+        
+        totalCount = boardService.getBoardCount(category, null, null); // 총 게시글 수
+        int totalPages = totalCount > 0 ? (int) Math.ceil((double) totalCount / pageSize) : 0; // 전체 페이지 수
 
-        List<BoardDto> boardList = boardService.getBoardList(startRow, endRow, null, null, null);
-        System.out.println("게시글 리스트: " + boardList);
-        System.out.println("startRow: " + startRow);
-        System.out.println("endRow: " + endRow);
+        List<BoardDto> boardList = boardService.getBoardList(page, pageSize, category, null, null);
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("pageSize", pageSize);
+        model.addAttribute("selectedCategory", category);
+        System.out.println("category: " + category);
 
         return "list"; // list.jsp 반환
     }

@@ -67,39 +67,43 @@
         WHERE bd_no = #{bd_no}
     </update>
     
-    <!-- 게시글 리스트 조회 -->
+	<!-- 게시글 리스트 조회 -->
 	<select id="getBoardList" resultType="BoardDto">
 	    SELECT * FROM (
-	        SELECT bd_no, bd_title, bd_content, bd_writer, bd_hit, bd_date, bd_imgpath, bd_modname, ROWNUM AS rn
-	        FROM (
-	            SELECT bd_no, bd_title, bd_content, bd_writer, bd_hit, bd_date, bd_imgpath, bd_modname
-	            FROM board
-	            WHERE bd_state = 'Y'
-	            
-	            <!-- 카테고리 필터링 -->
-	            <if test="category != null and category != ''">
-	                AND bd_cate = #{category}
-	            </if>
+	        SELECT b.bd_no, b.bd_title, b.bd_content, b.bd_writer, b.bd_hit, b.bd_date, 
+	               b.bd_imgpath, b.bd_modname, 
+	               NVL(l.like_count, 0) AS bd_like,
+	               ROW_NUMBER() OVER (ORDER BY b.bd_date DESC) AS rn
+	        FROM board b
+	        LEFT JOIN (
+	            SELECT bd_no, COUNT(*) AS like_count
+	            FROM likes
+	            GROUP BY bd_no
+	        ) l ON b.bd_no = l.bd_no
+	        WHERE b.bd_state = 'Y'
+	        
+	        <!-- 카테고리 필터링 -->
+	        <if test="category != null and category != ''">
+	            AND b.bd_cate = #{category}
+	        </if>
 	
-	            <!-- 검색 조건 필터링 -->
-	            <if test="condition != null and condition != ''">
-	                <choose>
-	                    <when test="condition == 'title'">
-	                        AND bd_title LIKE '%' || #{keyword} || '%'
-	                    </when>
-	                    <when test="condition == 'content'">
-	                        AND bd_content LIKE '%' || #{keyword} || '%'
-	                    </when>
-	                    <when test="condition == 'writer'">
-	                        AND bd_writer LIKE '%' || #{keyword} || '%'
-	                    </when>
-	                </choose>
-	            </if>
-	            
-	            ORDER BY bd_no DESC
-	        )
+	        <!-- 검색 조건 필터링 -->
+	        <if test="condition != null and condition != ''">
+	            <choose>
+	                <when test="condition == 'title'">
+	                    AND b.bd_title LIKE '%' || #{keyword} || '%'
+	                </when>
+	                <when test="condition == 'content'">
+	                    AND b.bd_content LIKE '%' || #{keyword} || '%'
+	                </when>
+	                <when test="condition == 'writer'">
+	                    AND b.bd_writer LIKE '%' || #{keyword} || '%'
+	                </when>
+	            </choose>
+	        </if>
 	    )
-	    WHERE rn BETWEEN #{startRow} AND #{endRow}
+	    WHERE rn BETWEEN #{startRow} + 1 AND #{endRow}
+		ORDER BY rn
 	</select>
 
     <!-- 게시글 총 개수 조회 (페이징에 필요) -->
