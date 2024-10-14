@@ -500,8 +500,8 @@
 					    </tr>
 					  </thead>
 				      <tbody>
-				      <c:if test="${not empty qnaList}">
-				      	<c:forEach var="qDTO" items="${qnaList}">
+				      <c:if test="${not empty products}">
+				      	<c:forEach var="qDTO" items="${products}">
 				      	<input type="hidden" id="loggedInUserId" value="${memberList.mb_id}" />
 				            <tr>
 				               <td class="text-center align-middle">
@@ -544,46 +544,36 @@
 		                            <fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />        
 		                        </td>
 		                    </tr>
-		                    console.log("111:" + ${qDTO.qna_qstate});
-		                    console.log("111:" +${qDTO.qna_rstate});
-		                    console.log("qnaRepList" + ${not empty qnaRepList});
 		                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
 		                    <c:choose>
 							    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
-							    console.log("333:");
 							        <!-- 문의상태가 공개이고 관리자가 답변을 달아준 경 -->
 							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
 							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
-							            <td colspan="3">${qDTO.qna_content}</td>    
+							            <td colspan="3">${qDTO.qna_content}</td>
 							        </tr>
-							        <c:if test="${empty qnaRepList}">
-						        		<c:forEach var="reply" items="${qnaRepList}">
-							        	<script>
-								            console.log("Reply: " + "${reply.qrContent}");
-								        </script>
-							        	
-									        <tr id="reply-${reply.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
-									            <td colspan="1" class="text-center align-middle"></td>
-									            <td colspan="1" style="font-size: 14px;">
-									            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
+							        
+							            <c:forEach var="reply" items="${qnaRepList}">
+								            <c:if test="${qDTO.qna_no == reply.qnaNo}">
+								                <tr class="reply-content" id="reply-${qDTO.qna_no}" style="display: none; background-color: #fff9c4;">
+								                    <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
+								                    <td colspan="1" style="font-size: 14px;">
+								                    	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
 									            		${reply.qrContent}
-									           	</td>
-									            <td colspan="1">
-									            	<c:choose>
-												        <c:when test="${reply.qrId == 'admin'}">
-												            관리자
-												        </c:when>
-												        <c:otherwise>
-												            ${reply.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
-												        </c:otherwise>
-												    </c:choose>
-									            </td>									            
-								            	<td class="text-center align-middle">
-						                            <fmt:formatDate value="${reply.qrDate}" pattern="yyyy-MM-dd" />      
-						                        </td>						                
-									        </tr>
-							       		</c:forEach>
-						        	</c:if>		
+								                    </td>
+								                     <td colspan="1">
+										            	<c:choose>
+													        <c:when test="${reply.qrId == 'admin'}">판매자</c:when>
+													        <c:otherwise>${reply.qrId}</c:otherwise>
+													    </c:choose>
+									            	</td>
+								                    <td class="text-center align-middle">
+								                    	<em><fmt:formatDate value="${reply.qrDate}" pattern="yyyy-MM-dd" /></em>
+								                    </td>
+								                </tr>
+								            </c:if>
+								        </c:forEach>  
+							        
 							    </c:when>
 							    <c:when test="${qDTO.qna_qstate == '공개'}">
 							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
@@ -629,6 +619,7 @@
 						function toggleContent(qnaNo) {
 						    var contentDiv = document.getElementById("content-" + qnaNo);
 						    var detailsRow = document.getElementById("reply-" + qnaNo);
+
 						    
 						    
 						    console.log("contentDiv: " +  contentDiv)
@@ -637,32 +628,11 @@
 
 						    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
 						        contentDiv.style.display = "table-row"; // 내용을 보이게 함
-
-						        // AJAX로 qna_no를 서버에 전달하여 답변 데이터를 가져옴
-						        $.ajax({
-						            url: '/getQnaDetails', // 컨트롤러에서 처리할 URL
-						            type: 'GET',
-						            data: { qna_no: qnaNo },
-						            success: function(response) {
-						                if (response) {
-						                    // 서버로부터 받은 답변 데이터를 화면에 표시
-						                    if (detailsRow) { // detailsRow가 존재할 때만 style을 변경
-									            detailsRow.style.display = "table-row"; // 답변을 보이게 함
-									            detailsRow.querySelector('td').innerHTML = response.qrContent; // 답변 내용 표시
-									        } else {
-									            console.error("detailsRow가 존재하지 않습니다.");
-									        }
-						                } else {
-						                    alert('답변이 없습니다.');
-						                }
-						            },
-						            error: function() {
-						                alert('답변을 가져오는 데 실패했습니다.');
-						            }
-						        });
+					            detailsRow.style.display = "table-row"; // 답변을 보이게 함
 						    } else {
 						        contentDiv.style.display = "none"; // 내용을 숨김
 						        detailsRow.style.display = "none"; // 답변 숨김
+
 						    }
 						}
 					</script>

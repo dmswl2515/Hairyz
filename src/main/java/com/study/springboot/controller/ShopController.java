@@ -137,11 +137,16 @@ public class ShopController {
         	System.out.println("Member ID is null");
         }
         
+        //문의글
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
+        
+        List<QnaReplyDto> qnaRepList = qnaService.getAllQnaReplies();
+        model.addAttribute("qnaRepList", qnaRepList);
+        System.out.println("qnaRepList : " + qnaRepList);
              
         // 페이지네이션 설정
-        int pageSize = 1; // 페이지당 항목 수
+        int pageSize = 5; // 페이지당 항목 수
         int totalQnAs = qnaList.size(); // 전체 상품 수
         int startRow = (page - 1) * pageSize; // 시작 인덱스
         int endRow = Math.min(startRow + pageSize, totalQnAs);
@@ -171,18 +176,6 @@ public class ShopController {
         model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalQnAs / pageSize), page + 2)); // 끝 페이지
     
         return "p_details";              
-    }
-    
-    @RequestMapping("/getQnaDetails")
-    @ResponseBody  // JSON 형식으로 응답하기 위해 사용
-    public List<QnaReplyDto> getQnaDetails(@RequestParam("qna_no") int qnaNo) {
-        
-    	List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo);
-        
-        System.out.println("qna_no: " + qnaNo);
-        System.out.println("qnaRepList: " + qnaRepList);
-        
-        return qnaRepList;
     }
     
     
