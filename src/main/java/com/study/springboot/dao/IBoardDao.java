@@ -3,6 +3,7 @@ package com.study.springboot.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.study.springboot.dto.BoardDto;
 
@@ -20,5 +21,31 @@ public interface IBoardDao
 
     // 게시글 목록 가져오기 (카테고리별)
     List<BoardDto> getBoardListByCategory(String bd_cate);
+
+    // 좋아요 추가
+    int insertLike(@Param("userId") String userId, @Param("boardId") int boardId);
+
+    // 좋아요 삭제
+    int deleteLike(@Param("userId") String userId, @Param("boardId") int boardId);
+
+    // 특정 게시글의 좋아요 수 조회
+    int getLikeCount(@Param("boardId") int boardId);
+
+    // 사용자가 특정 게시글에 좋아요를 눌렀는지 확인
+    int checkUserLike(@Param("userId") String userId, @Param("boardId") int boardId);
+
+	int deletePost(int bd_no);
+
+	// 수정할 게시글 조회
+	BoardDto getPostById(int bd_no);
+
+	int updatePost(BoardDto boardDto);
+
+	// 게시글 검색
+	int getBoardCount(@Param("category") String category, @Param("condition") String condition, @Param("keyword") String keyword);
+
+	// 게시글 목록 조회
+    List<BoardDto> getBoardList(@Param("startRow") int startRow, @Param("endRow") int endRow, @Param("pageSize") int pageSize, 
+                                @Param("category") String category, @Param("condition") String condition, @Param("keyword") String keyword);
     
 }

@@ -5,7 +5,7 @@
 	
 <mapper namespace="com.study.springboot.dao.IBoardDao">
 
-	<insert id="insertPost" parameterType="com.study.springboot.dto.BoardDto">
+	<insert id="insertPost" parameterType="com.study.springboot.dto.BoardDto" useGeneratedKeys="true" keyProperty="bd_no"  keyColumn="BD_NO">
 	    INSERT INTO board 
     	  (bd_no, bd_cate, mb_id, bd_writer, bd_title, bd_content, bd_date, 
     	  	bd_imgpath, bd_orgname, bd_modname, bd_state)
@@ -22,10 +22,115 @@
 	<!-- 게시글 조회수 증가 -->
     <update id="upHit" parameterType="int">
         UPDATE board
-        SET bd_hit = bd_hit + 1
-        WHERE bd_no = #{bd_no}
+           SET bd_hit = bd_hit + 1
+         WHERE bd_no = #{bd_no}
     </update>
 	
+	<!-- 좋아요 추가 -->
+    <insert id="insertLike">
+        INSERT INTO likes (lk_no, mb_id, bd_no, lk_date)
+        VALUES (likes_seq.NEXTVAL, #{userId, jdbcType=VARCHAR}, #{boardId}, SYSDATE)
+    </insert>
+
+    <!-- 좋아요 삭제 -->
+    <delete id="deleteLike">
+        DELETE FROM likes WHERE mb_id = #{userId, jdbcType=VARCHAR} AND bd_no = #{boardId}
+    </delete>
+
+    <!-- 특정 게시글의 좋아요 수 조회 -->
+    <select id="getLikeCount" resultType="int">
+        SELECT COUNT(*) FROM likes WHERE bd_no = #{boardId}
+    </select>
+
+    <!-- 사용자가 특정 게시글에 대해 이미 좋아요를 눌렀는지 확인 -->
+    <select id="checkUserLike" resultType="int">
+        SELECT COUNT(*) FROM likes WHERE mb_id = #{userId, jdbcType=VARCHAR} AND bd_no = #{boardId}
+    </select>
+    
+    <delete id="deletePost" parameterType="int">
+        UPDATE board SET bd_state = 'N' WHERE bd_no = #{bd_no}
+    </delete>
+    
+    <!-- 수정할 게시글 조회 -->
+    <select id="getPostById" parameterType="int" resultType="com.study.springboot.dto.BoardDto">
+        SELECT * FROM board WHERE bd_no = #{bd_no}
+    </select>
+    
+    <!-- 게시글 수정 -->
+    <update id="updatePost" parameterType="com.study.springboot.dto.BoardDto">
+        UPDATE board
+        SET bd_title = #{bd_title, jdbcType=VARCHAR},
+            bd_content = #{bd_content, jdbcType=VARCHAR},
+            bd_cate = #{bd_cate, jdbcType=CHAR},
+            bd_orgname = #{bd_orgname, jdbcType=VARCHAR},  <!-- 파일 이름 -->
+            bd_modname = #{bd_modname, jdbcType=VARCHAR}   <!-- 시스템 파일 이름 -->
+        WHERE bd_no = #{bd_no}
+    </update>
+    
+	<!-- 게시글 리스트 조회 -->
+	<select id="getBoardList" resultType="BoardDto">
+	    SELECT * FROM (
+	        SELECT b.bd_no, b.bd_title, b.bd_content, b.bd_writer, b.bd_hit, b.bd_date, 
+	               b.bd_imgpath, b.bd_modname, 
+	               NVL(l.like_count, 0) AS bd_like,
+	               ROW_NUMBER() OVER (ORDER BY b.bd_date DESC) AS rn
+	        FROM board b
+	        LEFT JOIN (
+	            SELECT bd_no, COUNT(*) AS like_count
+	            FROM likes
+	            GROUP BY bd_no
+	        ) l ON b.bd_no = l.bd_no
+	        WHERE b.bd_state = 'Y'
+	        
+	        <!-- 카테고리 필터링 -->
+	        <if test="category != null and category != ''">
+	            AND b.bd_cate = #{category}
+	        </if>
 	
+	        <!-- 검색 조건 필터링 -->
+	        <if test="condition != null and condition != ''">
+	            <choose>
+	                <when test="condition == 'title'">
+	                    AND b.bd_title LIKE '%' || #{keyword} || '%'
+	                </when>
+	                <when test="condition == 'content'">
+	                    AND b.bd_content LIKE '%' || #{keyword} || '%'
+	                </when>
+	                <when test="condition == 'writer'">
+	                    AND b.bd_writer LIKE '%' || #{keyword} || '%'
+	                </when>
+	            </choose>
+	        </if>
+	    )
+	    WHERE rn BETWEEN #{startRow} + 1 AND #{endRow}
+		ORDER BY rn
+	</select>
+
+    <!-- 게시글 총 개수 조회 (페이징에 필요) -->
+    <select id="getBoardCount" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        WHERE bd_state = 'Y'
+        
+        <!-- 카테고리 필터링 -->
+        <if test="category != null and category != ''">
+            AND bd_cate = #{category}
+        </if>
+
+        <!-- 검색 조건 필터링 -->
+        <if test="condition != null and condition != ''">
+            <choose>
+                <when test="condition == 'title'">
+                    AND bd_title LIKE '%' || #{keyword} || '%'
+                </when>
+                <when test="condition == 'content'">
+                    AND bd_content LIKE '%' || #{keyword} || '%'
+                </when>
+                <when test="condition == 'writer'">
+                    AND bd_writer LIKE '%' || #{keyword} || '%'
+                </when>
+            </choose>
+        </if>
+    </select>
 	
 </mapper>

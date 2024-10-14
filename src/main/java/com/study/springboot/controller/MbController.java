@@ -97,7 +97,6 @@ public class MbController {
             // 세션에 로그인한 아이디와 닉네임 저장
             session.setAttribute("userId", member.getMb_id()); 
             session.setAttribute("userNickname", member.getMb_nickname()); // 닉네임 저장
-
             
         	jsonResponse = "{\"code\": \"success\", \"desc\": \"로그인 되었습니다.\"}";
         	

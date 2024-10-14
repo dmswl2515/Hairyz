@@ -6,28 +6,29 @@
 <mapper namespace="com.study.springboot.dao.IReplyDao">
 
 	 <!-- 특정 게시글의 댓글 목록 가져오기 -->
-    <select id="getReplyListByBoardId" parameterType="int" resultType="com.study.springboot.dto.ReplyDto">
+    <select id="getRepliesByBdNo" parameterType="int" resultType="com.study.springboot.dto.ReplyDto">
         SELECT * FROM reply
-        WHERE tb_no = #{bd_no} AND rp_state = 'Y'
-        ORDER BY rp_date ASC
+        WHERE bd_no = #{bd_no} AND rp_state = 'Y'
+        ORDER BY rp_no DESC
     </select>
 
     <!-- 댓글 추가 -->
     <insert id="insertReply" parameterType="com.study.springboot.dto.ReplyDto">
-        INSERT INTO reply (rp_no, tb_no, rp_writer, rp_content, rp_date, rp_state)
-        VALUES (reply_seq.NEXTVAL, #{tb_no}, #{rp_writer}, #{rp_content}, SYSDATE, #{rp_state})
+        INSERT INTO reply (rp_no, bd_no, mb_id, rp_writer, rp_content, rp_date)
+        VALUES (reply_seq.NEXTVAL, #{bd_no}, #{mb_id, jdbcType=VARCHAR}, #{rp_writer, jdbcType=VARCHAR}, #{rp_content, jdbcType=VARCHAR}, #{rp_date})
     </insert>
 
     <!-- 댓글 삭제 -->
-    <delete id="deleteReply" parameterType="int">
-        DELETE FROM reply
-        WHERE rp_no = #{rp_no}
-    </delete>
+    <update id="updateRpState" parameterType="int">
+         UPDATE reply
+            SET rp_state = 'N'
+          WHERE rp_no = #{rp_no}
+    </update>
 
     <!-- 댓글 개수 가져오기 -->
     <select id="countReplies" parameterType="int" resultType="int">
         SELECT COUNT(*) FROM reply
-        WHERE tb_no = #{tb_no}
+        WHERE bd_no = #{bd_no}
     </select>
 	
 	
