@@ -164,7 +164,6 @@
 		        boardItems.forEach(function(item) {
 		            // 각 게시물의 Date Time을 가져옵니다.
 		            var boardTimeString = item.getAttribute('data-board-time');
-		            console.log('Raw Board Date String:', boardTimeString); // 값 확인
 		            var boardTime = new Date(boardTimeString).getTime(); // 날짜 문자열을 밀리초로 변환
 
 		            // NaN 체크 추가
@@ -199,9 +198,10 @@
 			    if (!userId || !userNickname) {
 			        // 사용자 정보가 없으면 로그인 필요 알림
 			        if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
-			            // 로그인 페이지로 이동, 현재 페이지 URL을 파라미터로 넘겨줌
-			            var currentUrl = window.location.pathname + window.location.search; // 현재 페이지 URL
-			            window.location.href = '/login.do?redirectUrl=' + encodeURIComponent(currentUrl);
+		                const redirectUrl = window.location.href;
+		                
+		                sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
+		                window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
 			        }
 			    } else {
 			        // 세션 정보가 있으면 글쓰기 페이지로 이동
