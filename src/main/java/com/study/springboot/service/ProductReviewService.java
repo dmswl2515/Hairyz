@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.study.springboot.dao.IProductReviewDao;
 import com.study.springboot.dto.ProductReviewDto;
+import com.study.springboot.dto.ReviewReplyDto;
 
 @Service
 public class ProductReviewService
@@ -17,4 +18,9 @@ public class ProductReviewService
 	public List<ProductReviewDto> getReviewsByProductId(int productId) {
         return PRDao.getReviewsByProductId(productId);
     }
+
+	public List<ReviewReplyDto> getReviewReplyByProductId(int pr_reviewId)
+	{
+		return PRDao.getReviewReplyByProductId(pr_reviewId);
+	}
 }

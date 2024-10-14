@@ -369,7 +369,8 @@
 	.my-custom-table td, .my-custom-table th {
 	    line-height: 2; /* 이 테이블에만 적용 */
 	}
- 
+	
+		
 </style>
 		
        	<div class=container>
@@ -389,43 +390,60 @@
 			    <h3><strong>구매평</strong></h3>
 			    <p>상품을 구매하신 분들이 작성한 리뷰입니다.</p>
 			</div>
-			<table class="mb-2 my-custom-table" style="width: 100%;">
-			    <tbody>
-			        <c:forEach var="item" items="${reviews}">
-			            <tr class="table-white text-left">
-			                <td colspan="3">
-			                    <span style="font-weight: bold;">
-			                        <c:forEach var="i" begin="1" end="5">
-			                            <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
-			                        </c:forEach>
-			                        ${item.pr_rating}
-			                    </span>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td colspan="3">
-			                    <span style="font-weight:bold; margin-right:15px;">${item.pr_MbNnme}</span>
-			                    <span>
-			                        <fmt:formatDate value="${item.pr_reviewDate}" pattern="yyyy-MM-dd" />
-			                    </span>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td colspan="2" class="table-bottom-border" style="vertical-align: top;">
-			                    ${item.pr_reviewText}
-			                </td>
-			                <c:if test="${not empty item.pr_modName}">
-			                    <td colspan="1" class="table-bottom-border" style="width:200px; vertical-align: top;">
-			                        <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" alt="상품 이미지" style="width:100%; height:auto;">
-			                    </td>
-			                </c:if>
-			                <c:if test="${empty item.pr_modName}">
-			                    <td colspan="1" class="table-bottom-border"></td>
-			                </c:if>
-			            </tr>
-			        </c:forEach>
-			    </tbody>
-			</table>
+		        <c:forEach var="item" items="${reviews}">
+				    <div style="display: flex; align-items: flex-start;">    
+				        <div class="content" style="display: flex; flex-direction: column;">
+				            <h5>
+				                <span style="font-weight: bold;">
+				                    <c:forEach var="i" begin="1" end="5">
+				                        <span class="star ${i <= item.pr_rating ? '' : 'star-empty'}">&#9733;</span> <!-- ★ -->
+				                    </c:forEach>
+				                    ${item.pr_rating}
+				                </span>
+				            </h5>
+				            <div>
+				                <span style="font-weight:bold; margin-right:15px;">${item.pr_MbNnme}</span>
+				            </div>
+				            <div>
+				                <span>
+				                    <fmt:formatDate value="${item.pr_reviewDate}" pattern="yyyy-MM-dd" />
+				                </span>
+				            </div>
+				            <div>
+				                ${item.pr_reviewText}
+				            </div>
+				        </div>
+				
+				        <c:if test="${not empty item.pr_modName}">
+				            <img src="${pageContext.request.contextPath}/upload/${item.pr_modName}" 
+				                 alt="상품 이미지" 
+				                 style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;">
+				        </c:if>
+				    </div>
+				    <c:forEach var="reply" items="${reviewReplies[item.pr_reviewId]}">
+				        <div style="margin-top: 10px; background-color: #fff59d;">
+				            <span style="margin-left: 10px;">
+					            <strong>
+					            	<i class="fas fa-angle-right mt-2 mr-2"></i>
+					            	<c:choose>
+							            <c:when test="${reply.rrp_id == 'master'}">
+							                판매자
+							            </c:when>
+							            <c:otherwise>
+							                ${reply.rrp_id}
+							            </c:otherwise>
+							        </c:choose>
+					            </strong> 
+					            <fmt:formatDate value="${reply.rrp_date}" pattern="yyyy-MM-dd" /><br/>
+				        	</span>
+				        	<div style="margin-left: 23px; margin-top: 10px;">
+				            	${reply.rrp_content}
+			        		</div>
+				        </div>
+				    </c:forEach>
+				    <hr style="border-color: #ffc107;">
+				    
+				</c:forEach>
 			    
 			<hr class="product-hr">
 			    <div id="qna-content" class="">

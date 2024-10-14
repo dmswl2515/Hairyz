@@ -100,7 +100,7 @@
 	</style>
 			
 		<div class="custom-container my-4">
-			<h3 class="text-center mt-1 mb-4"><strong>Q&A 관리</strong></h3>
+			<h3 class="text-center mt-1 mb-4"><strong>상품 관리</strong></h3>
 			<!-- 통합검색 창 -->
             <form class="form-inline d-flex justify-content-center" method="get" action="${pageContext.request.contextPath}/p_manage">
                  <select class="form-control mr-2" id="searchCondition" name="condition">
