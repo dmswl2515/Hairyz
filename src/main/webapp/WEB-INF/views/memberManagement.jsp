@@ -209,12 +209,12 @@ function searchMembers() {
 							}
 							</script>
 		
-		                  </ul>
-		                </nav>
+				                  </ul>
+				                </nav>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-	    </div>
+			    </div>
     
     <!-- FOOTER -->
 	<%@ include file="footer.jsp" %>

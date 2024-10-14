@@ -19,7 +19,9 @@
 	<div class="content">
 		<%@ include file="header.jsp" %>
 	</div>
-        
+    <div style="float: left;">
+		<%@ include file="sideMenu.jsp" %>
+	</div>    
 	<style>
 	    
 	    /* 수정& 취소 버튼 넓이 */
@@ -96,6 +98,7 @@
            margin: 0 auto;
       }    
 	</style>
+			
 		<div class="custom-container my-4">
 			<h3 class="text-center mt-1 mb-4"><strong>Q&A 관리</strong></h3>
 			<!-- 통합검색 창 -->

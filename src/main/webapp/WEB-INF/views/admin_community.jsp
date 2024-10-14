@@ -18,11 +18,18 @@
 	<div class="content">
 		<%@ include file="header.jsp" %>
 	</div>
+	<div style="float: left;">
+		<%@ include file="sideMenu.jsp" %>
+	</div> 
 	
 <style>
+	.content {
+    	flex: 0; /* 원하는 값으로 조정 */
+	}
+	
 	.table {
-     border-color: #ffc107; /* 테이블 테두리 색상 */
-     border-collapse: collapse;
+     	border-color: #ffc107; /* 테이블 테두리 색상 */
+     	border-collapse: collapse;
   }
 
   .table th{
