@@ -112,7 +112,7 @@ body {
 			                    <c:forEach var="re" items="${returnExchange}">
 			                        <tr>
 			                            <td>${re.orderdate}</td>
-			                            <td><img src="${pageContext.request.contextPath}/upload/${re.originalfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;"></td>
+			                            <td><img src="${pageContext.request.contextPath}/upload/${re.changedfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;"></td>
 			                            <td>${re.productname}</td>
 			                            <td>${re.orderamount}</td>
 			                            <td>

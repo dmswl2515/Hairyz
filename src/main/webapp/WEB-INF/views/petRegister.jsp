@@ -223,7 +223,7 @@ input[type="radio"].btn-check {
 		                </div>
 		            </div>
 		            <div class="form-group">
-						<input type="text" class="form-control" name="birth" id="birth" size="20" placeholder="생년월일" required>
+						<input type="text" class="form-control" name="birth" id="birth" size="20" placeholder="생년월일 ex) 940727" required>
 		            </div>
 		            <div class="form-group">
 		            	<div class="form-group row">
