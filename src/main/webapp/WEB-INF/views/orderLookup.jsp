@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
 														        <!-- 이미지와 상품 정보 컨테이너 -->
 														        <div class="d-flex">
 														            <!-- 상품 이미지 -->
-														            <img src="${pageContext.request.contextPath}/upload/${order.originalfilename}" alt="상품사진" class="img-thumbnail" style="width: 150px; height: auto;">
+														            <img src="${pageContext.request.contextPath}/upload/${order.changedfilename}" alt="상품사진" class="img-thumbnail" style="width: 150px; height: auto;">
 														
 														            <!-- 상품 정보 -->
 														            <div class="ml-3">
