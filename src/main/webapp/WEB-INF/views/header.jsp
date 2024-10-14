@@ -61,7 +61,7 @@
 				%>
                  	<a href="${pageContext.request.contextPath}/login.do" class="btn btn-outline-warning" onclick="redirectToLogin()">로그인</a>
                  <%}else{%>
-                 	<a href="#" class="btn btn-outline-warning">마이페이지</a>
+                 	<a href="myProfile_view.do" class="btn btn-outline-warning">마이페이지</a>
                  	<a href="s_cart" class="btn btn-outline-warning">장바구니</a>
                  <%} %>
              </div>
