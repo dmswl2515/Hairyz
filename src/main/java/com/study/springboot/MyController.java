@@ -516,7 +516,16 @@ public class MyController {
 		int mbNum = Integer.parseInt(memberNo);
 		int odNo = Integer.parseInt(orderNo);
 		int star = Integer.parseInt(rating);
-		String path = serverPatheFullName.getPath();
+		String path = null;
+		if(serverPatheFullName == null) {
+			path = "";
+			originalName = "";
+			saveFileName = "";
+		}else {
+			
+			path = serverPatheFullName.getPath();
+		}
+		
 		MemberDto mDto = memberDao.selectMember2(mbNum);
 		String mbNnme = mDto.getMb_name();
 		
