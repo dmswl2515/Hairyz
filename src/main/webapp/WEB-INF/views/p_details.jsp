@@ -114,7 +114,7 @@
     .modal {
     	display: none; /* 기본적으로 숨김 */
 	    position: fixed; /* 고정 위치 */
-	    z-index: 1; /* 가장 위에 표시 */
+	    z-index: 1050; /* 가장 위에 표시 */
 	    left: 0;
 	    top: 0;
 	    width: 100%; /* 전체 너비 */
@@ -130,7 +130,7 @@
 	    margin: 15% auto; /* 중앙 정렬 */
 	    padding: 20px;
 	    border: 1px solid #888;
-	    width: 20%; /* 모달 너비 */
+	    width: 100%; /* 모달 너비 */
 	    text-align: center;
 	}
 	
@@ -482,19 +482,20 @@
 					    </tr>
 					  </thead>
 				      <tbody>
+				      <c:if test="${not empty qnaList}">
 				      	<c:forEach var="qDTO" items="${qnaList}">
 				      	<input type="hidden" id="loggedInUserId" value="${memberList.mb_id}" />
 				            <tr>
-				                <td class="text-center align-middle">
-					                <c:choose>
-								        <c:when test="${qDTO.qna_rstate == 'N'}">
-								            미답변
-								        </c:when>
-								        <c:when test="${qDTO.qna_rstate == 'Y'}">
-								            답변 완료
-								        </c:when>
-								    </c:choose>
-								</td>        
+				               <td class="text-center align-middle">
+					               <c:choose>
+								       <c:when test="${qDTO.qna_rstate == 'N'}">
+								           미답변
+								       </c:when>
+								       <c:when test="${qDTO.qna_rstate == 'Y'}">
+								           답변 완료
+								       </c:when>
+								   </c:choose>
+							 	</td>        
 				                <td onclick="handleClick('${qDTO.qna_authorId}','${qDTO.qna_qstate}', '${qDTO.qna_content}', '${qDTO.qna_no}')" style="cursor: pointer;">
 		                            <div class="product-container">  
 		                                <c:choose>
@@ -504,7 +505,7 @@
 		                                    <c:when test="${qDTO.qna_qstate == '비공개' && (memberList.mb_id == null || qDTO.qna_authorId != memberList.mb_id)}">
 		                                        비밀글입니다
 		                                    </c:when>
-		                                    <c:when test="${qDTO.qna_qstate == '공개' || qDTO.qna_authorId == memberList.mb_id}">
+		                                    <c:when test="${qDTO.qna_qstate == '공개'}">
 		                                        ${qDTO.qna_content}
 		                                    </c:when>
 		                                </c:choose>&nbsp;&nbsp;
@@ -525,70 +526,56 @@
 		                            <fmt:formatDate value="${qDTO.qna_date}" pattern="yyyy-MM-dd" />        
 		                        </td>
 		                    </tr>
+		                    console.log("111:" + ${qDTO.qna_qstate});
+		                    console.log("111:" +${qDTO.qna_rstate});
+		                    console.log("qnaRepList" + ${not empty qnaRepList});
 		                    <!-- 각 문의의 상세 내용 행의 id 속성을 고유하게 설정 -->
 		                    <c:choose>
 							    <c:when test="${qDTO.qna_qstate == '공개' && qDTO.qna_rstate == 'Y'}">
+							    console.log("333:");
 							        <!-- 문의상태가 공개이고 관리자가 답변을 달아준 경 -->
 							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
 							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
 							            <td colspan="3">${qDTO.qna_content}</td>    
 							        </tr>
-							        <c:if test="${not empty qnaRepList}">
-							        	<input type="hidden" id=qrNo name=qrNo value="${qnaRepList[0].qr_no}">
-								        <tr id="details-${qnaRepList[0].qr_no}" class="details-content" style="display: none; background-color: #fff9c4;">
-								            
-								            <td colspan="1" class="text-center align-middle"></td>
-								            <td colspan="1" style="font-size: 14px;">
-								            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
-								            		${qnaRepList[0].qrContent}
-								           	</td>
-								            <td colspan="1">
-								            	<c:choose>
-											        <c:when test="${qnaRepList[0].qrId == 'admin'}">
-							                            관리자
-							                        </c:when>
-							                        <c:otherwise>
-							                            ${qnaRepList[0].qrId}
-							                        </c:otherwise>
-											    </c:choose>
-								            </td>									            
-							            	<td class="text-center align-middle">
-					                            <fmt:formatDate value="${qnaRepList[0].qrDate}" pattern="yyyy-MM-dd" />     
-					                        </td>						                
-								        </tr>
-							        </c:if>		
+							        <c:if test="${empty qnaRepList}">
+						        		<c:forEach var="reply" items="${qnaRepList}">
+							        	<script>
+								            console.log("Reply: " + "${reply.qrContent}");
+								        </script>
+							        	
+									        <tr id="reply-${reply.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
+									            <td colspan="1" class="text-center align-middle"></td>
+									            <td colspan="1" style="font-size: 14px;">
+									            	<i class="fas fa-angle-right" style="margin-right: 5px;"></i>
+									            		${reply.qrContent}
+									           	</td>
+									            <td colspan="1">
+									            	<c:choose>
+												        <c:when test="${reply.qrId == 'admin'}">
+												            관리자
+												        </c:when>
+												        <c:otherwise>
+												            ${reply.qrId}  <!-- 다른 경우, 원래의 ID를 출력 -->
+												        </c:otherwise>
+												    </c:choose>
+									            </td>									            
+								            	<td class="text-center align-middle">
+						                            <fmt:formatDate value="${reply.qrDate}" pattern="yyyy-MM-dd" />      
+						                        </td>						                
+									        </tr>
+							       		</c:forEach>
+						        	</c:if>		
 							    </c:when>
-							    <c:when test="${qDTO.qna_qstate == '비공개' && qDTO.qna_authorId == memberList.mb_id}">
-							        <!-- 비공개 글이고 자신이 작성자인 경우 -->
+							    <c:when test="${qDTO.qna_qstate == '공개'}">
 							        <tr id="content-${qDTO.qna_no}" class="toggle-content" style="display: none; background-color: #fff9c4;">
-							            <td colspan="1" class="text-center align-middle" style="border-bottom: none !important;"></td>
+							            <td colspan="1" class="text-center align-middle"></td>
 							            <td colspan="3">${qDTO.qna_content}</td>    
 							        </tr>
-							        <c:if test="${not empty qnaRepList}">
-							            <tr id="details-${qnaRepList[0].qr_no}" class="details-content" style="display: none; background-color: #fff9c4;">
-							                <td colspan="1" class="text-center align-middle"></td>
-							                <td colspan="1" style="font-size: 14px;">
-							                    <i class="fas fa-angle-right" style="margin-right: 5px;"></i>
-							                    ${qnaRepList[0].qrContent} <!-- 첫 번째 답변의 내용을 출력 -->
-							                </td>
-							                <td colspan="1">
-							                    <c:choose>
-							                        <c:when test="${qnaRepList[0].qrId == 'admin'}">
-							                            관리자
-							                        </c:when>
-							                        <c:otherwise>
-							                            ${qnaRepList[0].qrId}
-							                        </c:otherwise>
-							                    </c:choose>
-							                </td>
-							                <td class="text-center align-middle">
-							                    <fmt:formatDate value="${qnaRepList[0].qrDate}" pattern="yyyy-MM-dd" /> 
-							                </td>
-							            </tr>
-							        </c:if>
 							    </c:when>
 							</c:choose>
 		                </c:forEach>
+		            </c:if>    
 					<c:if test="${empty qnaList}">
 					    <tr>
 					        <td colspan="4" class="text-center align-middle">등록된 문의 내용이 없습니다.</td>
@@ -597,7 +584,7 @@
 					
 					<script>
 						var loggedInUserId = "${sessionScope.userId}";
-						var currentQnaNo = null;
+						//currentQnaNo = null;
 						
 						function handleClick(authorId, qnaQState, qnaContent, qnaNo) {
 							
@@ -608,58 +595,56 @@
 							console.log("qnaContent: " + qnaContent);
 							console.log("qnaNo :" + qnaNo);
 							
-							currentQnaNo = qnaNo;
+							//currentQnaNo = qnaNo;
 							
 							if (qnaQState === '비공개') {
 								if (authorId === loggedInUserId) {
-									fetchQnaReply(); // 내용 토글
+									toggleContent(qnaNo);
 						        } else {
 						            alert("비밀글입니다");
 						        }
 						    } else {
-						    	fetchQnaReply(); // 공개글의 경우 toggleContent 호출
+						    	toggleContent(qnaNo); // 공개글의 경우 toggleContent 호출
 						    }
 						}
 						
-						function fetchQnaReply() {
-						    fetch('/selectQnANo?qnaNo=' + currentQnaNo) // 컨트롤러의 URL을 설정
-							    .then(response => {
-						            if (!response.ok) {
-						                throw new Error('네트워크 응답이 좋지 않습니다: ' + response.statusText);
-						            }
-						            return response.json();
-						        })
-						        .then(data => {
-						        	console.log("Fetched data:", data); 
-						            // 답변 데이터를 사용하여 DOM 업데이트
-						            const detailsRow = document.getElementById("details-" + currentQnaNo);
-						            console.log("detailsRow : " + detailsRow)
-						            
-						            if (detailsRow) { // detailsRow가 null이 아닐 경우
-						                detailsRow.innerHTML = data.replyContent; // 서버에서 가져온 답변 내용을 삽입
-						                toggleContent(); // 내용 토글
-						            } else {
-						                console.error('Details row not found for qnaNo:', currentQnaNo);
-						            }
-						        })
-						}
-						
-						function toggleContent() {
-							
-						    var contentDiv = document.getElementById("content-" + currentQnaNo);
-						    var detailsRow = document.getElementById("details-" + currentQnaNo);
+						function toggleContent(qnaNo) {
+						    var contentDiv = document.getElementById("content-" + qnaNo);
+						    var detailsRow = document.getElementById("reply-" + qnaNo);
 						    
-						    console.log(contentDiv)
-						    console.log(detailsRow)
 						    
+						    console.log("contentDiv: " +  contentDiv)
+						    console.log("detailsRow: " +  detailsRow)
+						    
+
 						    if (contentDiv.style.display === "none" || contentDiv.style.display === "") {
 						        contentDiv.style.display = "table-row"; // 내용을 보이게 함
-						        if (detailsRow) { // detailsRow가 존재할 때만 display 조정
-						            detailsRow.style.display = "table-row"; // 문의 답변을 보이게 함
-						        }
+
+						        // AJAX로 qna_no를 서버에 전달하여 답변 데이터를 가져옴
+						        $.ajax({
+						            url: '/getQnaDetails', // 컨트롤러에서 처리할 URL
+						            type: 'GET',
+						            data: { qna_no: qnaNo },
+						            success: function(response) {
+						                if (response) {
+						                    // 서버로부터 받은 답변 데이터를 화면에 표시
+						                    if (detailsRow) { // detailsRow가 존재할 때만 style을 변경
+									            detailsRow.style.display = "table-row"; // 답변을 보이게 함
+									            detailsRow.querySelector('td').innerHTML = response.qrContent; // 답변 내용 표시
+									        } else {
+									            console.error("detailsRow가 존재하지 않습니다.");
+									        }
+						                } else {
+						                    alert('답변이 없습니다.');
+						                }
+						            },
+						            error: function() {
+						                alert('답변을 가져오는 데 실패했습니다.');
+						            }
+						        });
 						    } else {
 						        contentDiv.style.display = "none"; // 내용을 숨김
-						        detailsRow.style.display = "none";
+						        detailsRow.style.display = "none"; // 답변 숨김
 						    }
 						}
 					</script>
@@ -952,3 +937,7 @@
 </script>
 </body>
 </html>
+
+
+
+

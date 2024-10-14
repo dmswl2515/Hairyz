@@ -109,7 +109,8 @@ public class ShopController {
     
     @RequestMapping("/p_details")    
     public String productDetail(@RequestParam(defaultValue = "1") int page,
-								@RequestParam("pdNum") int pdNum, 
+								@RequestParam("pdNum") int pdNum,
+								@RequestParam(value = "qna_no", required = false, defaultValue = "0") int qna_no,
     							HttpSession session,
 								Model model) {
     	
@@ -137,7 +138,7 @@ public class ShopController {
         
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
         model.addAttribute("qnaList", qnaList);
-        
+             
         // 페이지네이션 설정
         int pageSize = 1; // 페이지당 항목 수
         int totalQnAs = qnaList.size(); // 전체 상품 수
@@ -146,7 +147,9 @@ public class ShopController {
         
         //구매평
         List<ProductReviewDto> reviews = PRService.getReviewsByProductId(pdNum);
+        System.out.println("reviews: "+ reviews);
         model.addAttribute("reviews", reviews);
+        
         
         //QnA 페이지네이션 
         List<QDto> paginatedQnAs = qnaList.subList(startRow, endRow);
@@ -160,22 +163,17 @@ public class ShopController {
         return "p_details";              
     }
     
-    @GetMapping("/selectQnANo")
-    @ResponseBody
-    public ResponseEntity<Map<String, String>> fetchQnaReply(@RequestParam(value = "qnaNo") int qnaNo) {
-        // qnaNo로 답변 가져오는 로직
-    	System.out.println("qnaNo: " + qnaNo);
-    	
-    	List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo); // qnaNo에 해당하는 답변 목록 가져오기
-        String replyContent = qnaRepList.isEmpty() ? "답변이 없습니다." : qnaRepList.get(0).getQrContent(); // 첫 번째 답변 내용 가져오기
+    @RequestMapping("/getQnaDetails")
+    @ResponseBody  // JSON 형식으로 응답하기 위해 사용
+    public List<QnaReplyDto> getQnaDetails(@RequestParam("qna_no") int qnaNo) {
         
-        System.out.println("replaycontent : " + replyContent);
+    	List<QnaReplyDto> qnaRepList = qnaService.getQnaReplyByQnaNo(qnaNo);
         
-        Map<String, String> response = new HashMap<>();
-        response.put("replyContent", replyContent);
-        return ResponseEntity.ok(response);
+        System.out.println("qna_no: " + qnaNo);
+        System.out.println("qnaRepList: " + qnaRepList);
+        
+        return qnaRepList;
     }
-
     
     
     @RequestMapping("/s_purchase")    

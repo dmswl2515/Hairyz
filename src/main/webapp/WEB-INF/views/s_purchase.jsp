@@ -492,7 +492,7 @@
 		    				style="display: inline-block; width: 100%; background-color: transparent; border: none; text-align: left; cursor: pointer;">
 					    결제하기
 					</button>
-					<script>
+					<script> 
 						//부트페이
 						document.getElementById('paymentButton').addEventListener('click', function() {
 					        
@@ -516,11 +516,6 @@
 							var customerPhone = document.getElementById('odMphone').value;
 							var customerEmail = document.getElementById('odMemail').value;
 							
-							/*
-							var productNum = input.value;
-							var productName = document.getElementById('productName').value;
-							var productQantity = document.getElementById('odAmount').value;
-							*/
 							
 							console.log(totalPrice)
 							console.log(orderNumber)
@@ -529,11 +524,6 @@
 							console.log(customerPhone)
 							console.log(customerEmail)
 							
-							/*
-							console.log(productNum)
-							console.log(productName)
-							console.log(productQantity)
-							*/
 							
 							Bootpay.requestPayment({
 					            "application_id": "6703330ccc5274a3ac3fc385",
