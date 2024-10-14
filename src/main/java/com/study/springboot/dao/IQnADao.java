@@ -16,9 +16,6 @@ public interface IQnADao
 	//상품 번호로 문의내용 가져오기
 	List<QDto> selectQnaByPdNum(@Param("pdNum") int pdNum);
 	
-	//문의 번호로 답변 가져오기
-	public List<QnaReplyDto> getQnaWithReplies(@Param("qna_no") int qna_no);
-	
 	void insertQnA(QDto qDto);
 
 	String getMemberNameById(String mb_id);
@@ -28,5 +25,7 @@ public interface IQnADao
 	public int updateRstate(int qna_no, String qna_rstate);
 	
 	public int updateHide(int qna_no, String qna_hide);
+
+	List<QnaReplyDto> getQnaWithReplies(int qna_no);
 	
 }

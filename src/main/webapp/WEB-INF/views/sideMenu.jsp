@@ -14,7 +14,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-dark">
+            <a href="p_manage" class="nav-link text-dark">
                 상품관리
             </a>
         </li>
@@ -24,7 +24,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-dark">
+            <a href="admin_qna.do" class="nav-link text-dark">
                 QnA관리
             </a>
         </li>
@@ -34,7 +34,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-dark">
+            <a href="admin_community.do" class="nav-link text-dark">
                 커뮤니티관리
             </a>
         </li>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.study.springboot.dao.IAdminDao;
 import com.study.springboot.dto.AdminDto;
+import com.study.springboot.dto.BoardDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
 
@@ -30,5 +31,21 @@ public class AdminService {
     public List<QDto> getAllQna() {
         return adminDao.getAllQna();
     }
+
+	public List<BoardDto> getAllCommunityContent() {
+		return adminDao.getAllCommunityContent();
+	}
+
+	
+	public boolean hidePosts(List<Integer> bdNos) {
+		
+		try {
+			adminDao.updateBdStateToHidden(bdNos);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
 
 }

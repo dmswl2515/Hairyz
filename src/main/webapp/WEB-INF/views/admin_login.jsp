@@ -35,7 +35,7 @@ function submit_ajax() {
 			var result = JSON.parse(json);
 			if (result.code == "success") {
 				alert(result.desc);
-				window.location.replace("admin_membership.do");
+				window.location.replace("memberManagement.do");
 			} else {
 				alert(result.desc);
 			}
@@ -78,8 +78,7 @@ body {
 	<div class="login-wrapper">
 		<form id="login_frm" class="needs-validation" novalidate>
 			<div class="login-container">
-				<input type="text" class="form-control" id="id" name="id" placeholder="아이디" required 
-								 		value="${sessionScope.userId != null ? sessionScope.userId : ''}"> 
+				<input type="text" class="form-control" id="id" name="id" placeholder="아이디" required> 
 				<div class="invalid-feedback">아이디를 입력해주세요.</div>
 				<input type="password" class="form-control mt_15" id="ow" name="pw" placeholder="비밀번호" required>
 				<div class="invalid-feedback">비밀번호를 입력해주세요.</div>

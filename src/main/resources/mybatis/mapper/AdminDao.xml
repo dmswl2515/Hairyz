@@ -11,11 +11,29 @@
 	</select>
 	
 	
-	<!-- Q&A 답변 -->
+	<!-- Q&A 관리 -->
 	<select id="getAllQna" resultType="com.study.springboot.dto.QDto">
 	    SELECT *
 	    FROM QNA
 	    ORDER BY qna_rstate
 	</select>
+	
+	<!-- 커뮤니티 관리 -->
+	<select id="getAllCommunityContent" resultType="com.study.springboot.dto.BoardDto">
+	    SELECT *
+	    FROM Board
+	    WHERE bd_state = 'Y'
+	    ORDER BY bd_date
+	</select>
+	
+	<!-- 커뮤니티 관리 > 선택항목 숨기기 -->
+	<update id="updateBdStateToHidden">
+	    UPDATE board
+	    SET bd_state = 'N'
+	    WHERE bd_no IN
+	    <foreach item="bdNo" index="index" collection="list" open="(" separator="," close=")">
+	        #{bdNo}
+	    </foreach>
+	</update>
 	
 </mapper>

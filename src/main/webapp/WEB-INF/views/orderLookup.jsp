@@ -304,6 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const file = uploadImageInput.files[0]; // 선택한 파일
             const orderNo = this.getAttribute('data-order-no');
 
+            console.log("rating : " + rating)
             // FormData 객체 생성
             const formData = new FormData();
             formData.append('memberNo', '${member.mb_no}'); // member.mb_no 추가
@@ -389,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			                    <c:forEach var="order" items="${orderList}">
 			                        <tr>
 			                            <td>${order.orderdate}</td>
-			                            <td><img src="${pageContext.request.contextPath}/upload/${order.originalfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;"></td>
+			                            <td><img src="${pageContext.request.contextPath}/upload/${order.changedfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;"></td>
 			                            <td>${order.productname}</td>
 			                            <td>${order.orderamount}</td>
 			                            <td>

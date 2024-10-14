@@ -21,4 +21,6 @@ public interface ICartDao
 	void deleteProducts(List<Integer> pdNums);
 
 	void deleteByPdNum(Integer pdNum);
+
+	List<CartDto> findCartItemByMemberIdAndProductId(@Param("mbId") String mbId, int pdNum);
 }
