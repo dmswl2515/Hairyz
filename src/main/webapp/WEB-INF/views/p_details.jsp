@@ -755,7 +755,8 @@
         background-color: #ffc107; /* 호버 시 색상 변화 */
     }
 </style>
-
+	<%@ include file="kakaoCh.jsp" %>
+	
 	<%@ include file="footer.jsp" %>
 
 <!-- Optional JavaScript -->

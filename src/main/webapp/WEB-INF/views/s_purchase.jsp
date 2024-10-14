@@ -621,6 +621,7 @@ document.getElementById('odRaddress2').value = document.getElementById('recipien
 
 </script>
 
+<%@ include file="kakaoCh.jsp" %>
 					
 <%@ include file="footer.jsp" %>
 <!-- Optional JavaScript -->
