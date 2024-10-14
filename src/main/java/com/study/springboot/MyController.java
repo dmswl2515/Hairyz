@@ -28,11 +28,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dao.IOrderProductDao;
+import com.study.springboot.dao.IOrdersDao;
 import com.study.springboot.dao.IPetListDao;
 import com.study.springboot.dao.IProductReviewDao;
 import com.study.springboot.dao.IReviewReplyDao;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrderProductDto;
+import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PageDto;
 import com.study.springboot.dto.PetListDto;
 import com.study.springboot.dto.ProductReviewDto;
@@ -64,6 +66,9 @@ public class MyController {
 	
 	@Autowired
 	IReviewReplyDao reviewReplyDao;
+	
+	@Autowired
+	IOrdersDao ordersDao;
 	
 	@Value("${KAKAO-KEY}")
 	private String KAKAO_KEY;
@@ -528,10 +533,12 @@ public class MyController {
 		
 		MemberDto mDto = memberDao.selectMember2(mbNum);
 		String mbNnme = mDto.getMb_name();
+		OrdersDto oDto = ordersDao.selectOrders(odNo);
+		int odNum = oDto.getOdNum();
 		
 		
 		try {
-			orderProductDao.insertProductRevie(odNo, mbNum, mbNnme, star, reviewText, path, originalName, saveFileName);
+			orderProductDao.insertProductRevie(odNum, mbNum, mbNnme, star, reviewText, path, originalName, saveFileName);
 			return ResponseEntity.ok().body("success");
 		}catch (Exception e) {
 			e.printStackTrace();

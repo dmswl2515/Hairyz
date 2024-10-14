@@ -24,6 +24,27 @@
 		    #{odRaddress2}, #{odMemo}, 'Y', '1'
 		)
 	</insert>
+	
+	<select id="selectOrders" resultType="com.study.springboot.dto.OrdersDto">
+		SELECT 
+		    od_no AS odNo,
+		    od_mno AS odMno,
+		    od_date AS odDate,
+		    od_num AS odNum,
+		    od_amount AS odAmount,
+		    od_mname AS odMname,
+		    od_mphone AS odMphone,
+		    od_memail AS odMemail,
+		    od_recipient AS odRecipient,
+		    od_rphone AS odRphone,
+		    od_rzcode AS odRzcode,
+		    od_raddress AS odRaddress,
+		    od_raddress2 AS odRaddress2,
+		    od_memo AS odMemo,
+		    od_payment AS odPayment,
+		    od_state AS odState
+		FROM orders where od_no = #{param1}
+	</select>
 
 	
 </mapper>

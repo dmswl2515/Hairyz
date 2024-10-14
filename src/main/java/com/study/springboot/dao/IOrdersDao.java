@@ -11,6 +11,8 @@ public interface IOrdersDao
     void insertOrder(OrdersDto ordersDto);
 
 	boolean orderNumberExists(Integer orderNumber);
+	
+	public OrdersDto selectOrders(int od_no);
 
 	
 }
