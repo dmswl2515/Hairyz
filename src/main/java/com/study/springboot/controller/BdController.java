@@ -314,6 +314,7 @@ public class BdController {
         return ResponseEntity.ok(response);
     }
 
+    // 게시글 목록
     @GetMapping("/list.do")
     public String getBoardList(
         @RequestParam(value = "page", defaultValue = "1") int page,
@@ -342,34 +343,34 @@ public class BdController {
         return "list"; // list.jsp 반환
     }
     
+    // 게시글 검색
     @GetMapping("/boardSearch")
-    public String searchBoard(
-        @RequestParam(value = "category", defaultValue = "all") String category,
-        @RequestParam(value = "condition", defaultValue = "") String condition,
-        @RequestParam(value = "keyword", defaultValue = "") String keyword,
-        @RequestParam(value = "page", defaultValue = "1") int page,
-        Model model) {
+    public String searchBoard(@RequestParam(value = "page", defaultValue = "1") int page,
+					          @RequestParam(value = "category", required = false) String category,
+					          @RequestParam(value = "condition", required = false) String condition,
+					          @RequestParam(value = "keyword", required = false) String keyword,
+					          Model model) {
 
-        int pageSize = 5; // 한 페이지에 보여줄 게시글 수
-        int totalCount = boardService.getBoardCount(category, condition, keyword); // 총 게시글 수
-        int totalPages = (int) Math.ceil((double) totalCount / pageSize); // 전체 페이지 수
+        int pageSize = 3; // 한 페이지에 보여줄 게시글 수
+        int totalCount;
 
-        // 페이지에 따른 startRow와 endRow 계산
-        int startRow = (page - 1) * pageSize + 1; // 시작 행 번호
-        int endRow = page * pageSize; // 끝 행 번호
+        // 검색 조건 및 키워드 처리
+        if ("all".equals(category)) {
+            category = null;
+        }
 
-        List<BoardDto> boardList = boardService.getBoardList(startRow, endRow, category, condition, keyword);
-        System.out.println("게시글 리스트: " + boardList);
-        System.out.println("startRow: " + startRow);
-        System.out.println("endRow: " + endRow);
-        System.out.println("category: " + category);
-        System.out.println("condition: " + condition);
-        System.out.println("keyword: " + keyword);
+        totalCount = boardService.getBoardCount(category, condition, keyword); // 검색된 게시글 수
+        int totalPages = totalCount > 0 ? (int) Math.ceil((double) totalCount / pageSize) : 0; // 전체 페이지 수
+
+        List<BoardDto> boardList = boardService.getBoardList(page, pageSize, category, condition, keyword);
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("pageSize", pageSize);
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("searchCondition", condition);
+        model.addAttribute("searchKeyword", keyword);
 
         return "list"; // list.jsp 반환
     }
