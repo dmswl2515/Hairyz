@@ -525,40 +525,36 @@
 							console.log("customerEmail: "  + customerEmail)
 							
 							let totalPrice = 0; //금액 초기화
+							let items = [];
 							
 							// 상품 정보를 가져오는 부분
-							const items = Array.from(document.querySelectorAll('[id^="odNum-"]')).map(input => {
-						    const productNum = input.value;
-						    const qty = parseInt(document.getElementById(`odAmount-` + productNum).value) || 0; // 수량
-						    const price = parseInt(document.getElementById(`productPrice-` + productNum).value.replace(/[^0-9]/g, '')) || 0; // 가격
+							const productInputs = Array.from(document.querySelectorAll('[id^="odNum-"]'));
+						    productInputs.forEach(input => {
+						        const productNum = input.value;
+						        const qty = parseInt(document.getElementById(`odAmount-` + productNum).value) || 0; // 수량
+						        const price = parseInt(document.getElementById(`productPrice-` + productNum).value.replace(/[^0-9]/g, '')) || 0; // 가격
 						
-						    // 유효성 검사: 수량과 가격이 유효한지 확인
-						    if (qty > 0 && price > 0) {
-						        totalPrice += price; // 가격을 총 금액에 추가
-						    }
-							
-							    
-							
-							    console.log("productNum : " + productNum);
-							    console.log("qty : " + qty);
-							    console.log("price : " + price);
-							    console.log("totalPrice : " + totalPrice);
-							    
-							    
-							    return {
-							        "id": productNum,
-							        "name": document.getElementById(`productName-` + productNum).value,
-							        "qty": qty,
-							        "price": price
-							    };
-							});
+						        // 유효성 검사: 수량과 가격이 유효한지 확인
+						        if (qty > 0 && price > 0) {
+						        	const individualPrice = price / qty; // 단가 계산
+						            totalPrice += price; // 총 가격에 단가를 추가
+						            items.push({
+						                "id": productNum,
+						                "name": document.getElementById(`productName-` + productNum).value,
+						                "qty": qty,
+						                "price": individualPrice // 단가는 그대로 사용
+						            });
+						        }
+						    });
+							 
 							
 							// 최종적으로 계산된 총 금액을 사용
-							console.log("Calculated totalPrice: " + totalPrice);
+							const finalTotalPrice = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    						console.log("Calculated totalPrice: " + finalTotalPrice);
 							
 							Bootpay.requestPayment({
 					            "application_id": "6703330ccc5274a3ac3fc385",
-					            "price": totalPrice,
+					            "price": finalTotalPrice,
 					            "order_name": "주문 결제",
 					            "order_id": orderNumber,
 					            "pg": "",
