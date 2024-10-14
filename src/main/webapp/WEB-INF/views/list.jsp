@@ -186,8 +186,29 @@
 		
 		    <!-- 글쓰기 버튼 -->
 		    <div class="mt-4">
-		        <a href="/write.do" class="btn btn-warning">글쓰기</a>
+		        <a href="#" id="writeBtn" class="btn btn-warning">글쓰기</a>
 		    </div>
+		    <script>
+			document.getElementById('writeBtn').addEventListener('click', function(event) {
+			    event.preventDefault(); // 기본 링크 동작 방지
+			    
+			    // 세션에서 사용자 정보 확인
+			    var userId = '<c:out value="${sessionScope.userId}" />';
+			    var userNickname = '<c:out value="${sessionScope.userNickname}" />';
+			    
+			    if (!userId || !userNickname) {
+			        // 사용자 정보가 없으면 로그인 필요 알림
+			        if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
+			            // 로그인 페이지로 이동, 현재 페이지 URL을 파라미터로 넘겨줌
+			            var currentUrl = window.location.pathname + window.location.search; // 현재 페이지 URL
+			            window.location.href = '/login.do?redirectUrl=' + encodeURIComponent(currentUrl);
+			        }
+			    } else {
+			        // 세션 정보가 있으면 글쓰기 페이지로 이동
+			        window.location.href = '/write.do';
+			    }
+			});
+			</script>
 		
 		    <!-- 페이징 -->
 		    <nav class="mt-4">

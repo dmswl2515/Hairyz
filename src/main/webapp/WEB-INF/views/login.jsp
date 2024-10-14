@@ -268,6 +268,9 @@ function submit_ajax() {
 			<button type="button" class="btn btn-success" id="naverLoginButton">Naver 로그인</button><br>
 			<button type="button" class="btn btn-secondary" onclick="javascript:window.location='join.do'">회원가입</button><br>
 		</div>
+		<!-- hidden input으로 redirectUrl 전달 -->
+	    <input type="hidden" name="redirectUrl" value="${param.redirectUrl}">
+	    <button type="submit">로그인</button>
 	</form>
 	<script>
 	// Example starter JavaScript for disabling form submissions if there are invalid fields
