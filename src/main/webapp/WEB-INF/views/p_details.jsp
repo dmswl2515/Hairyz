@@ -442,8 +442,68 @@
 				        </div>
 				    </c:forEach>
 				    <hr style="border-color: #ffc107;">
-				    
 				</c:forEach>
+				
+		<!-- 구매평 페이지네이션 -->
+		<div class="director">
+	    <!-- 첫 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == 1}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" 
+	            		onclick="location.href='p_details?page=1&pdNum=${product.pdNum}&pr_reviewId=${reviews.pr_reviewId}'">&lt;&lt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 이전 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == 1}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" 
+	            		onclick="location.href='p_details?page=${currentPage - 1}&pdNum=${product.pdNum}&pr_reviewId=${reviews.pr_reviewId}'">&lt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 개별 페이지 -->
+	    <c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
+	        <c:choose>
+	            <c:when test="${currentPage == i}">
+	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
+	            </c:when>
+	            <c:otherwise>
+	                <button type="button" class="btn page-button" style="color:gray;" 
+	                		onclick="location.href='p_details?page=${i}&pdNum=${product.pdNum}&pr_reviewId=${reviews.pr_reviewId}'">${i}</button>
+	            </c:otherwise>
+	        </c:choose>
+	    </c:forEach>
+	
+	    <!-- 다음 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == totalPages}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" 
+	                    onclick="location.href='p_details?page=${currentPage + 1}&pdNum=${product.pdNum}&pr_reviewId=${reviews.pr_reviewId}'">&gt;</button>
+	        </c:otherwise>
+	    </c:choose>
+	
+	    <!-- 끝 페이지 -->
+	    <c:choose>
+	        <c:when test="${currentPage == totalPages}">
+	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
+	        </c:when>
+	        <c:otherwise>
+	            <button type="button" class="btn page-button" style="color:gray;" 
+	            		onclick="location.href='p_details?page=${totalPages}&pdNum=${product.pdNum}&pr_reviewId=${reviews.pr_reviewId}'">&gt;&gt;</button>
+	        </c:otherwise>
+	    </c:choose>
+		</div>
+		<!-- 페이지네이션 -->
 			    
 			<hr class="product-hr">
 			    <div id="qna-content" class="">
@@ -643,7 +703,7 @@
 		</div>
    	</div>
 
-       	<!-- 페이지네이션 -->
+       	<!-- Q&A 페이지네이션 -->
 		<div class="director">
 	    <!-- 첫 페이지 -->
 	    <c:choose>
