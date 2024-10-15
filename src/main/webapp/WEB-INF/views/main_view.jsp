@@ -130,12 +130,12 @@
 			</ol>
 			<div class="carousel-inner">
 				<div class="carousel-item active">
-					<a href="#">
+					<a href="list.do">
 						<img class="d-block w-100" src="images/slider1.png" alt="First slide">
 					</a>
 				</div>
 				<div class="carousel-item">
-					<a href="#">
+					<a href="s_main">
 						<img class="d-block w-100" src="images/slider2.png" alt="Second slide">
 					</a>
 				</div>
