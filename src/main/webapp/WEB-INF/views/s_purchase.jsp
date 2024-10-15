@@ -337,27 +337,48 @@
 			    // 상세주소
 			    const recipientDetailAddressContent = document.getElementById('recipient-detail-address');
 			    const rdaddressInput = document.getElementById('raddress-input2');
-			
-			    
+				
+			 	// 유효성 검사 
 			    if (recipientNameContent.style.display === 'none') {
-			        // 입력된 값을 텍스트로 업데이트합니다.
+			        if (!recipientNameInput.value.trim()) {
+			            alert('이름을 입력해주세요.');
+			            recipientNameInput.focus();
+			            return;
+			        }
+			        if (!rphoneInput.value.trim()) {
+			            alert('핸드폰 번호를 입력해주세요.');
+			            rphoneInput.focus();
+			            return;
+			        }
+			        if (!zcodeInput.value.trim()) {
+			            alert('우편번호를 입력해주세요.');
+			            zcodeInput.focus();
+			            return;
+			        }
+			        if (!raddressInput.value.trim()) {
+			            alert('주소를 입력해주세요.');
+			            raddressInput.focus();
+			            return;
+			        }
+			    
+			     	// 입력된 값을 텍스트로 업데이트합니다.
 			        recipientNameContent.textContent = recipientNameInput.value;
 			        recipientNameContent.style.display = 'inline';
 			        recipientNameInput.style.display = 'none';
-			
+
 			        recipientPhoneContent.textContent = rphoneInput.value;
 			        recipientPhoneContent.style.display = 'inline';
 			        rphoneInput.style.display = 'none';
-			
+
 			        zcodeContent.textContent = zcodeInput.value;
 			        zcodeContent.style.display = 'inline';
 			        zcodeInput.style.display = 'none';
 			        zcodeButton.style.display = 'none';
-			
+
 			        recipientAddressContent.textContent = raddressInput.value;
 			        recipientAddressContent.style.display = 'inline';
 			        raddressInput.style.display = 'none';
-			
+
 			        recipientDetailAddressContent.textContent = rdaddressInput.value;
 			        recipientDetailAddressContent.style.display = 'inline';
 			        rdaddressInput.style.display = 'none';
@@ -365,23 +386,19 @@
 			        recipientNameContent.style.display = 'none';
 			        recipientNameInput.style.display = 'inline';
 			        recipientNameInput.focus();
-			
+
 			        recipientPhoneContent.style.display = 'none';
 			        rphoneInput.style.display = 'inline';
-			        rphoneInput.focus();
-			
+
 			        zcodeContent.style.display = 'none';
 			        zcodeInput.style.display = 'inline';
-			        zcodeInput.focus();
 			        zcodeButton.style.display = 'inline';
-			
+
 			        recipientAddressContent.style.display = 'none';
 			        raddressInput.style.display = 'inline';
-			        raddressInput.focus();
-			
+
 			        recipientDetailAddressContent.style.display = 'none';
 			        rdaddressInput.style.display = 'inline';
-			        rdaddressInput.focus();
 			    }
 			    
 			}
