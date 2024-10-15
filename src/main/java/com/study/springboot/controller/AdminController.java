@@ -173,7 +173,7 @@ public class AdminController {
 
 	}
 	
-	// 관리자 - 커뮤니 관리화면
+	// 관리자 - 커뮤니티 관리화면
     @RequestMapping("/admin_community.do")
     public String ManagingCommunityContent(@RequestParam(defaultValue = "1") int page,
     						Model model) {

@@ -109,7 +109,8 @@ public class ShopController {
     }
     
     @RequestMapping("/p_details")    
-    public String productDetail(@RequestParam(defaultValue = "1") int page,
+    public String productDetail(@RequestParam(defaultValue = "1") int qnaPage, 
+    							@RequestParam(defaultValue = "1") int reviewPage,
 								@RequestParam("pdNum") int pdNum,
 								@RequestParam(value = "qna_no", required = false, defaultValue = "0") int qna_no,
 								HttpSession session,
@@ -137,33 +138,25 @@ public class ShopController {
         	System.out.println("Member ID is null");
         }
         
-        //문의글
+        //Q&A 페이징 처리
         List<QDto> qnaList = qnaService.getQnaByProductId(pdNum);
-        model.addAttribute("qnaList", qnaList);
-        
-        List<QnaReplyDto> qnaRepList = qnaService.getAllQnaReplies();
-        model.addAttribute("qnaRepList", qnaRepList);
-        System.out.println("qnaRepList : " + qnaRepList);
-             
-        // 페이지네이션 설정
-        int pageSize = 5; // 페이지당 항목 수
+        int qnaPageSize  = 5; // 페이지당 항목 수
         int totalQnAs = qnaList.size(); // 전체 상품 수
-        int startRow = (page - 1) * pageSize; // 시작 인덱스
-        int endRow = Math.min(startRow + pageSize, totalQnAs);
-        
-        //QnA 페이지네이션 
-        List<QDto> paginatedQnAs = qnaList.subList(startRow, endRow);
-        
+        int startRow = (qnaPage - 1) * qnaPageSize; // 시작 인덱스
+        int endRow = Math.min(startRow + qnaPageSize, totalQnAs);
+        List<QnaReplyDto> qnaRepList = qnaService.getAllQnaReplies();
+        List<QDto> paginatedQnAs = qnaList.subList(startRow, endRow);        
+        model.addAttribute("qnaRepList", qnaRepList);
         model.addAttribute("products", paginatedQnAs);
-        model.addAttribute("currentPage", page); // 현재 페이지 번호
-        model.addAttribute("totalPages", (int) Math.ceil((double) totalQnAs / pageSize)); // 전체 페이지 수
-        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
-        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalQnAs / pageSize), page + 2)); // 끝 페이지
+        model.addAttribute("currentQnaPage", qnaPage); // 현재 페이지 번호
+        model.addAttribute("totalQnaPages", (int) Math.ceil((double) totalQnAs / qnaPageSize)); // 전체 페이지 수
+        model.addAttribute("qnaStartPage", Math.max(1, qnaPage - 2)); // 시작 페이지
+        model.addAttribute("qnaEndPage", Math.min((int) Math.ceil((double) totalQnAs / qnaPageSize), qnaPage + 2)); // 끝 페이지
         
-        //구매평
+        System.out.println("qnaRepList : " + qnaRepList);
+        
+        //구매평 페이징 처리
         List<ProductReviewDto> reviews = PRService.getReviewsByProductId(pdNum);
-        System.out.println("reviews: "+ reviews);
-        
         // 각 구매평에 해당하는 답글 가져오기
         Map<Integer, List<ReviewReplyDto>> reviewReplies = new HashMap<>();
         for (ProductReviewDto review : reviews) {
@@ -171,24 +164,21 @@ public class ShopController {
             reviewReplies.put(review.getPr_reviewId(), replies);
         }
         model.addAttribute("reviewReplies", reviewReplies);
-        System.out.println("reviewReplies : " + reviewReplies);
         
         // 구매평 페이지네이션 설정
-        int pageSize2 = 3; // 페이지당 항목 수
+        int reviewPageSize  = 3; // 페이지당 항목 수
         int totalPReviews = reviewReplies.size(); // 전체 상품 수
-        int startRow2 = (page - 1) * pageSize2; // 시작 인덱스
-        int endRow2 = Math.min(startRow + pageSize2, totalPReviews);
-        
-        //구매평 페이지네이션 
+        int startRow2 = (reviewPage - 1) * reviewPageSize ; // 시작 인덱스
+        int endRow2 = Math.min(startRow2 + reviewPageSize , totalPReviews);
         List<ProductReviewDto> paginatedReviews = reviews.subList(startRow2, endRow2);
-        
         model.addAttribute("reviews", paginatedReviews);
-        model.addAttribute("currentPage", page); // 현재 페이지 번호
-        model.addAttribute("totalPages", (int) Math.ceil((double) totalPReviews / pageSize2)); // 전체 페이지 수
-        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
-        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalPReviews / pageSize2), page + 2)); // 끝 페이지
+        model.addAttribute("currentReviewPage", reviewPage); // 현재 페이지 번호
+        model.addAttribute("totalReviewPages", (int) Math.ceil((double) totalPReviews / reviewPageSize )); // 전체 페이지 수
+        model.addAttribute("reviewStartPage", Math.max(1, reviewPage - 2)); // 시작 페이지
+        model.addAttribute("reviewEndPage", Math.min((int) Math.ceil((double) totalPReviews / reviewPageSize ), reviewPage + 2)); // 끝 페이지
         
-        
+        System.out.println("reviews: "+ reviews);
+        System.out.println("reviewReplies : " + reviewReplies);
     
         return "p_details";              
     }
