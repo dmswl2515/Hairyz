@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -500,6 +502,10 @@ public class MyController {
 
 				// 업로드한 파일을 지정한 파일에 저장한다.
 				mfile.transferTo(serverPatheFullName);
+				
+				// 설정한 경로에 파일 저장 - saveFileName으로 저장 (복사)
+		        File copiedFile = new File(path + File.separator + saveFileName);
+		        Files.copy(serverPatheFullName.toPath(), copiedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);  // 파일 복사
 
 			}
 		} catch (UnsupportedEncodingException e)
