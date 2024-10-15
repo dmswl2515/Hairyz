@@ -390,7 +390,7 @@
        	   	</div>
 		</div>
 	</div>
-
+<%@ include file="kakaoCh.jsp" %>
 					
 <%@ include file="footer.jsp" %>
 <!-- Optional JavaScript -->

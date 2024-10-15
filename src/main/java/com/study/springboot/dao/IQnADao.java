@@ -25,7 +25,5 @@ public interface IQnADao
 	public int updateRstate(int qna_no, String qna_rstate);
 	
 	public int updateHide(int qna_no, String qna_hide);
-
-	List<QnaReplyDto> getQnaWithReplies(int qna_no);
 	
 }

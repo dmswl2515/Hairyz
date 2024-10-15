@@ -18,7 +18,9 @@
 	<div class="content">
 		<%@ include file="header.jsp" %>
 	</div>
-	
+	<div style="float: left;">
+		<%@ include file="sideMenu.jsp" %>
+	</div>	
 <style>
 	.table {
      border-color: #ffc107; /* 테이블 테두리 색상 */

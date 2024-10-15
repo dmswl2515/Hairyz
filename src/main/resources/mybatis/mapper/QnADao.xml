@@ -10,6 +10,7 @@
 	    FROM product p
 	    JOIN qna q ON p.pd_num = q.qna_pnum
 	    WHERE p.pd_num = #{pdNum}
+	    ORDER BY q.qna_date	    
     </select>
     
     <resultMap id="qnaReplyResultMap" type="com.study.springboot.dto.QnaReplyDto">

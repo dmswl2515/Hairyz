@@ -24,6 +24,7 @@
             PRODUCTREVIEW
         WHERE 
             pr_productId = #{productId}
+          AND pr_visibility = 'Y'
     </select>
 
 	<select id="selectReview" resultType="com.study.springboot.dto.ProductReviewDto">
@@ -52,5 +53,9 @@
 	<update id="updateVisibility">
 		update PRODUCTREVIEW set pr_visibility = #{param2} where pr_reviewId = #{param1}
 	</update>
+	
+	<select id="getReviewReplyByProductId" resultType="com.study.springboot.dto.ReviewReplyDto">
+		SELECT * FROM REVIEWREPLY WHERE pr_reviewId = #{prReviewId}
+	</select>
 	
 </mapper>

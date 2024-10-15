@@ -9,4 +9,17 @@
 		insert into QNAREPLY (qr_no, qna_no, qr_id, qr_content) values (qnareply_seq.nextval, #{param1}, #{param2}, #{param3})
 	</insert>
 	
+	<select id="getAllQnaReplies" resultMap="qnaReplyResultMap">
+        SELECT *
+        FROM QNAREPLY
+    </select>
+    
+    <resultMap id="qnaReplyResultMap" type="com.study.springboot.dto.QnaReplyDto">
+        <result property="qrNo" column="qr_no" />
+        <result property="qnaNo" column="qna_no" />
+        <result property="qrId" column="qr_id" />
+        <result property="qrContent" column="qr_content" />
+        <result property="qrDate" column="qr_date" />
+    </resultMap>
+	
 </mapper>
