@@ -13,5 +13,6 @@ public class CartDto
     private String pdChngFname; // 상품 이미지 파일명
     private String pdName;    // 상품 이름
     private int pdPrice;
+    private int pdAmount;
     
 }

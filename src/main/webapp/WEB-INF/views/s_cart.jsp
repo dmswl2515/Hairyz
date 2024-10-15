@@ -98,6 +98,11 @@
 	    text-decoration: underline; /* 밑줄 유지 */
 	}
 	
+	.out-of-stock {
+	    background-color: #f0f0f0; /* 연한 회색 */
+	    color: #b0b0b0; /* 글씨 색상도 회색으로 변경 */
+	}
+	
 </style>
 
 
@@ -122,23 +127,33 @@
 				<tbody>
 				    <c:forEach var="item" items="${products}">
 				        <input type="hidden" id="pdNum" name="productNum" value="${item.pdNum}" />
-				        <tr>
+				        <tr class="${item.pdAmount == 0 ? 'out-of-stock' : ''}">
 				            <!-- 체크박스 열 -->
 				            <td class="text-center align-middle">
 				                <div class="d-flex justify-content-center align-items-center" style="height: 100%; margin-left:10px;">
-				                    <input class="form-check-input selectEach" type="checkbox" name="eachCheckBox" value="${item.pdNum}">
+				                    <input class="form-check-input selectEach" type="checkbox" name="eachCheckBox" 
+				                    	   value="${item.pdNum}" ${item.pdAmount == 0 ? 'disabled' : ''}
+				                    	   data-amount="${item.pdAmount}">
 				                </div>
 								<script>
-								  // 'selectAll' 체크박스를 통해 개별 체크박스를 모두 선택하거나 해제
-								  document.getElementById('selectAll').addEventListener('change', function() {
-								    const isChecked = this.checked;
-								    const checkboxes = document.querySelectorAll('.selectEach');
-								    
-								    checkboxes.forEach(function(checkbox) {
-								      checkbox.checked = isChecked;
-								      
-								    });
-								  });
+								  
+				                document.addEventListener('DOMContentLoaded', function() {
+				                    // 'selectAll' 체크박스를 통해 개별 체크박스를 모두 선택하거나 해제
+				                    document.getElementById('selectAll').addEventListener('change', function() {
+				                        const isChecked = this.checked;
+				                        const checkboxes = document.querySelectorAll('.selectEach');
+				                        
+				                        checkboxes.forEach(function(checkbox) {
+				                            // 품절된 상품일 경우 체크 해제
+				                            if (checkbox.dataset.amount !== "0") { // 품절 상품이 아닐 때만 체크
+				                                checkbox.checked = isChecked;
+				                            } else {
+				                                checkbox.checked = false; // 품절 상품은 항상 체크 해제
+				                            }
+				                        });
+				                    });
+				                });
+								  
 								</script>
 								
 								<script>
@@ -160,7 +175,8 @@
 				            <!-- 수량 -->
 				            <td class="text-center align-middle">
 					            <div>
-					                <span id="quantity-text-${item.pdNum}" data-pdnum="${item.pdNum}">${item.sbagAmount}개</span>
+					                <span id="quantity-text-${item.pdNum}" data-pdnum="${item.pdNum}">
+					                ${item.pdAmount == 0 ? 0 : item.sbagAmount}개</span>
 					            </div>
 					            <br>
 					            <div class="btn-group" role="group" aria-label="Default button group">
@@ -170,7 +186,8 @@
 					        </td>
 				            <!-- 주문 금액 -->
 				            <td class="text-center align-middle" id="price-${item.pdNum}">
-				            	<span id="total-price-${item.pdNum}">${item.sbagPrice}원</span>
+				            	<span id="total-price-${item.pdNum}">
+				            	${item.pdAmount == 0 ? 0 : item.sbagPrice}원</span>
 				            </td>
 				            
 				            <script>
@@ -280,6 +297,48 @@
 	   	   		<button id="remove-soldout" class="btn btn-outline-warning removeBtn">
 	   	   			품절상품 삭제
 	   	   		</button>
+	   	   		<script>
+			   	   	document.getElementById('remove-soldout').addEventListener('click', function() {
+			   	     const soldOutItems = [];
+			   	     const checkboxes = document.querySelectorAll('.selectEach');
+		
+				   	  checkboxes.forEach(checkbox => {
+				          if (checkbox.dataset.amount === "0") { // 품절 상품
+				              soldOutItems.push(checkbox.value); // pdNum 추가
+				          }
+				      });
+						
+				   	 console.log('품절 상품 목록:', soldOutItems);
+				   	
+			   	     if (soldOutItems.length > 0) {
+			   	         // Ajax 요청으로 서버에 삭제 요청
+			   	         fetch('/remove-soldout', { // 삭제를 처리할 서버 URL
+			   	             method: 'POST',
+			   	             headers: {
+			   	                 'Content-Type': 'application/json'
+			   	             },
+			   	             body: JSON.stringify(soldOutItems)
+			   	         })
+			   	         .then(response => {
+			   	        	if (!response.ok) {
+			   	                throw new Error('Network response was not ok.');
+			   	            }
+			   	            return response.json(); // JSON 응답 처리
+			   	         })
+			   	         .then(data => {
+			   	             alert(data.message); // 성공 메시지
+			   	             location.reload(); // 페이지 새로고침 (장바구니 갱신)
+			   	         })
+			   	         .catch(error => {
+			   	             console.error('Error:', error); // 오류 처리
+			   	             alert('품절 상품 삭제 중 오류가 발생했습니다.');
+			   	         });
+			   	     } else {
+			   	         alert('삭제할 품절 상품이 없습니다.');
+			   	     }
+			   	 });
+
+	   	   		</script>
        	   	</div>
 
 		 	<table class="table table-bordered mt-5 mb-2 tableDeco" style="border-left: none; border-right: none;">

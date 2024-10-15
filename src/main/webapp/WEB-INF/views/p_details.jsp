@@ -857,6 +857,14 @@
 		        return; // 더 이상 진행하지 않음
 		    }
 		 
+		 let productAmount = document.getElementById('productAmount').value;
+	        
+	        // pd_amount가 0인지 확인
+	        if (productAmount == 0) {
+	            alert("품절된 상품으로 구매 불가합니다."); // 알림창 표시
+	            return; 
+	        }
+		 
 	    var productNum = document.getElementById('productNum').value;
 	    var quantity = document.getElementById('quantity-input').value;
 	    var price = parseInt(document.getElementById('total-price').innerText.replace('원', '').replace(',', ''));

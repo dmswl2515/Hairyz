@@ -34,6 +34,7 @@ import com.study.springboot.repository.PRepository;
 import com.study.springboot.service.CartService;
 import com.study.springboot.service.MemberService;
 import com.study.springboot.service.OrdersService;
+import com.study.springboot.service.PService;
 import com.study.springboot.service.ProductReviewService;
 import com.study.springboot.service.QnAService;
 
@@ -65,6 +66,11 @@ public class ShopController {
 	
 	@Autowired
     private ProductReviewService PRService;
+	
+	@Autowired
+    private PService pService;
+	
+	
 	
 	
     
@@ -283,6 +289,8 @@ public class ShopController {
             } else {
                 System.out.println("Member ID is null");
             }
+    		
+    		
     	
             return "s_cart";              
     }
@@ -338,6 +346,24 @@ public class ShopController {
 
         return response;
     }
+    
+    @PostMapping("/remove-soldout")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteSoldOutProducts(@RequestBody List<Integer> pdNums) {
+        Map<String, Object> response = new HashMap<>();
+        
+        boolean success = cartService.deleteSelectedProducts(pdNums); // 서비스 호출
+        response.put("success", success);
+        
+        if (success) {
+            response.put("message", "품절 상품이 삭제되었습니다."); // 메시지 추가
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "품절 상품 삭제 실패."); // 메시지 추가
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
     
     @RequestMapping("/test1")
     public String root() throws Exception{
