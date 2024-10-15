@@ -45,6 +45,7 @@
 			<div class="d-flex justify-content-center align-items-center">
 			    <form action="p_update" method="post" enctype="multipart/form-data" class="text-center">
 			        <input type="hidden" name="pdNum" value="${product.pdNum}" />
+			        <input type="hidden" name="page" value="${currentPage}" />
 			        <!-- 첫 번째 파일 선택 -->
 			        <div style="text-align: center;">
 				        <img id="productImagePreview1" 

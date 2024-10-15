@@ -194,7 +194,7 @@
 		                        
 		                        <input type="button" class="btn btn-outline-warning custom-width" 
 		                        value="상품 수정" 
-		                        onclick="window.location.href='p_modify?pdNum=${item.pdNum}';"/>
+		                        onclick="window.location.href='p_modify?page=${currentPage}&pdNum=${item.pdNum}';"/>
 		                    </td>
 		                </tr>
 		            </c:forEach>

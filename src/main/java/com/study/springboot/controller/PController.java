@@ -205,14 +205,19 @@ public class PController {
     
  
     @RequestMapping("/p_modify")    
-    public String pModifyForm(@RequestParam("pdNum") Integer pdNum, Model model) {
+    public String pModifyForm(@RequestParam("pdNum") Integer pdNum, 
+    						  @RequestParam(value = "page", required = false) Integer page,
+    						  Model model) {
         
         List<PDto> products = pRepository.findByPdNum(pdNum);
         
         if (!products.isEmpty()) {
             model.addAttribute("product", products.get(0)); // 첫 번째 상품을 모델에 추가
         } 
-         return "p_modify";
+        
+        model.addAttribute("currentPage", page);
+        
+        return "p_modify";
     }
     
     
@@ -226,7 +231,10 @@ public class PController {
 					            @RequestParam("pd_category") String pdCategory,
 					            @RequestParam("pd_price") Integer pdPrice,
 					            @RequestParam("pd_amount") Integer pdAmount,
+					            @RequestParam("page") Integer page,
 					            RedirectAttributes redirectAttributes) throws IOException {
+    	
+    	System.out.println("page: " + page);
     	
     	// 기존 상품을 데이터베이스에서 찾기
     	List<PDto> products = pRepository.findByPdNum(pdNum);
@@ -284,12 +292,11 @@ public class PController {
             product.setPd_selling(product.getPd_selling()); // 기존 pd_selling을 설정
             product.setPdRdate(product.getPdRdate()); // 기존 pd_rdate를 설정
             
-
             // 제품 정보 저장
             pRepository.save(product);
             
         }
-    	return "redirect:/p_modify?pdNum=" + pdNum;
+    	return "redirect:/p_manage?page=" + page;
     }
     
 }
