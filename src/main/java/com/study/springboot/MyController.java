@@ -913,6 +913,7 @@ public class MyController {
     	// 제품 검색
         List<PDto> productList = pService.getProductsByKeyword(sKeyword);
         model.addAttribute("productList", productList);
+        int productCount = productList.size(); // 제품 수 세기
         
         for (PDto product : productList) {
             System.out.println("상품명: " + product.getPdName());
@@ -922,9 +923,14 @@ public class MyController {
         // 게시판 검색
         List<BoardDto> boardList = sService.getBoardsByKeyword(sKeyword);
         model.addAttribute("boardList", boardList);
-    	
+        int boardCount = boardList.size(); // 게시판 수 세기
+        
         System.out.println("productList: " + productList);
         System.out.println("boardList: " + boardList);
+        
+        // 검색 결과 수 합산
+        int totalCount = productCount + boardCount;
+        model.addAttribute("totalCount", totalCount); // 총 결과 수 모델에 추가
     	
         return "searchview";                 
 	}
