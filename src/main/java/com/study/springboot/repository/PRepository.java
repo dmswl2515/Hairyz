@@ -46,6 +46,10 @@ public interface PRepository extends JpaRepository<PDto, Integer>
 
     @Query(value = "SELECT COUNT(*) FROM product WHERE pd_category = :pd_category", nativeQuery = true)
     long countByPdCategory(@Param("pd_category") String pd_category);
+    
+    //키워드로 상품검색
+    @Query("SELECT p FROM PDto p WHERE p.pdName LIKE %:sKeyword%")
+    List<PDto> findProductsByKeyword(@Param("sKeyword") String sKeyword);
 
     
     

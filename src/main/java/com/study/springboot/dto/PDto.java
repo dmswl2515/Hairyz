@@ -1,7 +1,5 @@
 package com.study.springboot.dto;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -13,7 +11,9 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "product")
 public class PDto

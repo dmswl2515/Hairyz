@@ -112,11 +112,22 @@
 
         <!-- 통합검색 창 -->
         <div class="custom-container my-4">
-            <form class="form-inline d-flex justify-content-center">
-                <input class="form-control mr-sm-2" type="search" placeholder="통합검색" aria-label="Search" style="width: 30%;">
+            <form action="/searchAll" class="form-inline d-flex justify-content-center" onsubmit="return validateForm();">
+                <input class="form-control mr-sm-2" id="searchInput" type="text" name="sKeyword" placeholder="통합검색" aria-label="Search" style="width: 30%;">
                 <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">검색</button>
             </form>
         </div>
+        
+        <script>
+		    function validateForm() {
+		        const input = document.getElementById('searchInput');
+		        if (input.value.trim() === '') {
+		            alert('검색어를 입력해주세요');
+		            return false; // 폼 제출을 중단합니다.
+		        }
+		        return true; // 폼을 정상적으로 제출합니다.
+		    }
+		</script>
 
         <!-- 슬라이더 -->
 		<div id="carouselExampleIndicators"

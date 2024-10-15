@@ -35,5 +35,10 @@ public class PService
 	    return pRepository.findByPdNameContaining(productName);
 	}
 	
+	//통합검색
+	public List<PDto> getProductsByKeyword(String sKeyword) {
+        return pRepository.findProductsByKeyword(sKeyword);
+    }
+	
 	
 }

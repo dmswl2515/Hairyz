@@ -24,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -34,12 +35,16 @@ import com.study.springboot.dao.IOrdersDao;
 import com.study.springboot.dao.IPetListDao;
 import com.study.springboot.dao.IProductReviewDao;
 import com.study.springboot.dao.IReviewReplyDao;
+import com.study.springboot.dto.BoardDto;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrderProductDto;
 import com.study.springboot.dto.OrdersDto;
+import com.study.springboot.dto.PDto;
 import com.study.springboot.dto.PageDto;
 import com.study.springboot.dto.PetListDto;
 import com.study.springboot.dto.ProductReviewDto;
+import com.study.springboot.service.PService;
+import com.study.springboot.service.SearchService;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -71,6 +76,12 @@ public class MyController {
 	
 	@Autowired
 	IOrdersDao ordersDao;
+	
+	@Autowired
+	SearchService sService;
+	
+	@Autowired
+	PService pService;
 	
 	@Value("${KAKAO-KEY}")
 	private String KAKAO_KEY;
@@ -892,4 +903,29 @@ public class MyController {
 		return uuid;
 	}
 	
+	//통합검색
+	@RequestMapping("/searchAll")    
+    public String IntegratedSearch(@RequestParam(value = "sKeyword", required = false) String sKeyword,
+    							   Model model) {
+    	
+    	System.out.println("sKeyword : " + sKeyword);
+    	
+    	// 제품 검색
+        List<PDto> productList = pService.getProductsByKeyword(sKeyword);
+        model.addAttribute("productList", productList);
+        
+        for (PDto product : productList) {
+            System.out.println("상품명: " + product.getPdName());
+            System.out.println("가격: " + product.getPd_price());
+        }
+        
+        // 게시판 검색
+        List<BoardDto> boardList = sService.getBoardsByKeyword(sKeyword);
+        model.addAttribute("boardList", boardList);
+    	
+        System.out.println("productList: " + productList);
+        System.out.println("boardList: " + boardList);
+    	
+        return "searchview";                 
+	}
 }
