@@ -112,7 +112,7 @@ public class BoardService {
         }
 
         // <img><br> 태그를 정규식으로 모두 제거
-        return content.replaceAll("(?i)<img[^>]*>\s*<br\s*/?>", "<!--IMG_REMOVED-->");
+        return content.replaceAll("(?i)<img[^>]*>(\\s*<br\\s*/?>)?", "<!--IMG_REMOVED-->");
     }
 
 }

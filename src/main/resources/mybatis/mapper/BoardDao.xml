@@ -99,6 +99,11 @@
 	                <when test="condition == 'writer'">
 	                    AND b.bd_writer LIKE '%' || #{keyword} || '%'
 	                </when>
+			        <when test="condition == 'all'">
+			            AND (b.bd_title LIKE '%' || #{keyword} || '%' 
+			                 OR b.bd_content LIKE '%' || #{keyword} || '%' 
+			                 OR b.bd_writer LIKE '%' || #{keyword} || '%')
+			        </when>
 	            </choose>
 	        </if>
 	    )
@@ -129,6 +134,11 @@
                 <when test="condition == 'writer'">
                     AND bd_writer LIKE '%' || #{keyword} || '%'
                 </when>
+	            <when test="condition == 'all'">
+	                AND (bd_title LIKE '%' || #{keyword} || '%' 
+	                     OR bd_content LIKE '%' || #{keyword} || '%' 
+	                     OR bd_writer LIKE '%' || #{keyword} || '%')
+	            </when>
             </choose>
         </if>
     </select>

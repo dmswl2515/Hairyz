@@ -22,10 +22,10 @@
 </style>
 </head>
 <body>
-	<div class="content">
-		<%@ include file="header.jsp" %>
-		
-		<div class="container list mt-4">
+<div class="content">
+	<%@ include file="header.jsp" %>
+	
+	<div class="container list mt-4">
         <!-- 카테고리 -->
         <nav class="nav cate mb-4">
             <a class="nav-link" href="list.do"># 전체</a>
@@ -244,10 +244,18 @@
 
         <!-- 목록으로 돌아가기 버튼 -->
         <div class="mt-4">
-            <a href="/list.do" class="btn btn-secondary" style="width:5rem;">목록</a>
-        </div>
+		    <c:choose>
+		        <c:when test="${not empty searchCondition and not empty searchKeyword}">
+		            <a href="/boardSearch?page=${currentPage}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="btn btn-secondary" style="width:5rem;">목록</a>
+		        </c:when>
+		        <c:otherwise>
+		            <a href="/list.do?page=${currentPage}&category=${category}" class="btn btn-secondary" style="width:5rem;">목록</a>
+		        </c:otherwise>
+		    </c:choose>
+		</div>
+        
     </div>
-	</div>
+</div>
 					
 	<%@ include file="footer.jsp" %>
 	<!-- Bootstrap JS, Popper.js, and jQuery -->

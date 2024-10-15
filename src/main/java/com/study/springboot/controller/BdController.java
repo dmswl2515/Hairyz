@@ -181,7 +181,13 @@ public class BdController {
     
     // 게시글 상세 페이지
     @GetMapping("/post_view.do/{bd_no}")
-    public String viewPost(@PathVariable("bd_no") int bd_no, Model model, HttpServletRequest request) {
+    public String viewPost(@PathVariable("bd_no") int bd_no,
+			    	       @RequestParam(value = "page", defaultValue = "1") int currentPage,
+			    	       @RequestParam(value = "category", required = false) String category,
+			    	       @RequestParam(value = "condition", required = false) String searchCondition,
+			    	       @RequestParam(value = "keyword", required = false) String searchKeyword,
+			    	       Model model,
+			    	       HttpServletRequest request) {
     	// 게시글 정보 조회
         BoardDto board = boardService.getPostView(bd_no);
         // 작성자의 프로필 정보 조회
@@ -209,6 +215,11 @@ public class BdController {
         model.addAttribute("replyCount", replyList.size()); // 댓글 수
         // 게시글 ID를 모델에 추가 (AJAX에서 사용할 수 있도록)
         model.addAttribute("bd_no", bd_no);
+        // 목록페이지에서 페이지, 카테고리, 검색조건 받아오기
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("category", category);
+        model.addAttribute("searchCondition", searchCondition);
+        model.addAttribute("searchKeyword", searchKeyword);
         
         return "post_view";
     }
@@ -314,7 +325,7 @@ public class BdController {
         return ResponseEntity.ok(response);
     }
 
-    // 게시글 목록
+    // 게시글 목록 출력
     @GetMapping("/list.do")
     public String getBoardList(
         @RequestParam(value = "page", defaultValue = "1") int page,
@@ -337,7 +348,7 @@ public class BdController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("pageSize", pageSize);
-        model.addAttribute("selectedCategory", category);
+        model.addAttribute("category", category);
         System.out.println("category: " + category);
 
         return "list"; // list.jsp 반환
@@ -353,6 +364,9 @@ public class BdController {
 
         int pageSize = 3; // 한 페이지에 보여줄 게시글 수
         int totalCount;
+        
+        // 검색 조건이 있을 때 isSearch를 true로 설정
+        boolean isSearch = (condition != null && !condition.isEmpty() && keyword != null && !keyword.isEmpty());
 
         // 검색 조건 및 키워드 처리
         if ("all".equals(category)) {
@@ -368,9 +382,10 @@ public class BdController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("pageSize", pageSize);
-        model.addAttribute("selectedCategory", category);
+        model.addAttribute("category", category);
         model.addAttribute("searchCondition", condition);
         model.addAttribute("searchKeyword", keyword);
+        model.addAttribute("isSearch", isSearch); 
 
         return "list"; // list.jsp 반환
     }
