@@ -30,14 +30,12 @@ public class BoardDto {
     	String regex = "<img[^>]+src=['\"]([^'\"]+)['\"][^>]*>";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.bd_content);
-        System.out.println("본문 내용: " + this.bd_content);
 
         if (matcher.find()) {
         	String imageUrl = matcher.group(1);
-            System.out.println("추출된 이미지 URL: " + imageUrl); // 로그 출력
+            //System.out.println("추출된 이미지 URL: " + imageUrl); // 로그 출력
             return imageUrl; // 첫 번째 매치된 이미지 URL 반환
         }
-        System.out.println("추출된 이미지가 없습니다.");
         return null; // 이미지가 없을 경우 null 반환
     }
 }

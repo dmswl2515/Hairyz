@@ -188,24 +188,26 @@ public class BdController {
 			    	       @RequestParam(value = "keyword", required = false) String searchKeyword,
 			    	       Model model,
 			    	       HttpServletRequest request) {
+    	// 세션에서 사용자 ID 가져오기
+    	HttpSession session = request.getSession();
+    	String userId = (String) session.getAttribute("userId");
+    	
     	// 게시글 정보 조회
-        BoardDto board = boardService.getPostView(bd_no);
+        BoardDto board = boardService.getPostView(bd_no, userId);
+        
         // 작성자의 프로필 정보 조회
         MemberDto profile = memberService.getMemberByMemberId(board.getMb_id());
-        // 세션에서 사용자 ID 가져오기
-        HttpSession session = request.getSession();
-        String userId = (String) session.getAttribute("userId");
         
-        // 댓글 리스트 조회
+        // 댓글 리스트 조회 및 댓글 작성자의 프로필 정보를 조회하여 모델에 추가
         List<ReplyDto> replyList = replyService.getRepliesByBdNo(bd_no);
-        
-        // 댓글 작성자의 프로필 정보를 조회하여 모델에 추가
         List<MemberDto> replyProfiles = new ArrayList<>();
         for (ReplyDto reply : replyList) {
             // 댓글 작성자의 프로필 정보 조회
             MemberDto replyProfile = memberService.getMemberByMemberId(reply.getMb_id());
             replyProfiles.add(replyProfile);
         }
+        
+        // 모델에 정보 추가
         model.addAttribute("board", board);
         model.addAttribute("profile", profile); 
         model.addAttribute("replyList", replyList);
@@ -352,7 +354,7 @@ public class BdController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("category", category);
-        System.out.println("category: " + category);
+//        System.out.println("category: " + category);
 
         return "list"; // list.jsp 반환
     }
@@ -368,13 +370,16 @@ public class BdController {
         int pageSize = 3; // 한 페이지에 보여줄 게시글 수
         int totalCount;
 
-        // 검색 조건이 있을 때 페이지를 1로 설정
-        if ((condition != null && !condition.isEmpty()) || (keyword != null && !keyword.isEmpty())) {
-            page = 1; // 검색 시 페이지를 항상 1로 설정
-        }
-        
         // 검색 조건이 있을 때 isSearch를 true로 설정
         boolean isSearch = (condition != null && !condition.isEmpty() && keyword != null && !keyword.isEmpty());
+        
+        // 만약 검색 중이고, 페이지가 명시되지 않았다면 page를 1로 설정 (첫 검색일 때만 1페이지로 고정)
+        if (isSearch && page == 1) {
+            page = 1;
+        } else if (isSearch && page > 1) {
+            // 검색 결과 내에서 페이지 변경 시 해당 페이지를 유지
+            // 여기는 page 값을 그대로 유지함
+        }
 
         // 검색 조건 및 키워드 처리
         if ("all".equals(category)) {
