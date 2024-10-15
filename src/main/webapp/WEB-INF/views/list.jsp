@@ -51,7 +51,9 @@
 }
 .category-btn { margin-right: 5px; border-radius:1.25rem; border-color:#fff; color: #212529; }
 .category-btn.selected { background-color: #ffc107; }
-
+.pagination .page-link { background-color: #ffe082; border: 1px solid #ffc107; color: gray; }
+.pagination .page-item.active .page-link { background-color: #ffc107; border-color: #ffc107; color: #212529; }
+.pagination .page-link:hover { background-color: #ffc107; }
 </style>
 </head>
 <body>
@@ -60,7 +62,7 @@
 		
 		<div class="container list my-4">
 			<!-- 게시글 검색 -->
-			<form action="/boardSearch" method="get">
+			<form id="searchForm" action="/boardSearch" method="get">
 			    <input type="hidden" name="category" value="${param.category}">
 			    <input type="hidden" name="page" value="${param.page}">
 			    <div class="input-group searchWrap mb-4 mx-auto col-md-6">
@@ -145,15 +147,16 @@
 			                                <span class="badge badge-danger new-badge" style="display:none;">new</span>
 			                            </h5>
 			                            <div class="board-body ellipsis">
-			                                ${board.bd_content}
+			                                ${board.bd_content_delimg}
 			                            </div>
 			                            <div class="board-footer">
 			                                <span>${board.bd_writer}</span>&nbsp; | &nbsp;조회수: ${board.bd_hit}&nbsp; | &nbsp;좋아요: ${board.bd_like}
 			                            </div>
 			                        </div>
-			                        <c:if test="${board.bd_imgpath != null}">
-			                            <img src="${board.bd_imgpath}/${board.bd_modname}" alt="썸네일">
-			                        </c:if>
+			                        <c:set var="imageUrl" value="${board.extractImageUrl()}" />
+									<c:if test="${not empty imageUrl}">
+									    <img src="${imageUrl}" alt="썸네일" >
+									</c:if>
 			                    </div>
 			                </c:forEach>
 			            </c:if>
@@ -177,15 +180,16 @@
 			                                <span class="badge badge-danger new-badge" style="display:none;">new</span>
 			                            </h5>
 			                            <div class="board-body ellipsis">
-			                                ${board.bd_content}
+			                                ${board.bd_content_delimg}
 			                            </div>
 			                            <div class="board-footer">
 			                                <span>${board.bd_writer}</span>&nbsp; | &nbsp;조회수: ${board.bd_hit}&nbsp; | &nbsp;좋아요: ${board.bd_like}
 			                            </div>
 			                        </div>
-			                        <c:if test="${board.bd_imgpath != null}">
-			                            <img src="${board.bd_imgpath}/${board.bd_modname}" alt="썸네일">
-			                        </c:if>
+			                        <c:set var="imageUrl" value="${board.extractImageUrl()}" />
+									<c:if test="${not empty imageUrl}">
+									    <img src="${imageUrl}" alt="썸네일" >
+									</c:if>
 			                    </div>
 			                </c:forEach>
 			            </c:if>
@@ -276,7 +280,7 @@
 			            <c:otherwise>
 			                <c:if test="${currentPage > 1}">
 			                    <li class="page-item">
-			                        <a href="?page=${currentPage - 1}&category=${category}" class="page-link">이전</a>
+			                        <a href="?page=${currentPage - 1}&category=${category}" class="page-link">&lt;</a>
 			                    </li>
 			                </c:if>
 			
@@ -288,7 +292,7 @@
 			
 			                <c:if test="${currentPage < totalPages}">
 			                    <li class="page-item">
-			                        <a href="?page=${currentPage + 1}&category=${category}" class="page-link">다음</a>
+			                        <a href="?page=${currentPage + 1}&category=${category}" class="page-link">&gt;</a>
 			                    </li>
 			                </c:if>
 			            </c:otherwise>

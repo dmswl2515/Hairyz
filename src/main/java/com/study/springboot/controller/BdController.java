@@ -343,6 +343,9 @@ public class BdController {
         int totalPages = totalCount > 0 ? (int) Math.ceil((double) totalCount / pageSize) : 0; // 전체 페이지 수
 
         List<BoardDto> boardList = boardService.getBoardList(page, pageSize, category, null, null);
+        for (BoardDto board : boardList) {
+            board.extractImageUrl(); // 각 게시글에서 이미지 URL 추출
+        }
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("currentPage", page);
@@ -364,6 +367,11 @@ public class BdController {
 
         int pageSize = 3; // 한 페이지에 보여줄 게시글 수
         int totalCount;
+
+        // 검색 조건이 있을 때 페이지를 1로 설정
+        if ((condition != null && !condition.isEmpty()) || (keyword != null && !keyword.isEmpty())) {
+            page = 1; // 검색 시 페이지를 항상 1로 설정
+        }
         
         // 검색 조건이 있을 때 isSearch를 true로 설정
         boolean isSearch = (condition != null && !condition.isEmpty() && keyword != null && !keyword.isEmpty());
@@ -449,27 +457,31 @@ public class BdController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
             }
 
-            // 파일 처리 (새로 업로드된 파일)
-            MultipartFile file = multiRequest.getFile("uploadFile");
-            if (file != null && !file.isEmpty()) {
-                // 기존 파일 삭제
-                if (existingPost.getBd_orgname() != null) {
-                    File delFile = new File(request.getServletContext().getRealPath("/") + "uploads/" + existingPost.getBd_modname());
-                    if (delFile.exists()) {
-                        delFile.delete();  // 기존 파일 삭제
+            // 파일 정보를 받아옴
+            String success = request.getParameter("success");
+            String imgPathFromUpload = request.getParameter("fileLink"); // 파일 경로
+            String originalFileName = request.getParameter("originalFileName"); // 원본 파일명
+            String systemFileName = request.getParameter("systemFileName"); // 해시값으로 저장된 파일명
+
+            // 파일이 성공적으로 업로드된 경우에만 파일 정보를 DTO에 설정
+            if ("true".equals(success)) {
+                // imgPathFromUpload에서 파일명을 제외한 경로만 저장
+                if (imgPathFromUpload != null) {
+                    int lastSlashIndex = imgPathFromUpload.lastIndexOf('/');
+                    if (lastSlashIndex != -1) {
+                        imgPathFromUpload = imgPathFromUpload.substring(0, lastSlashIndex); // 경로만 남김
                     }
                 }
 
-                // 새로운 파일 업로드
-                String originalFileName = file.getOriginalFilename();
-                String systemFileName = System.currentTimeMillis() + "_" + originalFileName;
-                String uploadDir = request.getServletContext().getRealPath("/") + "uploads/";
-                File newFile = new File(uploadDir + systemFileName);
-                file.transferTo(newFile);
-
-                // 파일 정보 갱신
-                boardDto.setBd_orgname(originalFileName);
-                boardDto.setBd_modname(systemFileName);
+                // DTO에 파일 정보 설정
+                boardDto.setBd_imgpath(imgPathFromUpload); // 파일 경로 (파일명 제외)
+                boardDto.setBd_orgname(originalFileName); // 원본 파일명
+                boardDto.setBd_modname(systemFileName); // 해시값으로 된 파일명
+            } else {
+                // 파일이 업로드되지 않았을 경우, 기존 파일 정보를 유지
+                boardDto.setBd_imgpath(existingPost.getBd_imgpath());
+                boardDto.setBd_orgname(existingPost.getBd_orgname());
+                boardDto.setBd_modname(existingPost.getBd_modname());
             }
 
             // 게시글 수정 처리

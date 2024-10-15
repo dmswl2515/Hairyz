@@ -99,7 +99,7 @@ public class BoardService {
             String content = board.getBd_content();
             String contentWithoutImages = removeImgTags(content);  // 이미지 태그 제거
             
-            board.setBd_content(contentWithoutImages);  // 수정된 내용을 다시 설정
+            board.setBd_content_delimg(contentWithoutImages);  // 수정된 내용 설정
         }
 
         return boardList;
