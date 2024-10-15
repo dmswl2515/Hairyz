@@ -495,7 +495,7 @@
 		        </c:when>
 		        <c:otherwise>
 		            <button type="button" class="btn page-button" style="color:gray;" 
-		                    onclick="location.href='p_details?reviewPage=${currentReviewPage + 1}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">&gt;</button>
+		                    onclick="location.href='p_details?reviewPage=${currentReviewPage + 1}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}&scrollToReviews=true';">&gt;</button>
 		        </c:otherwise>
 		    </c:choose>
 		
@@ -506,12 +506,29 @@
 		        </c:when>
 		        <c:otherwise>
 		            <button type="button" class="btn page-button" style="color:gray;" 
-		            		onclick="location.href='p_details?reviewPage=${totalReviewPages}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">&gt;&gt;</button>
+		            		onclick="location.href='p_details?reviewPage=${totalReviewPages}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}&scrollToReviews=true';">&gt;&gt;</button>
 		        </c:otherwise>
 		    </c:choose>
 			</div>
 		</c:if>	
 		<!-- 페이지네이션 -->
+		
+		<script>
+		    function scrollToReviews() {
+		        const reviewsElement = document.getElementById('reviews-content');
+		        if (reviewsElement) {
+		            reviewsElement.scrollIntoView({ behavior: 'smooth' });
+		        }
+		    }
+		
+		    // 페이지 로드 시 scrollToReviews 호출
+		    window.onload = function() {
+		        const params = new URLSearchParams(window.location.search);
+		        if (params.get('scrollToReviews') === 'true') {
+		            scrollToReviews();
+		        }
+		    };
+		</script>
 			    
 			<hr class="product-hr">
 			    <div id="qna-content" class="">
@@ -631,7 +648,7 @@
 								                    </td>
 								                     <td colspan="1">
 										            	<c:choose>
-													        <c:when test="${reply.qrId == 'admin'}">판매자</c:when>
+													        <c:when test="${reply.qrId == 'master'}">판매자</c:when>
 													        <c:otherwise>${reply.qrId}</c:otherwise>
 													    </c:choose>
 									            	</td>
