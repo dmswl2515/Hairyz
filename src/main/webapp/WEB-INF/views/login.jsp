@@ -157,16 +157,22 @@ function fbLogin() {
 }
 
 function snsLogin(snsEmail) {
+    const redirectUrl = sessionStorage.getItem('redirect'); // 세션 스토리지에서 리다이렉트 URL 가져오기
+    
     $.ajax({
         url: '/checkSnsLoginEmail.do',
         type: 'POST',
         contentType: 'application/json', // Content-Type 설정
-        data: JSON.stringify({ email: snsEmail }), // JSON.stringify 사용
+        data: JSON.stringify({ email: snsEmail, redirect: redirectUrl }), // JSON.stringify 사용
         success: function(response) {
             if (response.code === 'exists') {
                 alert(response.desc);
-                // 기존 회원이므로 바로 로그인 처리
-                window.location.href = '/main_view.do';  // 로그인 후 메인 페이지로 이동
+             	// 기존 회원이므로 로그인 처리 후 리다이렉트
+                if (response.redirect) {
+                    window.location.href = response.redirect; // 요청한 URL로 이동
+                } else {
+                    window.location.href = '/main_view.do'; // 기본 페이지로 이동
+                }
             } else if (response.code === 'not_found') {
                 alert(response.desc);
                 // 새 회원이므로 회원가입 페이지로 이동

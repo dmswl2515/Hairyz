@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,6 +20,12 @@
     align-items: center;
 }
 .boardList .board-item:first-child { border-top: 1px solid #ffc107; }
+.boardList .no-posts {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    padding: 50px 0;
+}
 .board-item h5 { font-size: 1.15rem; }
 .board-item .content { flex: 1; }
 .board-item img {
@@ -110,37 +117,98 @@
 			    }
 			});
 			</script>
-
 		    
 		    <!-- 게시글 리스트 -->
 		    <div id="boardList" class="boardList">
 		        <!-- 반복되는 게시글 항목 -->
-		        <c:forEach var="board" items="${boardList}">
-		            <div class="board-item">
-		                <div class="content">
-		                    <h5>
-		                    	<a href="/post_view.do/${board.bd_no}" class="text-dark">
-			                        ${board.bd_title}
-			                    </a>
-							</h5>
-		                    <div class="board-body ellipsis">
-							    ${board.bd_content}
-							</div>
-		                    <div class="board-footer">
-		                        <span>${board.bd_writer}</span>&nbsp; | &nbsp;조회수: ${board.bd_hit}&nbsp; | &nbsp;좋아요: ${board.bd_like}
-		                    </div>
-		                </div>
-		                <c:if test="${board.bd_imgpath != null}">
-		                    <img src="${board.bd_imgpath}/${board.bd_modname}" alt="썸네일">
-		                </c:if>
-		            </div>
-		        </c:forEach>
+		        <c:choose>
+				    <c:when test="${empty boardList}">
+				        <div class="board-item">
+				            <div class="content no-posts">등록된 게시물이 없습니다.</div>
+				        </div>
+				    </c:when>
+				    <c:otherwise>
+				        <c:forEach var="board" items="${boardList}">
+				         <fmt:formatDate value="${board.bd_date}" pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ" var="formattedDate"/>
+                       	 	<div class="board-item" data-board-time="${formattedDate}">
+				                <div class="content">
+				                    <h5>
+				                        <a href="/post_view.do/${board.bd_no}" class="text-dark">
+				                            ${board.bd_title}
+				                        </a>
+				                        <span class="badge badge-danger new-badge" style="display:none;">new</span>
+				                    </h5>
+				                    <div class="board-body ellipsis">
+				                        ${board.bd_content}
+				                    </div>
+				                    <div class="board-footer">
+				                        <span>${board.bd_writer}</span>&nbsp; | &nbsp;조회수: ${board.bd_hit}&nbsp; | &nbsp;좋아요: ${board.bd_like}
+				                    </div>
+				                </div>
+				                <c:if test="${board.bd_imgpath != null}">
+				                    <img src="${board.bd_imgpath}/${board.bd_modname}" alt="썸네일">
+				                </c:if>
+				            </div>
+				        </c:forEach>
+				    </c:otherwise>
+				</c:choose>
 		    </div>
+		    <script>
+		 // 현재 시간(ms) 구하기
+		    var currentTime = new Date().getTime(); // 현재 시간
+
+		    // 페이지가 로드되면 게시물의 시간과 비교
+		    window.onload = function() {
+		        var boardItems = document.querySelectorAll('.board-item');
+
+		        boardItems.forEach(function(item) {
+		            // 각 게시물의 Date Time을 가져옵니다.
+		            var boardTimeString = item.getAttribute('data-board-time');
+		            var boardTime = new Date(boardTimeString).getTime(); // 날짜 문자열을 밀리초로 변환
+
+		            // NaN 체크 추가
+		            if (isNaN(boardTime)) {
+		                console.error('Invalid board time for item:', item);
+		                return; // 오류가 발생하면 다음 항목으로 넘어갑니다.
+		            }
+
+		            // 시간 차이 계산
+		            var timeDiff = currentTime - boardTime;
+
+		            // 새로운 게시물로 판단하여 배지 추가
+		            if (timeDiff <= 86400000) { // 24시간 이내
+		                item.querySelector('.new-badge').style.display = 'inline';
+		            }
+		        });
+		    };
+			</script>
 		
 		    <!-- 글쓰기 버튼 -->
 		    <div class="mt-4">
-		        <a href="/write.do" class="btn btn-warning">글쓰기</a>
+		        <a href="#" id="writeBtn" class="btn btn-warning">글쓰기</a>
 		    </div>
+		    <script>
+			document.getElementById('writeBtn').addEventListener('click', function(event) {
+			    event.preventDefault(); // 기본 링크 동작 방지
+			    
+			    // 세션에서 사용자 정보 확인
+			    var userId = '<c:out value="${sessionScope.userId}" />';
+			    var userNickname = '<c:out value="${sessionScope.userNickname}" />';
+			    
+			    if (!userId || !userNickname) {
+			        // 사용자 정보가 없으면 로그인 필요 알림
+			        if (confirm('로그인이 필요합니다. 로그인 하시겠습니까?')) {
+		                const redirectUrl = window.location.href;
+		                
+		                sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
+		                window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+			        }
+			    } else {
+			        // 세션 정보가 있으면 글쓰기 페이지로 이동
+			        window.location.href = '/write.do';
+			    }
+			});
+			</script>
 		
 		    <!-- 페이징 -->
 		    <nav class="mt-4">

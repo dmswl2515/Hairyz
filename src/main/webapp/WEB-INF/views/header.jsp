@@ -56,7 +56,10 @@
 				<%
 				//아이디 취득 후 id가 Null인지 확인
 				String id = (String)session.getAttribute("userId");
-				if (id == null)
+				String admin = (String)session.getAttribute("adminId");
+				if (admin != null){
+					//어드민일경우 출력X
+				}else if (id == null)
 				{
 				%>
                  	<a href="${pageContext.request.contextPath}/login.do" class="btn btn-outline-warning" onclick="redirectToLogin()">로그인</a>

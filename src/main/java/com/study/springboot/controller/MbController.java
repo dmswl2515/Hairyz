@@ -117,14 +117,19 @@ public class MbController {
     @PostMapping("/checkSnsLoginEmail.do")
     public ResponseEntity<Map<String, String>> checkSnsLoginEmail(@RequestBody Map<String, String> params, HttpSession session) {
         String email = params.get("email");
+        String redirect = params.get("redirect"); // redirect URL 가져오기
+        System.out.println("redirectUrl : " + redirect);
+        
         MemberDto dto = memberDao.findById(email);
         Map<String, String> response = new HashMap<>();
         if (dto != null) {
             // SNS 계정으로 로그인된 경우 세션에 아이디, 닉네임 저장
             session.setAttribute("userId", dto.getMb_id()); 
             session.setAttribute("userNickname", dto.getMb_nickname()); // 닉네임 저장
+            
             response.put("code", "exists");
             response.put("desc", "SNS 계정으로 로그인 되었습니다.");
+            response.put("redirect", redirect != null ? redirect : "/main_view.do"); // redirect URL 추가
         } else {
             response.put("code", "not_found");
             response.put("desc", "SNS 계정과 연동된 이메일이 없습니다. 추가 정보 입력이 필요합니다.");
