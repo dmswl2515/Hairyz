@@ -45,7 +45,7 @@
 				        <img id="productImagePreview1" src="images/add_photo.png" alt="상품 이미지 1" 
 	    					 class="image-preview" style="width: 150px; height: 150px; cursor: pointer; object-fit: cover; border-radius: 15px;" />
 			            <input type="file" name="file" id="fileInput" class="form-control-file" required 
-			            	   onchange="previewImage(event, 'productImagePreview1', 'fileName')" style="display: none;"/><br>
+			            	   onchange="checkFileSize(event, 'productImagePreview1', 'fileName')" style="display: none;"/><br>
 			        	<label for="fileInput" class="btn btn-outline-warning">파일 선택</label><br>
     					<span id="fileName" class="ml-2">선택된 파일이 없습니다.</span>
 			        </div>
@@ -81,7 +81,7 @@
      						 class="image-preview" style="width: 150px; height: 150px; cursor: pointer; object-fit: cover; border-radius: 15px;" /><br>
 			            
 			            <input type="file" name="file2" id="fileInput2" class="form-control-file" required 
-					           onchange="previewImage(event, 'productImagePreview2', 'fileName2')" style="display: none;"/>
+					           onchange="checkFileSize(event, 'productImagePreview2', 'fileName2')" style="display: none;"/>
 					    <label for="fileInput2" class="btn btn-outline-warning file-input-label">파일 선택</label><br>
 					    <span id="fileName2" class="ml-2">선택된 파일이 없습니다.</span>
 			        </div>
@@ -95,6 +95,22 @@
 			
 <!-- 이미지 미리보기 -->
 <script>
+//파일 크기 제한: 10MB (10 * 1024 * 1024 바이트)
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+function checkFileSize(event, previewId, fileNameId) {
+    const file = event.target.files[0];
+
+    // 파일 크기 검사
+    if (file && file.size > MAX_FILE_SIZE) {
+        alert("파일 크기가 너무 큽니다. 최대 10MB까지 업로드할 수 있습니다.");
+        event.target.value = ""; // 파일 입력 초기화
+        return;
+    }
+
+    previewImage(event, previewId, fileNameId);
+}
+
 function previewImage(event, previewId, fileNameId) {
     const reader = new FileReader();
     const imagePreview = document.getElementById(previewId);

@@ -76,10 +76,10 @@
 		    </div>
 		    
 		   	<div class="text-center my-4"> 
-			    <button class="circle-button" id= "all" value="food" onclick="selectCategory('food');">사료</button> 
-			    <button class="circle-button" id= "refreshment" value="refreshment" onclick="selectCategory('refreshment');">간식</button>
-			    <button class="circle-button" id= "product" value="product" onclick="selectCategory('product');">용품</button>
-			    <button class="circle-button" id= "etc" value="etc" onclick="selectCategory('etc');">리빙</button>
+			    <button class="circle-button" id= "all" value="food" onclick="updateSelectedCategory('food');">사료</button> 
+			    <button class="circle-button" id= "refreshment" value="refreshment" onclick="updateSelectedCategory('refreshment');">간식</button>
+			    <button class="circle-button" id= "product" value="product" onclick="updateSelectedCategory('product');">용품</button>
+			    <button class="circle-button" id= "etc" value="etc" onclick="updateSelectedCategory('etc');">리빙</button>
 			</div>
 
 <script>
@@ -148,7 +148,7 @@
     }
 	
  	// 카테고리 선택 함수
-    function selectCategory(category) {
+    function updateSelectedCategory(category) {
         selectedCategory = category; // 선택한 카테고리 업데이트
         console.log("Selected category:", selectedCategory);
 
@@ -160,6 +160,16 @@
             }
         });
         updateURL();
+    }
+ 	
+ 	// 페이지 네비게이션 함수
+    function navigateToPage(page) {
+        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
+        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
+        
+        // URL을 동적으로 업데이트 (페이지 이동)
+        console.log("Generated URL:", url);
+        window.location.href = url; // URL로 이동
     }
  	
  	// URL 업데이트 함수
@@ -246,10 +256,10 @@
 	    <!-- 첫 페이지 -->
 	    <c:choose>
 	        <c:when test="${currentPage == 1}">
-	            <button type="button" class="btn page-button" disabled>&lt;&lt;</button>
+	            <button type="button" class="btn page-button" disabled >&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=1&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" onclick="navigateToPage(1)">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -259,7 +269,7 @@
 	            <button type="button" class="btn page-button" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${currentPage - 1}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&lt;</button>
+	            <button type="button" class="btn page-button" onclick="navigateToPage(${currentPage - 1})">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -270,7 +280,7 @@
 	                <button type="button" class="btn page-button" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn page-button" onclick="location.href='s_main?page=${i}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">${i}</button>
+	                <button type="button" class="btn page-button" onclick="navigateToPage(${i})">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -281,7 +291,7 @@
 	            <button type="button" class="btn page-button" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${currentPage + 1}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&gt;</button>
+	            <button type="button" class="btn page-button" onclick="navigateToPage(${currentPage + 1})">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -291,11 +301,12 @@
 	            <button type="button" class="btn page-button" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" onclick="location.href='s_main?page=${totalPages}&pd_animal=${pdAnimal}&pd_category=${pdCategory}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" onclick="navigateToPage(${totalPages})">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
 		<!-- 페이지네이션 -->
+		
 		
 		
 <style>
