@@ -30,34 +30,56 @@ function maskEmail(email) {
 
 
 $(document).ready(function() {
+	var basePath = '${pageContext.request.contextPath}';
+	
 	//아이디 찾기
 	$('#findIdForm').on('submit', function(e) {
 	    e.preventDefault();
-	    console.log("아이디 찾기 버튼이 클릭되었습니다.");
-	    $.post('/findId', { phone: $('input[name="phone"]').val() })
+	    showPreloader(); // 프리로더 표시
+	    //console.log("아이디 찾기 버튼이 클릭되었습니다.");
+	    
+	    $.post(basePath + '/findId', { phone: $('input[name="phone"]').val() })
 	        .done(function(data) {
 	        	const maskedEmail = maskEmail(data); // 이메일 마스킹 함수 호출
 	            alert(maskedEmail + "로 아이디가 전송되었습니다.");
 	        })
 	        .fail(function() {
 	            alert("해당 전화번호로 가입된 회원이 없습니다.");
+	        })
+	        .always(function() {
+	            hidePreloader(); // 프리로더 숨기기
 	        });
 	});
 	
 	// 비밀번호 찾기
 	$('#findPwForm').on('submit', function(e) {
 	    e.preventDefault();
+	    showPreloader(); // 프리로더 표시
+	    
 	    const email = $('input[name="id"]').val();
-	    $.post('/findPw', { id: email })
+	    $.post(basePath + '/findPw', { id: email })
 	        .done(function() {
 	            const maskedEmail = maskEmail(email);
 	            alert(maskedEmail + "로 비밀번호가 전송되었습니다.");
 	        })
 	        .fail(function() {
 	            alert("해당 아이디로 가입된 회원이 없습니다.");
+	        })
+	        .always(function() {
+	            hidePreloader(); // 프리로더 숨기기
 	        });
 	});
 });
+
+//프리로더 표시
+function showPreloader() {
+    $('#preloader').show();
+}
+
+// 프리로더 숨기기
+function hidePreloader() {
+    $('#preloader').hide();
+}
 </script>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">	
@@ -68,6 +90,9 @@ $(document).ready(function() {
 .find-area { margin-bottom:0;text-align:right; }
 .find-wrapper button { margin:10px 0 0;width:100%;height:50px;color:#fff;padding:10px 20px; }
 .invalid-feedback { margin-top:0;margin-bottom:.25rem;text-align:left; }
+#preloader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+			 background: rgba(255, 255, 255, 0.6); z-index: 9999; text-align: center; }
+#preloader img { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 </style>
 </head>
 <body>
@@ -96,6 +121,11 @@ $(document).ready(function() {
 		</div>
 	</form>
 	
+</div>
+
+<!-- 프리로더 -->
+<div id="preloader">
+    <img src="/images/spinner.gif" alt="Loading...">
 </div>
 
 <%@ include file="kakaoCh.jsp" %>
