@@ -39,8 +39,9 @@ body {
 </style>
 <script>
 function updateOrderState(orderno, state) {
+	var basePath = '${pageContext.request.contextPath}'; 
     $.ajax({
-        url: 'orderState.do',
+        url: basePath + '/orderState.do',
         type: 'POST',
         data: { 
         	orderno: orderno, 
@@ -156,10 +157,11 @@ function updateOrderState(orderno, state) {
 							
 							<script>
 							function navigateToPage(pageNumber) {
+								var basePath = '${pageContext.request.contextPath}'; 
 							    if (pageNumber < 1 || pageNumber > ${totalPages}) {
 							        return; // 페이지 번호가 범위를 벗어나면 아무 것도 하지 않음
 							    }
-							    window.location.href = "salesManagement.do?page=" + pageNumber; // 페이지 이동
+							    window.location.href = basePath + "salesManagement.do?page=" + pageNumber; // 페이지 이동
 							}
 							</script>
 		
