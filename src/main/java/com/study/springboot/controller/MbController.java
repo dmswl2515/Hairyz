@@ -115,13 +115,13 @@ public class MbController {
                 }
             } else if (mbState == 2) {
                 // 탈퇴한 회원
-                jsonResponse = "{\"code\": \"error\", \"desc\": \"탈퇴한 회원입니다.\"}";
+                jsonResponse = "{\"code\": \"error\", \"desc\": \"로그인 할 수 없는 계정입니다. 관리자에게 문의해주세요.\"}";
             } else if (mbState == 3) {
                 // 강퇴된 회원
-                jsonResponse = "{\"code\": \"error\", \"desc\": \"강퇴된 회원입니다.\"}";
+                jsonResponse = "{\"code\": \"error\", \"desc\": \"로그인 할 수 없는 계정입니다. 관리자에게 문의해주세요.\"}";
             } else if (mbState == 4) {
                 // 정지된 회원
-                jsonResponse = "{\"code\": \"error\", \"desc\": \"정지된 회원입니다.\"}";
+                jsonResponse = "{\"code\": \"error\", \"desc\": \"로그인 할 수 없는 계정입니다. 관리자에게 문의해주세요.\"}";
             } else {
                 // 알 수 없는 상태
                 jsonResponse = "{\"code\": \"error\", \"desc\": \"알 수 없는 오류가 발생했습니다.\"}";
@@ -137,22 +137,45 @@ public class MbController {
     public ResponseEntity<Map<String, String>> checkSnsLoginEmail(@RequestBody Map<String, String> params, HttpSession session) {
         String email = params.get("email");
         String redirect = params.get("redirect"); // redirect URL 가져오기
-        System.out.println("redirectUrl : " + redirect);
+//        System.out.println("redirectUrl : " + redirect);
         
-        MemberDto dto = memberDao.findById(email);
+        MemberDto dto = memberDao.findById(email);  // 이메일로 회원 정보 조회
         Map<String, String> response = new HashMap<>();
+        
         if (dto != null) {
-            // SNS 계정으로 로그인된 경우 세션에 아이디, 닉네임 저장
-            session.setAttribute("userId", dto.getMb_id()); 
-            session.setAttribute("userNickname", dto.getMb_nickname()); // 닉네임 저장
+            int mbState = dto.getMb_state();  // 회원 상태 확인
             
-            response.put("code", "exists");
-            response.put("desc", "SNS 계정으로 로그인 되었습니다.");
-            response.put("redirect", redirect != null ? redirect : "/main_view.do"); // redirect URL 추가
+            if (mbState == 1) {  // 정상 회원
+                // SNS 계정으로 로그인된 경우 세션에 아이디, 닉네임 저장
+                session.setAttribute("userId", dto.getMb_id());
+                session.setAttribute("userNickname", dto.getMb_nickname()); // 닉네임 저장
+
+                response.put("code", "exists");
+                response.put("desc", "SNS 계정으로 로그인 되었습니다.");
+                response.put("redirect", redirect != null ? redirect : "/main_view.do"); // redirect URL 추가
+
+            } else if (mbState == 2) {  // 탈퇴한 회원
+                response.put("code", "withdrawn");
+                response.put("desc", "로그인 할 수 없는 계정입니다. 관리자에게 문의해주세요.");
+
+            } else if (mbState == 3) {  // 강퇴된 회원
+                response.put("code", "banned");
+                response.put("desc", "로그인 할 수 없는 계정입니다. 관리자에게 문의해주세요.");
+
+            } else if (mbState == 4) {  // 정지된 회원
+                response.put("code", "suspended");
+                response.put("desc", "로그인 할 수 없는 계정입니다. 관리자에게 문의해주세요.");
+            
+            } else {
+                response.put("code", "error");
+                response.put("desc", "알 수 없는 오류가 발생했습니다.");
+            }
         } else {
+            // 회원이 존재하지 않음
             response.put("code", "not_found");
             response.put("desc", "SNS 계정과 연동된 이메일이 없습니다. 추가 정보 입력이 필요합니다.");
         }
+
         return ResponseEntity.ok(response);
     }
     

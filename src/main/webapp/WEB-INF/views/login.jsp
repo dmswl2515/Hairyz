@@ -35,22 +35,8 @@ function handleCredentialResponse(response) {
 }
 
 /* ------------------------------------------------------------------------------------------ */
-
-/* Kakao.init('3fe60097c9ec0969b537421877e8ae54');
-   function loginWithKakao() {
-     // 로그인 창을 띄웁니다.
-     Kakao.Auth.login({
-       success: function(authObj) {
-         //alert(JSON.stringify(authObj));
-         //signIn(authObj);
-       	window.location.href = "select_login_view.do";
-       },
-       fail: function(err) {
-         alert(JSON.stringify(err));
-       }
-     });
-   }; */
-   
+	
+   // Kakao
    Kakao.init('3fe60097c9ec0969b537421877e8ae54');
    function loginWithKakao() {
        Kakao.Auth.login({
@@ -65,13 +51,13 @@ function handleCredentialResponse(response) {
                			console.log('Nickname: ' + nickname);
                			console.log('Email: ' + email);
                			
-               			if (!email) {
-                            alert("이메일이 제공되지 않아 Kakao 로그인을 진행할 수 없습니다.");
-                            return;
+               			if (email === '') {
+                            // 이메일이 없을 경우 사용자에게 이메일 입력을 요청
+                            promptForEmail();
+                        } else {
+                            // 이메일이 있을 경우 회원가입 여부 확인
+                            snsLogin(email);
                         }
-
-                    	// 이메일로 회원 여부 확인
-                       snsLogin(email); // snsLogin 함수 호출
                    },
                    fail: function(error) {
                        console.log(error);
@@ -83,9 +69,21 @@ function handleCredentialResponse(response) {
            }
        });
    }
+   
+	// 이메일 입력을 요청하는 함수
+   function promptForEmail() {
+       var email = prompt("Kakao에서 이메일이 제공되지 않았습니다. 이메일을 입력해주세요.");
+       
+       if (email) {
+           snsLogin(email); // 이메일 입력 후 snsLogin 호출
+       } else {
+           alert("이메일 입력이 필요합니다.");
+       }
+   }
 
 	/* ------------------------------------------------------------------------------------------ */
 
+	// Naver
 	function initNaverLogin() {
 	  naverLogin = new naver.LoginWithNaverId({
 	    clientId: "YbQ2xy32RJJryAeB2oB8",
@@ -167,16 +165,20 @@ function snsLogin(snsEmail) {
         success: function(response) {
             if (response.code === 'exists') {
                 alert(response.desc);
+                
              	// 기존 회원이므로 로그인 처리 후 리다이렉트
                 if (response.redirect) {
                     window.location.href = response.redirect; // 요청한 URL로 이동
                 } else {
                     window.location.href = '/main_view.do'; // 기본 페이지로 이동
                 }
+             	
             } else if (response.code === 'not_found') {
                 alert(response.desc);
                 // 새 회원이므로 회원가입 페이지로 이동
                 window.location.href = '/join.do?snsEmail=' + encodeURIComponent(snsEmail);
+            } else {
+                alert(response.desc); // 나머지 상태에 대해 메시지 처리
             }
         },
         error: function(xhr, status, error) {
