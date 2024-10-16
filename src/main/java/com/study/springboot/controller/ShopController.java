@@ -76,43 +76,45 @@ public class ShopController {
     
     
     
-    @RequestMapping("/s_main")    
-    public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
-                                   @RequestParam(required = false) String pd_animal,
-                                   @RequestParam(required = false) String pd_category,
-                                   @RequestParam(required = false) String id,
-                                   Model model) {
-    	
-        // 페이지당 항목 수
-        int pageSize = 16; 
-        
-        // 필터링된 상품 수 계산
-        long totalProducts;
-        List<PDto> products;
-        
-        // 동물 및 카테고리 필터링 적용
-        if (pd_category != null && !pd_category.isEmpty() && pd_animal != null && !pd_animal.isEmpty()) {
-            totalProducts = pRepository.countByPdAnimalAndCategory(pd_animal, pd_category);
-            products = pRepository.findByPdAnimalAndCategory(pd_animal, pd_category, (page - 1) * pageSize, pageSize);
-        } else if (pd_animal != null && !pd_animal.isEmpty()) {
-            totalProducts = pRepository.countByPdAnimal(pd_animal);
-            products = pRepository.findByPdAnimal(pd_animal, (page - 1) * pageSize, pageSize);
-        } else if (pd_category != null && !pd_category.isEmpty()) {
-            totalProducts = pRepository.countByPdCategory(pd_category);
-            products = pRepository.findByPdCategory(pd_category, (page - 1) * pageSize, pageSize);
-        } else {
-            totalProducts = pRepository.count(); // 총 상품 수를 세는 메서드
-            products = pRepository.findPaginated((page - 1) * pageSize, pageSize);
-        }
+	@RequestMapping("/s_main")    
+	public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
+	                               @RequestParam(required = false) String pd_animal,
+	                               @RequestParam(required = false) String pd_category,
+	                               Model model) {
+	    
+	    // 페이지당 항목 수 설정
+	    int pageSize = 16; 
+	    long totalProducts = 0; // 전체 상품 수를 위한 변수
+	    List<PDto> products = new ArrayList<>(); // 상품 리스트 초기화
 
-        model.addAttribute("ProductItems", products); // 현재 페이지의 상품 리스트
-        model.addAttribute("currentPage", page); // 현재 페이지 번호
-        model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
-        model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
-        model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalProducts / pageSize), page + 2)); // 끝 페이지
+	    // 동물 및 카테고리 필터링 적용
+	    if (pd_category != null && !pd_category.isEmpty() && pd_animal != null && !pd_animal.isEmpty()) {
+	        products = pRepository.findByPdAnimalAndCategory(pd_animal, pd_category);
+	    } else if (pd_animal != null && !pd_animal.isEmpty()) {
+	        products = pRepository.findByPdAnimal(pd_animal);
+	    } else if (pd_category != null && !pd_category.isEmpty()) {
+	        products = pRepository.findByPdCategory(pd_category);
+	    } else {
+	        products = pRepository.findAll(); // 모든 상품 조회
+	    }
+	    
+	    // 전체 상품 수를 구합니다.
+	    totalProducts = products.size();
 
-        return "s_main";                 
-    }
+	    // 페이지네이션 설정
+	    int startRow = (page - 1) * pageSize; // 시작 인덱스
+	    int endRow = (int) Math.min(startRow + pageSize, totalProducts); // 끝 인덱스
+	    List<PDto> paginatedProducts = products.subList(startRow, endRow); // 페이지네이션된 상품 리스트
+
+	    // 페이지네이션 설정
+	    model.addAttribute("ProductItems", paginatedProducts); // 현재 페이지의 상품 리스트
+	    model.addAttribute("currentPage", page); // 현재 페이지 번호
+	    model.addAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize)); // 전체 페이지 수
+	    model.addAttribute("startPage", Math.max(1, page - 2)); // 시작 페이지
+	    model.addAttribute("endPage", Math.min((int) Math.ceil((double) totalProducts / pageSize), page + 2)); // 끝 페이지
+
+	    return "s_main";                 
+	}
     
     @RequestMapping("/p_details")    
     public String productDetail(@RequestParam(defaultValue = "1") int qnaPage, 
