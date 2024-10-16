@@ -282,8 +282,8 @@ public class ShopController {
     		String memberId = (String) session.getAttribute("userId");
     		System.out.println("Member ID: " + memberId);
     		
+    		// 회원의 장바구니 내역 가져오기
     		if (memberId != null) {
-                // 회원의 장바구니 내역 가져오기
                 List<CartDto> cartList = cartService.getCartByMemberId(memberId);
                 model.addAttribute("products", cartList);
                 

@@ -62,6 +62,16 @@
 		    margin-top: 30px !important; 
 	}
 	
+	.empty-container {
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    height: 300px; /* 적절한 높이를 설정해서 빈 상태일 때 공간을 유지 */
+	    width: 100%;
+	}
+	
+	
+	
 </style>
 
 	<div class="content">
@@ -82,147 +92,151 @@
 			    <button class="circle-button" id= "etc" value="etc" onclick="updateSelectedCategory('etc');">리빙</button>
 			</div>
 
-<script>
-	function selectCategory(button) {
-	    // 모든 카테고리 버튼에서 'selected' 클래스를 제거
-	    const categoryButtons = document.querySelectorAll('.category-style');
-	    categoryButtons.forEach(btn => {
-	        btn.classList.remove('selected');
-	    });
-	    
-	    // 클릭한 버튼에 'selected' 클래스 추가
-	    button.classList.add('selected');
-	}
-	
-	function selectCircle(button) {
-	    // 모든 원 버튼에서 'selected' 클래스를 제거
-	    const circleButtons = document.querySelectorAll('.circle-button');
-	    circleButtons.forEach(btn => {
-	        btn.classList.remove('selected');
-	    });
-	    
-	    // 클릭한 버튼에 'selected' 클래스 추가
-	    button.classList.add('selected');
-	}
-	
-	let selectedAnimal = ''; // 기본값
-    let selectedCategory = ''; //기본값
-    
-	 // 페이지가 로드될 때 쿼리 파라미터를 읽어 선택 상태 설정
-    window.onload = function() {
-       const urlParams = new URLSearchParams(window.location.search);
-       selectedAnimal = urlParams.get('pd_animal') || '';
-       selectedCategory = urlParams.get('pd_category') || '';
-       
-    // 선택된 동물 버튼 스타일 적용
-       const animalButtons = document.querySelectorAll('.category-style');
-       animalButtons.forEach(btn => {
-           if (btn.value === selectedAnimal) {
-               btn.classList.add('selected');
-           }
-       });
+			<script>
+				function selectCategory(button) {
+				    // 모든 카테고리 버튼에서 'selected' 클래스를 제거
+				    const categoryButtons = document.querySelectorAll('.category-style');
+				    categoryButtons.forEach(btn => {
+				        btn.classList.remove('selected');
+				    });
+				    
+				    // 클릭한 버튼에 'selected' 클래스 추가
+				    button.classList.add('selected');
+				}
+				
+				function selectCircle(button) {
+				    // 모든 원 버튼에서 'selected' 클래스를 제거
+				    const circleButtons = document.querySelectorAll('.circle-button');
+				    circleButtons.forEach(btn => {
+				        btn.classList.remove('selected');
+				    });
+				    
+				    // 클릭한 버튼에 'selected' 클래스 추가
+				    button.classList.add('selected');
+				}
+				
+				let selectedAnimal = ''; // 기본값
+			    let selectedCategory = ''; //기본값
+			    
+				 // 페이지가 로드될 때 쿼리 파라미터를 읽어 선택 상태 설정
+			    window.onload = function() {
+			       const urlParams = new URLSearchParams(window.location.search);
+			       selectedAnimal = urlParams.get('pd_animal') || '';
+			       selectedCategory = urlParams.get('pd_category') || '';
+			       
+			    // 선택된 동물 버튼 스타일 적용
+			       const animalButtons = document.querySelectorAll('.category-style');
+			       animalButtons.forEach(btn => {
+			           if (btn.value === selectedAnimal) {
+			               btn.classList.add('selected');
+			           }
+			       });
+			
+			       // 선택된 카테고리 버튼 스타일 적용
+			       const categoryButtons = document.querySelectorAll('.circle-button');
+			       categoryButtons.forEach(btn => {
+			           if (btn.value === selectedCategory) {
+			               btn.classList.add('selected');
+			           }
+			       });
+			   };
+			
+				
+			    //동물 선택 함수
+			    function selectAnimal(animal) {
+			        selectedAnimal = animal; // 선택한 동물 업데이트
+			        console.log("Selected animal:", selectedAnimal);
+			        
+			        const animalButtons = document.querySelectorAll('.category-style');
+			        animalButtons.forEach(btn => {
+			            btn.classList.remove('selected');
+			            if (btn.value === animal) {
+			                btn.classList.add('selected');
+			            }
+			        });
+			        updateURL(); // 동물 버튼 클릭 시 URL 업데이트
+			    }
+				
+			 	// 카테고리 선택 함수
+			    function updateSelectedCategory(category) {
+			        selectedCategory = category; // 선택한 카테고리 업데이트
+			        console.log("Selected category:", selectedCategory);
+			
+			        const categoryButtons = document.querySelectorAll('.circle-button');
+			        categoryButtons.forEach(btn => {
+			            btn.classList.remove('selected');
+			            if (btn.value === category) {
+			                btn.classList.add('selected');
+			            }
+			        });
+			        updateURL();
+			    }
+			 	
+			 	// 페이지 네비게이션 함수
+			    function navigateToPage(page) {
+			        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
+			        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
+			        
+			        // URL을 동적으로 업데이트 (페이지 이동)
+			        console.log("Generated URL:", url);
+			        window.location.href = url; // URL로 이동
+			    }
+			 	
+			 	// URL 업데이트 함수
+			    function updateURL() {
+			        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
+			        const page = 1; // 페이지는 1로 고정
+			        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
+			
+			        // URL을 동적으로 업데이트 (페이지 이동)
+			        console.log("Generated URL:", url);
+			        
+			        window.location.href = url;
+			    }
+			</script>
 
-       // 선택된 카테고리 버튼 스타일 적용
-       const categoryButtons = document.querySelectorAll('.circle-button');
-       categoryButtons.forEach(btn => {
-           if (btn.value === selectedCategory) {
-               btn.classList.add('selected');
-           }
-       });
-   };
-
-	
-    //동물 선택 함수
-    function selectAnimal(animal) {
-        selectedAnimal = animal; // 선택한 동물 업데이트
-        console.log("Selected animal:", selectedAnimal);
-        
-        const animalButtons = document.querySelectorAll('.category-style');
-        animalButtons.forEach(btn => {
-            btn.classList.remove('selected');
-            if (btn.value === animal) {
-                btn.classList.add('selected');
-            }
-        });
-        updateURL(); // 동물 버튼 클릭 시 URL 업데이트
-    }
-	
- 	// 카테고리 선택 함수
-    function updateSelectedCategory(category) {
-        selectedCategory = category; // 선택한 카테고리 업데이트
-        console.log("Selected category:", selectedCategory);
-
-        const categoryButtons = document.querySelectorAll('.circle-button');
-        categoryButtons.forEach(btn => {
-            btn.classList.remove('selected');
-            if (btn.value === category) {
-                btn.classList.add('selected');
-            }
-        });
-        updateURL();
-    }
- 	
- 	// 페이지 네비게이션 함수
-    function navigateToPage(page) {
-        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
-        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
-        
-        // URL을 동적으로 업데이트 (페이지 이동)
-        console.log("Generated URL:", url);
-        window.location.href = url; // URL로 이동
-    }
- 	
- 	// URL 업데이트 함수
-    function updateURL() {
-        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
-        const page = 1; // 페이지는 1로 고정
-        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
-
-        // URL을 동적으로 업데이트 (페이지 이동)
-        console.log("Generated URL:", url);
-        
-        window.location.href = url;
-    }
-</script>
-
-<style>
-	/*상품목록 디자인 */
-	.product-box {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 10px;
-            text-align: center;
-            width: 250px;
-            height: 300px;
-    }
-        .product-img {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
-    }
-    .product-text {
-            margin-left: 14px;
-            width:100%; 
-            height:100%; 
-            object-fit:cover;
-            
-    }
-    .product-name {
-        font-size: 0.92em;
-        overflow-wrap: break-word; /*텍스트 길이 줄바꿈*/
-    }
-
-    .product-price {
-        font-size: 0.9em; 
-        color: #ff9800; 
-    }
-    
-    
-</style>
+			<style>
+				/*상품목록 디자인 */
+				.product-box {
+			            border: 1px solid #ddd;
+			            border-radius: 5px;
+			            margin: 10px;
+			            text-align: center;
+			            width: 250px;
+			            height: 300px;
+			    }
+			        .product-img {
+			            max-width: 100%;
+			            height: auto;
+			            object-fit: contain;
+			    }
+			    .product-text {
+			            margin-left: 14px;
+			            width:100%; 
+			            object-fit:cover;
+			            
+			    }
+			    .product-name {
+			        font-size: 0.92em;
+			        overflow-wrap: break-word; /*텍스트 길이 줄바꿈*/
+			    }
+			
+			    .product-price {
+			        font-size: 0.9em; 
+			        color: #ff9800; 
+			    }
+			    
+			    
+			</style>
 		    
 		    <hr class="custom-hr">
 		    <div class="container">
-		    	<div class="row">
+		    	<div class="row empty">
+		    		<c:if test="${empty ProductItems}">
+						<div class="empty-container">
+					        <span class="text-center align-middle mt-5 mb-4">등록된 상품이 없습니다.</span>
+						</div>
+					</c:if>
 		    		<c:forEach var="item" items="${ProductItems}">
 		    			<!-- pd_selling 값이 'N'이 아닐 때만 노출 -->
            				<c:choose>
@@ -252,6 +266,7 @@
        	
        	
        	<!-- 페이지네이션 -->
+   	    <c:if test="${not empty ProductItems}">
 		<div class="director">
 	    <!-- 첫 페이지 -->
 	    <c:choose>
@@ -305,6 +320,7 @@
 	        </c:otherwise>
 	    </c:choose>
 		</div>
+		</c:if>
 		<!-- 페이지네이션 -->
 		
 		

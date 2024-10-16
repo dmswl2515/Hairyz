@@ -88,7 +88,7 @@
                      <a class="nav-link" href="/cafeMap.do">멍카페</a>
                  </li>
                  <li class="nav-item">
-                     <a class="nav-link" href="/petAdoption.do">캠페인</a>
+                     <a class="nav-link" href="/petAdoption.do">유기동물 통계</a>
                  </li>
              </ul>
          </div>

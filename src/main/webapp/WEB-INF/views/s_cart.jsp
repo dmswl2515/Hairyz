@@ -103,6 +103,15 @@
 	    color: #b0b0b0; /* 글씨 색상도 회색으로 변경 */
 	}
 	
+	.empty-container {
+	    justify-content: center;
+	    align-items: center;
+	    text-align: center;
+	    line-height: 500px;
+	    width: 100%;
+	}
+	
+	
 </style>
 
 
@@ -110,6 +119,12 @@
 	<div class=container>
 		<h3 class="text-center mt-5 mb-3"><strong>장바구니</strong></h3>
 		<div class=container1>
+			<c:if test="${empty products}">
+				<div class="empty-container">
+					<span class="text-center align-middle mt-5 mb-4">장바구니에 담긴 상품이 없습니다.</span>
+				</div>
+			</c:if>
+			<c:if test="${not empty products}">	
 		 	<table class="table table-bordered mb-2">
 			  <thead>
 			    <tr class="table-warning text-center">
@@ -180,9 +195,11 @@
 					            </div>
 					            <br>
 					            <div class="btn-group" role="group" aria-label="Default button group">
-	                             <button type="button" class="btn btn-outline-secondary decrease" data-pdnum="${item.pdNum}">-</button>
-        						 <button type="button" class="btn btn-outline-secondary increase" data-pdnum="${item.pdNum}">+</button>
-	                         </div>	
+	                             <button type="button" class="btn btn-outline-secondary decrease" 
+	                             		 data-pdnum="${item.pdNum}" ${item.pdAmount == 0 ? 'disabled' : ''}>-</button>
+        						 <button type="button" class="btn btn-outline-secondary increase" 
+        						 		 data-pdnum="${item.pdNum}" ${item.pdAmount == 0 ? 'disabled' : ''}>+</button>
+	                            </div>	
 					        </td>
 				            <!-- 주문 금액 -->
 				            <td class="text-center align-middle" id="price-${item.pdNum}">
@@ -346,7 +363,12 @@
 		    	  <tr class="table-warning text-center">
 		     		  <th class="text-center align-middle" style="background-color:white; border-left: none; border-right: none;">
 		                  <div class="d-flex justify-content-center align-items-center">
-		                  	  <c:set var="itemCount" value="${fn:length(products)}" />
+		                  	  <c:set var="itemCount" value="0" />
+								<c:forEach var="product" items="${products}">
+								    <c:if test="${product.pdAmount != 0}">
+								        <c:set var="itemCount" value="${itemCount + 1}" />
+								    </c:if>
+								</c:forEach>
 		                      <span>총 주문상품 ${itemCount}개</span>
 		                  </div>
 	            	  </th>
@@ -449,6 +471,7 @@
        	   	</div>
 		</div>
 	</div>
+	</c:if>
 <%@ include file="kakaoCh.jsp" %>
 					
 <%@ include file="footer.jsp" %>
