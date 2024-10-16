@@ -304,7 +304,7 @@ function submit_ajax() {
    	</div>
 </div>
 
-
+<%@ include file="kakaoCh.jsp" %>
 <%@ include file="footer.jsp" %>
 
 <!-- Optional JavaScript -->
