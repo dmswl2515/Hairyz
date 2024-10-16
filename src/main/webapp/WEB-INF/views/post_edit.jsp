@@ -198,6 +198,7 @@ function submitEdit() {
 	
 </div>
 
+<%@ include file="kakaoCh.jsp" %>
 <%@ include file="footer.jsp" %>
 
 <!-- Bootstrap JS, Popper.js, and jQuery -->

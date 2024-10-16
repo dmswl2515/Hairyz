@@ -14,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.springboot.dto.BoardDto;
@@ -57,10 +57,16 @@ public class BdController {
     @Autowired
     private ServletContext servletContext;
     
+    @Value("${KAKAO-KEY}")
+    private String KAKAO_KEY;
+    
     private static final Logger logger = LoggerFactory.getLogger(BdController.class); // Logger 생성
 
     @RequestMapping("/write.do")
     public String write(Model model) {
+    	
+    	model.addAttribute("kakaoKey", KAKAO_KEY);
+    	
         return "write"; // write.jsp를 반환
     }
 
@@ -208,6 +214,7 @@ public class BdController {
         }
         
         // 모델에 정보 추가
+        model.addAttribute("kakaoKey", KAKAO_KEY);
         model.addAttribute("board", board);
         model.addAttribute("profile", profile); 
         model.addAttribute("replyList", replyList);
@@ -349,6 +356,7 @@ public class BdController {
             board.extractImageUrl(); // 각 게시글에서 이미지 URL 추출
         }
 
+        model.addAttribute("kakaoKey", KAKAO_KEY);
         model.addAttribute("boardList", boardList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -437,6 +445,7 @@ public class BdController {
     @GetMapping("/post_edit.do/{bd_no}")
     public String editPost(@PathVariable("bd_no") int bd_no, Model model) {
         BoardDto board = boardService.getPostById(bd_no);
+        model.addAttribute("kakaoKey", KAKAO_KEY);
         model.addAttribute("board", board);
         return "post_edit";  // 수정 페이지 JSP
     }
