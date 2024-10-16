@@ -94,7 +94,7 @@ function updateOrderState(orderno, state) {
 					                <c:otherwise>
 					                    <c:forEach var="sm" items="${salesManage}">
 					                        <tr>
-					                            <td><img src="${pageContext.request.contextPath}/upload/${sm.originalfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;">&nbsp;${re.orderdate}</td>
+					                            <td><img src="${pageContext.request.contextPath}/upload/${sm.changedfilename}" alt="사진" class="img-thumbnail" style="width: 80px; height: 80px;">&nbsp;${re.orderdate}</td>
 					                            <td>${sm.orderdate}</td>
 					                            <td>${sm.membername}</td>
 					                            <td>${sm.orderno}</td>
