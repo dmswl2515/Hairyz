@@ -26,7 +26,8 @@
 <!-- 캡차 새로고침 기능 -->
 <script>
 function refreshCaptcha() {
-	document.getElementById('captchaImg').src = '/captcha/image?' + new Date().getTime();
+	var basePath = '${pageContext.request.contextPath}'; 
+	document.getElementById('captchaImg').src = basePath +'/captcha/image?' + new Date().getTime();
 }
 </script>
 
@@ -45,9 +46,9 @@ function checkDuplicateEmail() {
 		$('#mb_id').focus();
 		return;
 	}
-
+	var basePath = '${pageContext.request.contextPath}'; 
 	$.ajax({
-	    url: '/checkDuplicateEmail.do', // 절대 경로로 수정
+	    url: basePath + '/checkDuplicateEmail.do', // 절대 경로로 수정
 	    type: 'POST',
 	    data: { mb_id: email },
 	    success: function(response) {
@@ -79,8 +80,9 @@ function searchZipcode() {
 
 function checkCaptcha() {
     var userCaptcha = $('#captchaInput').val(); // 사용자 입력 캡차 값 가져오기
+    var basePath = '${pageContext.request.contextPath}'; 
     $.ajax({
-        url: '/captcha/verify',
+        url: basePath + '/captcha/verify',
         type: 'POST',
         data: { userCaptcha: userCaptcha },
         success: function(response) {
@@ -141,9 +143,9 @@ function submit_ajax() {
 	if (isSnsMember) {
         queryString += "&mb_sns=Y";
     }
-	
+	var basePath = '${pageContext.request.contextPath}'; 
 	$.ajax({
-		url: '/joinOk.do',
+		url: basePath + '/joinOk.do',
 		type: 'POST',
 		data: queryString,
 		dataType: 'text',
@@ -266,7 +268,7 @@ function submit_ajax() {
 				</div>
 				<div class="mb-3">
 				    <label for="captchaInput">캡차 <code>*</code></label><br>
-				    <img id="captchaImg" src="/captcha/image" alt="캡차 이미지" class="captcha-image" />
+				    <img id="captchaImg" src="${pageContext.request.contextPath}/captcha/image" alt="캡차 이미지" class="captcha-image" />
 				    <button type="button" class="btn btn-outline-secondary captcha" onclick="refreshCaptcha()">새로 고침</button>
 					<div class="input-group mt-2">
 					    <input type="text" id="captchaInput" name="captchaInput" class="form-control" required>
@@ -276,7 +278,7 @@ function submit_ajax() {
 				</div>
 				<hr class="mb-4">
 				<input type="button" class="btn btn-primary btn-lg btn-block" value="회원가입" onclick="form_check(event)"> 
-				<input type="button" class="btn btn-outline-secondary btn-lg btn-block" value="로그인" onclick="window.location='login.do'">
+				<input type="button" class="btn btn-outline-secondary btn-lg btn-block" value="로그인" onclick="window.location='${pageContext.request.contextPath}/login.do'">
 			</form>
 			<script>
 				// Example starter JavaScript for disabling form submissions if there are invalid fields
