@@ -20,10 +20,17 @@ public class BoardService {
     }
 
     // 특정 게시글 가져오기
-    public BoardDto getPostView(int bd_no) {
-        // 조회수 증가
-        boardDao.upHit(bd_no);
-        return boardDao.getPostView(bd_no);
+    public BoardDto getPostView(int bd_no, String userId) {
+    	// 게시글 정보 조회
+        BoardDto board = boardDao.getPostView(bd_no);
+        
+        // 작성자와 세션 사용자 ID 비교
+        if (!board.getMb_id().equals(userId)) {
+            // 작성자가 아닌 경우 조회수 증가
+            boardDao.upHit(bd_no);
+        }
+        
+        return board;
     }
 
     // 좋아요 토글 처리
@@ -75,14 +82,14 @@ public class BoardService {
         int endRow = startRow + pageSize;
         
         // 파라미터 값 출력
-        System.out.println("Page: " + page);
-        System.out.println("Page Size: " + pageSize);
-        System.out.println("Category: " + category);
-        System.out.println("Condition: " + condition);
-        System.out.println("Keyword: " + keyword);
-        System.out.println("startRow: " + startRow);
-        System.out.println("endRow: " + endRow);
-        System.out.println("category(service): " + category);
+//        System.out.println("Page: " + page);
+//        System.out.println("Page Size: " + pageSize);
+//        System.out.println("Category: " + category);
+//        System.out.println("Condition: " + condition);
+//        System.out.println("Keyword: " + keyword);
+//        System.out.println("startRow: " + startRow);
+//        System.out.println("endRow: " + endRow);
+//        System.out.println("category(service): " + category);
         
         if (condition == null || condition.trim().isEmpty()) {
             condition = null;
@@ -99,7 +106,7 @@ public class BoardService {
             String content = board.getBd_content();
             String contentWithoutImages = removeImgTags(content);  // 이미지 태그 제거
             
-            board.setBd_content(contentWithoutImages);  // 수정된 내용을 다시 설정
+            board.setBd_content_delimg(contentWithoutImages);  // 수정된 내용 설정
         }
 
         return boardList;
@@ -112,7 +119,7 @@ public class BoardService {
         }
 
         // <img><br> 태그를 정규식으로 모두 제거
-        return content.replaceAll("(?i)<img[^>]*>\s*<br\s*/?>", "<!--IMG_REMOVED-->");
+        return content.replaceAll("(?i)<img[^>]*>(\\s*<br\\s*/?>)?", "<!--IMG_REMOVED-->");
     }
 
 }

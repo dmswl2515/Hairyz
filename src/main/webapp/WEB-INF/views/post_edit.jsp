@@ -24,7 +24,7 @@ body { font-family: 'Roboto', sans-serif; }
 <script>
 $(document).ready(function() {
 	$('#ir1').summernote({
-		height: 300,                 // set editor height
+		height: 300,
 		lang: 'ko-KR',
 		placeholder: '내용을 입력해주세요.',
 		callbacks: {
@@ -34,6 +34,9 @@ $(document).ready(function() {
                 } else {
                     alert("이미지를 선택해 주세요.");
                 }
+            },
+            onMediaDelete: function(target) {  // 이미지 삭제 콜백 추가
+                deleteFile(target[0].src);  // 삭제된 이미지 경로를 서버로 전달
             }
 		}
 	});
@@ -66,6 +69,25 @@ function uploadFile(file) {
 		},
 		error: function() {
 			alert("파일 업로드 중 오류가 발생했습니다.");
+		}
+	});
+}
+
+//이미지 삭제 함수
+function deleteFile(src) {
+	$.ajax({
+		url: '/deleteFile',  // 서버 파일 삭제 처리 경로
+		type: 'POST',
+		data: { filePath: src },  // 삭제할 이미지 경로 전달
+		success: function(response) {
+			if (response.success) {
+				console.log('이미지 삭제 완료:', src);
+			} else {
+				alert(response.message);
+			}
+		},
+		error: function() {
+			alert("파일 삭제 중 오류가 발생했습니다.");
 		}
 	});
 }

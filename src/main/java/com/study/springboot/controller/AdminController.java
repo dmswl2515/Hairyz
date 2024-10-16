@@ -175,7 +175,7 @@ public class AdminController {
 	
 	// 관리자 - 커뮤니티 관리화면
     @RequestMapping("/admin_community.do")
-    public String ManagingCommunityContent(@RequestParam(defaultValue = "1") int page,
+    public String ManagingCommunityContent(@RequestParam(name="page", defaultValue = "1") int page,
     						Model model) {
     	
     	List<BoardDto> communityList = adminService.getAllCommunityContent();

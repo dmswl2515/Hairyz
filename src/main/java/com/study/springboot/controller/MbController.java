@@ -87,30 +87,49 @@ public class MbController {
     public String login(@RequestParam("id") String id, @RequestParam("pw") String pw, @RequestParam(value = "redirect", required = false) String redirect, 
     				    HttpSession session) {
     	
-        boolean isValidUser = memberService.validateLogin(id, pw);
-        
+    	MemberDto member = memberDao.findById(id);  // 회원 정보를 먼저 가져옴
         String jsonResponse;
-        if (isValidUser) {
-        	// 로그인한 회원 정보를 가져옴
-            MemberDto member = memberDao.selectMember(id);
-            
-            // 세션에 로그인한 아이디와 닉네임 저장
-            session.setAttribute("userId", member.getMb_id()); 
-            session.setAttribute("userNickname", member.getMb_nickname()); // 닉네임 저장
-            
-        	jsonResponse = "{\"code\": \"success\", \"desc\": \"로그인 되었습니다.\"}";
-        	
-        	// redirect URL이 있을 경우 해당 URL로 리다이렉트
-            if (redirect != null && !redirect.isEmpty()) {
-            	session.removeAttribute("redirect");
-                return "{\"code\": \"redirect\", \"url\": \"" + redirect + "\"}"; // JSON 응답으로 URL 반환
-            } else {
-                return "{\"code\": \"redirect\", \"url\": \"main_view.do\"}"; // 기본 페이지 URL
-            }
-        	
-        } else {
-        	jsonResponse = "{\"code\": \"error\", \"desc\": \"아이디 또는 비밀번호가 잘못되었습니다.\"}";
+
+        if (member == null) {
+            // 아이디가 존재하지 않음
+            jsonResponse = "{\"code\": \"error\", \"desc\": \"아이디 또는 비밀번호가 잘못되었습니다.\"}";
+            return jsonResponse;
         }
+
+        boolean isValidUser = memberService.validateLogin(id, pw);  // 아이디와 비밀번호 검증
+
+        if (isValidUser) {
+            int mbState = member.getMb_state();  // 회원 상태를 가져옴
+
+            if (mbState == 1) {
+                // 정상 회원인 경우
+                session.setAttribute("userId", member.getMb_id()); 
+                session.setAttribute("userNickname", member.getMb_nickname()); 
+
+                // 리다이렉트 URL 처리
+                if (redirect != null && !redirect.isEmpty()) {
+                    session.removeAttribute("redirect");
+                    jsonResponse = "{\"code\": \"redirect\", \"url\": \"" + redirect + "\"}";
+                } else {
+                    jsonResponse = "{\"code\": \"redirect\", \"url\": \"main_view.do\"}";
+                }
+            } else if (mbState == 2) {
+                // 탈퇴한 회원
+                jsonResponse = "{\"code\": \"error\", \"desc\": \"탈퇴한 회원입니다.\"}";
+            } else if (mbState == 3) {
+                // 강퇴된 회원
+                jsonResponse = "{\"code\": \"error\", \"desc\": \"강퇴된 회원입니다.\"}";
+            } else if (mbState == 4) {
+                // 정지된 회원
+                jsonResponse = "{\"code\": \"error\", \"desc\": \"정지된 회원입니다.\"}";
+            } else {
+                // 알 수 없는 상태
+                jsonResponse = "{\"code\": \"error\", \"desc\": \"알 수 없는 오류가 발생했습니다.\"}";
+            }
+        } else {
+            jsonResponse = "{\"code\": \"error\", \"desc\": \"아이디 또는 비밀번호가 잘못되었습니다.\"}";
+        }
+
         return jsonResponse;
     }
     

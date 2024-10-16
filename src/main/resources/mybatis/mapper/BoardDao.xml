@@ -62,8 +62,9 @@
         SET bd_title = #{bd_title, jdbcType=VARCHAR},
             bd_content = #{bd_content, jdbcType=VARCHAR},
             bd_cate = #{bd_cate, jdbcType=CHAR},
-            bd_orgname = #{bd_orgname, jdbcType=VARCHAR},  <!-- 파일 이름 -->
-            bd_modname = #{bd_modname, jdbcType=VARCHAR}   <!-- 시스템 파일 이름 -->
+            bd_imgpath = #{bd_imgpath, jdbcType=VARCHAR},
+            bd_orgname = #{bd_orgname, jdbcType=VARCHAR},
+            bd_modname = #{bd_modname, jdbcType=VARCHAR}
         WHERE bd_no = #{bd_no}
     </update>
     
@@ -99,6 +100,11 @@
 	                <when test="condition == 'writer'">
 	                    AND b.bd_writer LIKE '%' || #{keyword} || '%'
 	                </when>
+			        <when test="condition == 'all'">
+			            AND (b.bd_title LIKE '%' || #{keyword} || '%' 
+			                 OR b.bd_content LIKE '%' || #{keyword} || '%' 
+			                 OR b.bd_writer LIKE '%' || #{keyword} || '%')
+			        </when>
 	            </choose>
 	        </if>
 	    )
@@ -129,6 +135,11 @@
                 <when test="condition == 'writer'">
                     AND bd_writer LIKE '%' || #{keyword} || '%'
                 </when>
+	            <when test="condition == 'all'">
+	                AND (bd_title LIKE '%' || #{keyword} || '%' 
+	                     OR bd_content LIKE '%' || #{keyword} || '%' 
+	                     OR bd_writer LIKE '%' || #{keyword} || '%')
+	            </when>
             </choose>
         </if>
     </select>

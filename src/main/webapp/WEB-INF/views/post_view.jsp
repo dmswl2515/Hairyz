@@ -12,8 +12,9 @@
 <meta charset="UTF-8">
 <title>${board.bd_title} | 털뭉치즈</title>
 <style>
-.nav.cate { border:solid #d8d8d8; border-width:1px 0; }
-.nav.cate .nav-link { color: #333; }
+.cate { padding: 0 0 1.5rem; border:solid #ffc107; border-width:0 0 1px; }
+.cate .category-btn { margin-right: 5px; border-radius:1.25rem; border-color:#fff; color: #212529; }
+.cate .category-btn.selected { background-color: #ffc107; }
 .tit_post { font-size:1.3rem; }
 .ed_area { font-size:0.9rem; }
 .writerInfo { line-height:1.2; }
@@ -22,16 +23,15 @@
 </style>
 </head>
 <body>
-	<div class="content">
-		<%@ include file="header.jsp" %>
-		
-		<div class="container list mt-4">
+<div class="content">
+	<%@ include file="header.jsp" %>
+	
+	<div class="container list mt-4">
         <!-- 카테고리 -->
-        <nav class="nav cate mb-4">
-            <a class="nav-link" href="list.do"># 전체</a>
-            <a class="nav-link ${board.bd_cate == 'f' ? 'active' : ''}" href="list.do?category=f"># 자유</a>
-            <a class="nav-link ${board.bd_cate == 'q' ? 'active' : ''}" href="list.do?category=q"># 질문</a>
-        </nav>
+        <div class="cate mb-4">
+            <a class="btn btn-outline-warning category-btn ${board.bd_cate == 'f' ? 'selected' : ''}" href="/list.do?category=f"># 자유</a>
+            <a class="btn btn-outline-warning category-btn ${board.bd_cate == 'q' ? 'selected' : ''}" href="/list.do?category=q"># 질문</a>
+        </div>
 
         <!-- 게시글 제목 -->
         <div class="d-flex justify-content-between align-items-center mb-1">
@@ -244,10 +244,18 @@
 
         <!-- 목록으로 돌아가기 버튼 -->
         <div class="mt-4">
-            <a href="/list.do" class="btn btn-secondary" style="width:5rem;">목록</a>
-        </div>
+		    <c:choose>
+		        <c:when test="${not empty searchCondition and not empty searchKeyword}">
+		            <a href="/boardSearch?page=${currentPage}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="btn btn-secondary" style="width:5rem;">목록</a>
+		        </c:when>
+		        <c:otherwise>
+		            <a href="/list.do?page=${currentPage}&category=${category}" class="btn btn-secondary" style="width:5rem;">목록</a>
+		        </c:otherwise>
+		    </c:choose>
+		</div>
+        
     </div>
-	</div>
+</div>
 					
 	<%@ include file="footer.jsp" %>
 	<!-- Bootstrap JS, Popper.js, and jQuery -->

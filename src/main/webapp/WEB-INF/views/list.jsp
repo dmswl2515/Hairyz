@@ -51,7 +51,9 @@
 }
 .category-btn { margin-right: 5px; border-radius:1.25rem; border-color:#fff; color: #212529; }
 .category-btn.selected { background-color: #ffc107; }
-
+.pagination .page-link { background-color: #ffe082; border: 1px solid #ffc107; color: gray; }
+.pagination .page-item.active .page-link { background-color: #ffc107; border-color: #ffc107; color: #212529; }
+.pagination .page-link:hover { background-color: #ffc107; }
 </style>
 </head>
 <body>
@@ -60,18 +62,23 @@
 		
 		<div class="container list my-4">
 			<!-- 게시글 검색 -->
-		    <div class="input-group searchWrap mb-4 mx-auto col-md-6">
-		        <select class="custom-select" id="searchCondition">
-		            <option value="all" selected>전체</option>
-		            <option value="title">제목</option>
-		            <option value="content">내용</option>
-		            <option value="writer">작성자</option>
-		        </select>
-		        <input type="text" class="form-control" id="searchKeyword" placeholder="검색어 입력">
-		        <div class="input-group-append">
-		            <button class="btn btn-outline-warning" type="button" onclick="searchPosts()">검색</button>
-		        </div>
-		    </div>
+			<form id="searchForm" action="/boardSearch" method="get">
+			    <input type="hidden" name="category" value="${param.category}">
+			    <input type="hidden" name="page" value="${param.page}">
+			    <div class="input-group searchWrap mb-4 mx-auto col-md-6">
+			        <select class="custom-select" id="searchCondition" name="condition">
+			            <option value="all" <c:if test="${searchCondition == 'all'}">selected</c:if>>전체</option>
+			            <option value="title" <c:if test="${searchCondition == 'title'}">selected</c:if>>제목</option>
+			            <option value="content" <c:if test="${searchCondition == 'content'}">selected</c:if>>내용</option>
+			            <option value="writer" <c:if test="${searchCondition == 'writer'}">selected</c:if>>작성자</option>
+			        </select>
+			        <input type="text" class="form-control" id="searchKeyword" name="keyword" placeholder="검색어 입력"
+			               value="${searchKeyword}">
+			        <div class="input-group-append">
+			            <button type="submit" class="btn btn-outline-warning">검색</button>
+			        </div>
+			    </div>
+			</form>
 		
 		    <!-- 카테고리 -->
 			<div class="mb-4">
@@ -97,7 +104,7 @@
 			        const category = $(this).data('category'); // 클릭된 버튼의 category 값 가져오기
 			
 			        // URL 변경
-			        changeURL(currentPage, category);
+			        changeURL(1, category);
 			    });
 			
 			    function setCurrentButton(category) {
@@ -118,41 +125,77 @@
 			});
 			</script>
 		    
-		    <!-- 게시글 리스트 -->
-		    <div id="boardList" class="boardList">
-		        <!-- 반복되는 게시글 항목 -->
-		        <c:choose>
-				    <c:when test="${empty boardList}">
-				        <div class="board-item">
-				            <div class="content no-posts">등록된 게시물이 없습니다.</div>
-				        </div>
-				    </c:when>
-				    <c:otherwise>
-				        <c:forEach var="board" items="${boardList}">
-				         <fmt:formatDate value="${board.bd_date}" pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ" var="formattedDate"/>
-                       	 	<div class="board-item" data-board-time="${formattedDate}">
-				                <div class="content">
-				                    <h5>
-				                        <a href="/post_view.do/${board.bd_no}" class="text-dark">
-				                            ${board.bd_title}
-				                        </a>
-				                        <span class="badge badge-danger new-badge" style="display:none;">new</span>
-				                    </h5>
-				                    <div class="board-body ellipsis">
-				                        ${board.bd_content}
-				                    </div>
-				                    <div class="board-footer">
-				                        <span>${board.bd_writer}</span>&nbsp; | &nbsp;조회수: ${board.bd_hit}&nbsp; | &nbsp;좋아요: ${board.bd_like}
-				                    </div>
-				                </div>
-				                <c:if test="${board.bd_imgpath != null}">
-				                    <img src="${board.bd_imgpath}/${board.bd_modname}" alt="썸네일">
-				                </c:if>
-				            </div>
-				        </c:forEach>
-				    </c:otherwise>
-				</c:choose>
-		    </div>
+			<!-- 게시글 리스트 -->
+			<div id="boardList" class="boardList">
+			    <!-- 반복되는 게시글 항목 -->
+			    <c:choose>
+			        <c:when test="${isSearch}">
+			            <c:if test="${empty boardList}">
+			                <div class="board-item">
+			                    <div class="content no-posts">검색 결과가 없습니다.</div>
+			                </div>
+			            </c:if>
+			            <c:if test="${not empty boardList}">
+			                <c:forEach var="board" items="${boardList}">
+			                    <fmt:formatDate value="${board.bd_date}" pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ" var="formattedDate"/>
+			                    <div class="board-item" data-board-time="${formattedDate}">
+			                        <div class="content">
+			                            <h5>
+			                                <a href="/post_view.do/${board.bd_no}?page=${currentPage}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="text-dark">
+			                                    ${board.bd_title}
+			                                </a>
+			                                <span class="badge badge-danger new-badge" style="display:none;">new</span>
+			                            </h5>
+			                            <div class="board-body ellipsis">
+			                                ${board.bd_content_delimg}
+			                            </div>
+			                            <div class="board-footer">
+			                                <span>${board.bd_writer}</span>&nbsp; | &nbsp;조회수: ${board.bd_hit}&nbsp; | &nbsp;좋아요: ${board.bd_like}
+			                            </div>
+			                        </div>
+			                        <c:set var="imageUrl" value="${board.extractImageUrl()}" />
+									<c:if test="${not empty imageUrl}">
+									    <img src="${imageUrl}" alt="썸네일" >
+									</c:if>
+			                    </div>
+			                </c:forEach>
+			            </c:if>
+			        </c:when>
+			        
+			        <c:otherwise>
+			            <c:if test="${empty boardList}">
+			                <div class="board-item">
+			                    <div class="content no-posts">등록된 게시물이 없습니다.</div>
+			                </div>
+			            </c:if>
+			            <c:if test="${not empty boardList}">
+			                <c:forEach var="board" items="${boardList}">
+			                    <fmt:formatDate value="${board.bd_date}" pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ" var="formattedDate"/>
+			                    <div class="board-item" data-board-time="${formattedDate}">
+			                        <div class="content">
+			                            <h5>
+			                                <a href="/post_view.do/${board.bd_no}?page=${currentPage}&category=${category}" class="text-dark">
+			                                    ${board.bd_title}
+			                                </a>
+			                                <span class="badge badge-danger new-badge" style="display:none;">new</span>
+			                            </h5>
+			                            <div class="board-body ellipsis">
+			                                ${board.bd_content_delimg}
+			                            </div>
+			                            <div class="board-footer">
+			                                <span>${board.bd_writer}</span>&nbsp; | &nbsp;조회수: ${board.bd_hit}&nbsp; | &nbsp;좋아요: ${board.bd_like}
+			                            </div>
+			                        </div>
+			                        <c:set var="imageUrl" value="${board.extractImageUrl()}" />
+									<c:if test="${not empty imageUrl}">
+									    <img src="${imageUrl}" alt="썸네일" >
+									</c:if>
+			                    </div>
+			                </c:forEach>
+			            </c:if>
+			        </c:otherwise>
+			    </c:choose>
+			</div>
 		    <script>
 		 // 현재 시간(ms) 구하기
 		    var currentTime = new Date().getTime(); // 현재 시간
@@ -211,27 +254,51 @@
 			</script>
 		
 		    <!-- 페이징 -->
-		    <nav class="mt-4">
-		        <nav class="mt-4">
-				    <ul class="pagination justify-content-center">
-				        <c:if test="${currentPage > 1}">
-				            <li class="page-item">
-				                <a class="page-link" href="?page=${currentPage - 1}">이전</a>
-				            </li>
-				        </c:if>
-				        <c:forEach var="i" begin="1" end="${totalPages}">
-				            <li class="page-item <c:if test='${currentPage == i}'>active</c:if>'">
-				                <a class="page-link" href="?page=${i}">${i}</a>
-				            </li>
-				        </c:forEach>
-				        <c:if test="${currentPage < totalPages}">
-				            <li class="page-item">
-				                <a class="page-link" href="?page=${currentPage + 1}">다음</a>
-				            </li>
-				        </c:if>
-				    </ul>
-				</nav>
-		    </nav>
+			<nav class="mt-4">
+			    <ul class="pagination justify-content-center">
+			        <c:choose>
+			            <c:when test="${isSearch}">
+			                <c:if test="${currentPage > 1}">
+			                    <li class="page-item">
+			                        <a href="/boardSearch?page=${currentPage - 1}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">이전</a>
+			                    </li>
+			                </c:if>
+			
+			                <c:forEach var="page" begin="1" end="${totalPages}">
+			                    <li class="page-item ${currentPage == page ? 'active' : ''}">
+			                        <a href="/boardSearch?page=${page}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">${page}</a>
+			                    </li>
+			                </c:forEach>
+			
+			                <c:if test="${currentPage < totalPages}">
+			                    <li class="page-item">
+			                        <a href="/boardSearch?page=${currentPage + 1}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">다음</a>
+			                    </li>
+			                </c:if>
+			            </c:when>
+			
+			            <c:otherwise>
+			                <c:if test="${currentPage > 1}">
+			                    <li class="page-item">
+			                        <a href="?page=${currentPage - 1}&category=${category}" class="page-link">&lt;</a>
+			                    </li>
+			                </c:if>
+			
+			                <c:forEach var="page" begin="1" end="${totalPages}">
+			                    <li class="page-item ${currentPage == page ? 'active' : ''}">
+			                        <a href="?page=${page}&category=${category}" class="page-link">${page}</a>
+			                    </li>
+			                </c:forEach>
+			
+			                <c:if test="${currentPage < totalPages}">
+			                    <li class="page-item">
+			                        <a href="?page=${currentPage + 1}&category=${category}" class="page-link">&gt;</a>
+			                    </li>
+			                </c:if>
+			            </c:otherwise>
+			        </c:choose>
+			    </ul>
+			</nav>
 		    
 		</div>
 	</div>
