@@ -29,8 +29,8 @@
 	<div class="container list mt-4">
         <!-- 카테고리 -->
         <div class="cate mb-4">
-            <a class="btn btn-outline-warning category-btn ${board.bd_cate == 'f' ? 'selected' : ''}" href="/list.do?category=f"># 자유</a>
-            <a class="btn btn-outline-warning category-btn ${board.bd_cate == 'q' ? 'selected' : ''}" href="/list.do?category=q"># 질문</a>
+            <a class="btn btn-outline-warning category-btn ${board.bd_cate == 'f' ? 'selected' : ''}" href="${pageContext.request.contextPath}/list.do?category=f"># 자유</a>
+            <a class="btn btn-outline-warning category-btn ${board.bd_cate == 'q' ? 'selected' : ''}" href="${pageContext.request.contextPath}/list.do?category=q"># 질문</a>
         </div>
 
         <!-- 게시글 제목 -->
@@ -48,8 +48,9 @@
         </div>
         <script>
 		function confirmDelete(bd_no) {
+			var basePath = '${pageContext.request.contextPath}';
 		    if (confirm("이 글을 삭제하시겠습니까?")) {
-		        window.location.href = "/delete.do?bd_no=" + bd_no; // 사용자가 '예'를 클릭하면 삭제 요청
+		        window.location.href = basePath + "/delete.do?bd_no=" + bd_no; // 사용자가 '예'를 클릭하면 삭제 요청
 		    }
 		}
 		</script>
@@ -95,47 +96,48 @@
         </div>
         
         <script>
-	        $(document).ready(function() {
-	            let liked = false; // 기본 상태는 좋아요 안 누름
-	            const boardId = ${board.bd_no}; // 게시글 ID 가져오기
-	
-	            // 좋아요 상태 초기화 AJAX 요청 (선택 사항)
-	            $.ajax({
-	                url: '/getLikeStatus',
-	                type: 'GET',
-	                data: { boardId: boardId },
-	                success: function(response) {
-	                    if (response.liked) {
-	                        liked = true;
-	                        $('#likeIcon').css('color', 'red'); // 이미 좋아요 상태면 빨간색으로 표시
-	                    }
-	                },
-	                error: function() {
-	                    console.error("좋아요 상태 조회 중 오류가 발생했습니다.");
-	                }
-	            });
-	
-	            $('#likeIcon').click(function() {
-	                // AJAX 요청으로 좋아요 토글
-	                $.ajax({
-	                    url: '/upLike',
-	                    type: 'POST',
-	                    data: { boardId: boardId },
-	                    success: function(response) {
-	                        if (response.success) {
-	                            $('#likeCount').text(response.likes); // 좋아요 수 갱신
-	                            liked = !liked; // 좋아요 상태 토글
-	                            $('#likeIcon').css('color', liked ? 'red' : 'lightgray'); // 아이콘 색상 변경
-	                        } else {
-	                            alert(response.message); // 로그인 필요 메시지 등 처리
-	                        }
-	                    },
-	                    error: function() {
-	                        alert("좋아요 처리 중 오류가 발생했습니다.");
-	                    }
-	                });
-	            });
-	        });
+        $(document).ready(function() {
+            let liked = false; // 기본 상태는 좋아요 안 누름
+            const boardId = ${board.bd_no}; // 게시글 ID 가져오기
+            var basePath = '${pageContext.request.contextPath}';
+
+            // 좋아요 상태 초기화 AJAX 요청 (선택 사항)
+            $.ajax({
+                url: basePath + '/getLikeStatus',
+                type: 'GET',
+                data: { boardId: boardId },
+                success: function(response) {
+                    if (response.liked) {
+                        liked = true;
+                        $('#likeIcon').css('color', 'red'); // 이미 좋아요 상태면 빨간색으로 표시
+                    }
+                },
+                error: function() {
+                    console.error("좋아요 상태 조회 중 오류가 발생했습니다.");
+                }
+            });
+
+            $('#likeIcon').click(function() {
+                // AJAX 요청으로 좋아요 토글
+                $.ajax({
+                    url: basePath + '/upLike',
+                    type: 'POST',
+                    data: { boardId: boardId },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#likeCount').text(response.likes); // 좋아요 수 갱신
+                            liked = !liked; // 좋아요 상태 토글
+                            $('#likeIcon').css('color', liked ? 'red' : 'lightgray'); // 아이콘 색상 변경
+                        } else {
+                            alert(response.message); // 로그인 필요 메시지 등 처리
+                        }
+                    },
+                    error: function() {
+                        alert("좋아요 처리 중 오류가 발생했습니다.");
+                    }
+                });
+            });
+        });
 		</script>
 
         <!-- 댓글 목록 -->
@@ -172,8 +174,9 @@
 		
 		<script>
 		function confirmReplyDelete(rp_no, bd_no) {
+			var basePath = '${pageContext.request.contextPath}';
 		    if (confirm("이 댓글을 삭제하시겠습니까?")) {
-		        window.location.href = "/deleteReply.do?rp_no=" + rp_no + "&bd_no=" + bd_no; // 댓글 삭제 요청
+		        window.location.href = basePath + "/deleteReply.do?rp_no=" + rp_no + "&bd_no=" + bd_no; // 댓글 삭제 요청
 		    }
 		}
 		</script>
@@ -197,9 +200,10 @@
 		        event.preventDefault(); // 기본 제출 이벤트 방지
 		
 		        const formData = $(this).serialize(); // 폼 데이터 직렬화
+		        var basePath = '${pageContext.request.contextPath}';
 		
 		        $.ajax({
-		            url: '/addReply', // 댓글 추가 요청을 처리하는 URL
+		            url: basePath + '/addReply', // 댓글 추가 요청을 처리하는 URL
 		            type: 'POST',
 		            data: formData,
 		            success: function(response) {
@@ -214,7 +218,7 @@
 		
 		                    // 댓글 목록 갱신
 		                    const newReply = '<div class="d-flex mb-1">' +
-		                        '<img src="' + writerImg + '" alt="프로필 이미지" class="rounded-circle flex-shrink-0" width="40" height="40">' +
+		                        '<img src="' + basePath + writerImg + '" alt="프로필 이미지" class="rounded-circle flex-shrink-0" width="40" height="40">' +
 		                        '<div class="ml-2">' +
 		                        '<span>' + writer + '</span>' +
 		                        '<span class="text-muted ml-2">' + date + '</span>' +
@@ -246,10 +250,10 @@
         <div class="mt-4">
 		    <c:choose>
 		        <c:when test="${not empty searchCondition and not empty searchKeyword}">
-		            <a href="/boardSearch?page=${currentPage}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="btn btn-secondary" style="width:5rem;">목록</a>
+		            <a href="${pageContext.request.contextPath}/boardSearch?page=${currentPage}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="btn btn-secondary" style="width:5rem;">목록</a>
 		        </c:when>
 		        <c:otherwise>
-		            <a href="/list.do?page=${currentPage}&category=${category}" class="btn btn-secondary" style="width:5rem;">목록</a>
+		            <a href="${pageContext.request.contextPath}/list.do?page=${currentPage}&category=${category}" class="btn btn-secondary" style="width:5rem;">목록</a>
 		        </c:otherwise>
 		    </c:choose>
 		</div>

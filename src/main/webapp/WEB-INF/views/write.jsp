@@ -24,7 +24,7 @@ body { font-family: 'Roboto', sans-serif; }
 <script>
 $(document).ready(function() {
 	$('#ir1').summernote({
-		height: 300,                 // set editor height
+		height: 400,                 // set editor height
 		lang: 'ko-KR',
 		placeholder: '내용을 입력해주세요.',
 		callbacks: {
@@ -44,8 +44,9 @@ function uploadFile(file) {
 	var formData = new FormData();
 	formData.append("file", file);
 
+	var basePath = '${pageContext.request.contextPath}';
 	$.ajax({
-		url: '/uploadFile',  // 서버 파일 업로드 처리 경로
+		url: basePath + '/uploadFile',  // 서버 파일 업로드 처리 경로
 		type: 'POST',
 		data: formData,
 		contentType: false,
@@ -107,9 +108,10 @@ function submitPost() {
 	    console.log(pair[0]+ ': ' + pair[1]);
 	}
 
+    var basePath = '${pageContext.request.contextPath}';
     // Ajax 요청으로 게시글 데이터 전송
     $.ajax({
-        url: '/writeOk.do',  // 게시글 저장을 위한 서버 경로
+        url: basePath + '/writeOk.do',  // 게시글 저장을 위한 서버 경로
         type: 'POST',
         data: formData, 
         dataType: 'json', // FormData 객체로 데이터 전송
@@ -165,7 +167,7 @@ function submitPost() {
 
 		<div class="form-group text-center">
 			<button type="button" class="btn btn-primary" onclick="submitPost()">작성 완료</button>
-			<a href="list.do" class="btn btn-secondary">목록 보기</a>
+			<a href="${pageContext.request.contextPath}/list.do" class="btn btn-secondary">목록 보기</a>
 		</div>
 	</form>
 	

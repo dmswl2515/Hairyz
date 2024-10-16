@@ -24,7 +24,7 @@ body { font-family: 'Roboto', sans-serif; }
 <script>
 $(document).ready(function() {
 	$('#ir1').summernote({
-		height: 300,
+		height: 400,
 		lang: 'ko-KR',
 		placeholder: '내용을 입력해주세요.',
 		callbacks: {
@@ -48,8 +48,9 @@ function uploadFile(file) {
 	var formData = new FormData();
 	formData.append("file", file);
 
+	var basePath = '${pageContext.request.contextPath}';
 	$.ajax({
-		url: '/uploadFile',  // 서버 파일 업로드 처리 경로
+		url: basePath + '/uploadFile',  // 서버 파일 업로드 처리 경로
 		type: 'POST',
 		data: formData,
 		contentType: false,
@@ -72,28 +73,6 @@ function uploadFile(file) {
 		}
 	});
 }
-
-//이미지 삭제 함수
-function deleteFile(src) {
-	$.ajax({
-		url: '/deleteFile',  // 서버 파일 삭제 처리 경로
-		type: 'POST',
-		data: { filePath: src },  // 삭제할 이미지 경로 전달
-		success: function(response) {
-			if (response.success) {
-				console.log('이미지 삭제 완료:', src);
-			} else {
-				alert(response.message);
-			}
-		},
-		error: function() {
-			alert("파일 삭제 중 오류가 발생했습니다.");
-		}
-	});
-}
-
-//요청 상태를 관리하는 변수
-var isSubmitting = false;
 
 // 수정 완료 버튼 이벤트
 function submitEdit() {
@@ -135,9 +114,10 @@ function submitEdit() {
 	    console.log(pair[0]+ ': ' + pair[1]);
 	}
 
+    var basePath = '${pageContext.request.contextPath}';
     // Ajax 요청으로 수정된 데이터 전송
     $.ajax({
-        url: '/editOk.do',  // 수정 처리 서버 경로
+        url: basePath + '/editOk.do',  // 수정 처리 서버 경로
         type: 'POST',
         data: formData, 
         dataType: 'json',
@@ -192,7 +172,7 @@ function submitEdit() {
 
 		<div class="form-group text-center">
 			<button type="button" class="btn btn-primary" onclick="submitEdit()">수정 완료</button>
-			<a href="list.do" class="btn btn-secondary">목록 보기</a>
+			<a href="${pageContext.request.contextPath}/list.do" class="btn btn-secondary">목록 보기</a>
 		</div>
 	</form>
 	
