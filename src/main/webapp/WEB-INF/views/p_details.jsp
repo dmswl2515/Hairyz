@@ -130,7 +130,7 @@
 	    margin: 15% auto; /* 중앙 정렬 */
 	    padding: 20px;
 	    border: 1px solid #888;
-	    width: 100%; /* 모달 너비 */
+	    width: 20%; /* 모달 너비 */
 	    text-align: center;
 	}
 	
