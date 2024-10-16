@@ -13,6 +13,7 @@ public interface IMemberDao
 {
 	public MemberDto selectMember(String id);
 	public int updateProfile(String id, String nickname, String phone, String zipcode, String addr1, String addr2, String orgname, String modname, String imgpath);
+	public int updateProfile2(String id, String nickname, String phone, String zipcode, String addr1, String addr2);
 	public int updatePw(String id, String pw);
 	public int updateState(String id, int state);
 	public MemberDto selectMember2(int mb_no);
