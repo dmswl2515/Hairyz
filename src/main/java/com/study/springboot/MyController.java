@@ -192,15 +192,23 @@ public class MyController {
 			e.printStackTrace();
 		}
 		
-		String path = serverPatheFullName.getPath();
-    	String id = request.getParameter("id");
-    	String nickName = request.getParameter("nickName");
-    	String phone = request.getParameter("phone");
-    	String zipcode = request.getParameter("zipcode");
-    	String addr1 = request.getParameter("addr1");
-    	String addr2 = request.getParameter("addr2");
+		String id = request.getParameter("id");
+		String path = null;
+		String nickName = request.getParameter("nickName");
+		String phone = request.getParameter("phone");
+		String zipcode = request.getParameter("zipcode");
+		String addr1 = request.getParameter("addr1");
+		String addr2 = request.getParameter("addr2");
+		
+		if(serverPatheFullName != null) {
+			path = serverPatheFullName.getPath();
+			memberDao.updateProfile(id, nickName, phone, zipcode, addr1, addr2, originalName, saveFileName, path);
+			
+		}else {
+			
+			memberDao.updateProfile2(id, nickName, phone, zipcode, addr1, addr2);
+		}
     	
-    	memberDao.updateProfile(id, nickName, phone, zipcode, addr1, addr2, originalName, saveFileName, path);
     	
     	MemberDto dto = memberDao.selectMember(id);
     	model.addAttribute("profile_view", dto);

@@ -63,53 +63,7 @@
 <body>
 	<!-- 로그 및 로그인 -->
     <div class="content">
-        <div class="custom-container">
-            <div class="row align-items-center py-3">
-                <div class="col-9 logo-container">
-                    <a href="main_view.do">
-                        <img src="images/logo.png" alt="로고">
-                    </a>
-                </div>
-				
-				<div class="col-3 text-right">
-					<%
-					//아이디 취득 후 id가 Null인지 확인
-					String id = (String)session.getAttribute("userId");
-					if (id == null)
-					{
-					%>
-                    	<a href="login.do" class="btn btn-outline-warning">로그인</a>
-                    <%}else{%>
-                    	<a href="myProfile_view.do" class="btn btn-outline-warning">마이페이지</a>
-                    	<a href="s_cart" class="btn btn-outline-warning">장바구니</a>
-                    <%} %>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="custom-container">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="list.do">커뮤니티</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="s_main">쇼핑</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="hospitalMap.do">동물병원</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="cafeMap.do">멍카페</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="petAdoption.do">캠페인</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+		<%@ include file="header.jsp" %>
         <!-- 통합검색 창 -->
         <div class="custom-container my-4">
             <form action="/searchAll" class="form-inline d-flex justify-content-center" onsubmit="return validateForm();">
@@ -141,27 +95,27 @@
 			</ol>
 			<div class="carousel-inner">
 				<div class="carousel-item active">
-					<a href="list.do">
+					<a href="${pageContext.request.contextPath}/list.do">
 						<img class="d-block w-100" src="images/slider1.png" alt="First slide">
 					</a>
 				</div>
 				<div class="carousel-item">
-					<a href="s_main">
+					<a href="${pageContext.request.contextPath}/s_main">
 						<img class="d-block w-100" src="images/slider2.png" alt="Second slide">
 					</a>
 				</div>
 				<div class="carousel-item">
-					<a href="hospitalMap.do">
+					<a href="${pageContext.request.contextPath}/hospitalMap.do">
 						<img class="d-block w-100" src="images/slider3.png" alt="Third slide">
 					</a>
 				</div>
 				<div class="carousel-item">
-					<a href="cafeMap.do">
+					<a href="${pageContext.request.contextPath}/cafeMap.do">
 						<img class="d-block w-100" src="images/slider4.png" alt="Fourth slide">
 					</a>
 				</div>
 				<div class="carousel-item">
-					<a href="petAdoption.do">
+					<a href="${pageContext.request.contextPath}/petAdoption.do">
 						<img class="d-block w-100" src="images/slider5.png" alt="Fifth slide">
 					</a>
 				</div>
