@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dto.MemberDto;
-import com.study.springboot.mailSender.EmailService;
 import com.study.springboot.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,9 +28,15 @@ public class MbController {
 
     @Autowired
     private IMemberDao memberDao;
+
+    @Value("${KAKAO-KEY}")
+    private String KAKAO_KEY;
     
     @RequestMapping("/join.do")
     public String join(Model model) {
+    	
+    	model.addAttribute("kakaoKey", KAKAO_KEY);
+    	
         return "join"; // join.jsp를 반환
     }
 
@@ -78,7 +83,10 @@ public class MbController {
 
 
     @RequestMapping("/login.do")
-    public String login() {
+    public String login(Model model) {
+    	
+    	model.addAttribute("kakaoKey", KAKAO_KEY);
+    	
         return "login"; // login.jsp 반환
     }
     
@@ -181,7 +189,10 @@ public class MbController {
     
     @RequestMapping("/findInfo.do")
     public String find(Model model) {
-        return "find_info"; // join.jsp를 반환
+    	
+    	model.addAttribute("kakaoKey", KAKAO_KEY);
+    	
+        return "find_info"; // find_info.jsp를 반환
     }
 
 }
