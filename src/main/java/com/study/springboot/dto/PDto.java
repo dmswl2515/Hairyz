@@ -1,6 +1,8 @@
 package com.study.springboot.dto;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -70,7 +72,6 @@ public class PDto
     private String pd_fpath2; // 저장된 파일 경로(상세)
 
     private String pd_fsize2; // 파일 크기(상세)
-    
     
 
 	public PDto()

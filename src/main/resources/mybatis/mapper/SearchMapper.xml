@@ -16,9 +16,10 @@
     <select id="findBoardsByKeyword" resultType="com.study.springboot.dto.BoardDto">
         SELECT * 
 	    FROM BOARD 
-	    WHERE bd_writer LIKE '%' || #{sKeyword} || '%'
-      	   OR bd_title LIKE '%' || #{sKeyword} || '%'
-	       OR bd_content LIKE '%' || #{sKeyword} || '%'
+	    WHERE bd_state = 'Y' 
+	      AND (bd_writer LIKE '%' || #{sKeyword} || '%'
+	           OR bd_title LIKE '%' || #{sKeyword} || '%'
+	           OR bd_content LIKE '%' || #{sKeyword} || '%')
     </select>
 	
 </mapper>

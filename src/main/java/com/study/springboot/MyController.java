@@ -930,6 +930,13 @@ public class MyController {
         
         // 게시판 검색
         List<BoardDto> boardList = sService.getBoardsByKeyword(sKeyword);
+        for (BoardDto board : boardList) {
+        	String content = board.getBd_content();
+            String contentWithoutImages = removeImgTags(content);  // 이미지 태그 제거
+            board.setBd_content_delimg(contentWithoutImages);  // 수정된 내용 설정
+            
+        	board.extractImageUrl(); // 각 게시글에서 이미지 URL 추출
+        }
         model.addAttribute("boardList", boardList);
         int boardCount = boardList.size(); // 게시판 수 세기
         
@@ -942,4 +949,15 @@ public class MyController {
     	
         return "searchview";                 
 	}
+	
+	// 정규식을 사용해 <img> 태그를 제거하는 메서드
+    private String removeImgTags(String content) {
+        if (content == null) {
+            return null;
+        }
+
+        // <img><br> 태그를 정규식으로 모두 제거
+        return content.replaceAll("(?i)<img[^>]*>(\\s*<br\\s*/?>)?", "<!--IMG_REMOVED-->");
+    }
+	
 }
