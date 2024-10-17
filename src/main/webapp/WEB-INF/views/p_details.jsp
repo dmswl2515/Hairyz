@@ -232,9 +232,11 @@
 				              	   	//수량 변화 이벤트
 				              	  	$(document).ready(function() {
 				              	  	    let pricePerItem = ${product.pd_price} // 개별 상품 가격
+				              	  	    let stockQuantity = ${product.pd_amount}
 				              	  	    let quantity = parseInt($('#quantity-input').val()); // 초기 수량
 				              	  	    
 				              	  	    console.log("pricePerITem : " + pricePerItem)
+				              	  	    console.log("stockQuantity : " + stockQuantity)
 				              	  	    console.log("quantity : " + quantity)
 				              	  	
 				              	  	    function updateTotalPrice() {
@@ -243,10 +245,14 @@
 				              	  	    }
 				              	  	
 				              	  	    $('#increase').on('click', function() {
-				              	  	        quantity++;
-				              	  	        $('#quantity-input').val(quantity);
-				              	  	        updateTotalPrice();
-				              	  	    });
+					              	  	    if (quantity < stockQuantity) { // 재고 수량 체크
+					              	            quantity++;
+					              	            $('#quantity-input').val(quantity);
+					              	            updateTotalPrice();
+					              	        } else {
+					              	        	alert('주문가능한 수량은 총 ' + stockQuantity + '개 입니다.'); // 재고 초과 시 알림
+					              	        }
+					              	    });
 				              	  	
 				              	  	    $('#decrease').on('click', function() {
 				              	  	        if (quantity > 1) {
@@ -265,10 +271,16 @@
 				              	  	        let inputValue = $(this).val();
 				              	  	        // 입력된 값이 숫자인지 확인하고, 숫자가 아닌 경우 1로 설정
 				              	  	        if ($.isNumeric(inputValue) && parseInt(inputValue) > 0) {
-				              	  	            quantity = parseInt(inputValue); // 유효한 수량으로 업데이트
-				              	  	        } else {
-				              	  	            quantity = 1; // 기본값 1 설정
-				              	  	        }
+					              	  	        let inputQuantity = parseInt(inputValue);
+					              	            if (inputQuantity > stockQuantity) {
+					              	                alert('주문가능한 수량은 총 ' + stockQuantity + '개 입니다.'); // 재고 초과 시 알림
+					              	                quantity = stockQuantity; // 수량을 재고 수량으로 설정
+					              	            } else {
+					              	                quantity = inputQuantity; // 유효한 수량으로 업데이트
+					              	            }
+					              	        } else {
+					              	            quantity = 1; // 기본값 1 설정
+					              	        }
 				              	  	        $(this).val(quantity); // 입력란의 값을 업데이트
 				              	  	        updateTotalPrice(); // 총 가격 업데이트
 				              	  	    });

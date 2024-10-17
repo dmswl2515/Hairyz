@@ -37,6 +37,12 @@ public class PService
 	public List<PDto> getProductsByKeyword(String sKeyword) {
         return pRepository.findProductsByKeyword(sKeyword);
     }
+
+	public PDto findByPdNum(Integer odNum)
+	{
+		List<PDto> productList = pRepository.findByPdNum(odNum);
+	    return productList.isEmpty() ? null : productList.get(0); // 결과가 없으면 null 반환
+	}
 	
 	
 }

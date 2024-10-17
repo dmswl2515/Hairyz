@@ -1,6 +1,7 @@
 package com.study.springboot.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -23,4 +24,6 @@ public class OrdersDto {
     private String odMemo;          // 배송 메모
     private char odPayment;       // 결제 여부 (Y/N)
     private String odState;         // 상품 주문 상태
+    
+    private List<ProductOrderDto> productOrders; // 주문한 제품 리스트 추가
 }
