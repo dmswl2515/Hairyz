@@ -10,7 +10,7 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
 body.main footer hr { margin-top: 50px; }
-.main .carousel.slide { max-width: 1920px; margin: auto; }
+.main .carousel.slide {  }
 .main .carousel-item img { height: 600px; margin: auto; }
 .carousel-control { top: 50%; margin-top: -25px; width: 50px; height: 50px; border-radius: 50%; background-color: rgba(0, 0, 0, 0.2); }
 .carousel-control-prev { left:50px; }
