@@ -630,7 +630,7 @@ public class MyController {
 	{
 		
 		// 한 페이지에 보여줄 항목 수
-	    int pageSize = 5;
+	    int pageSize = 10;
 
 	    // 현재 페이지 - request에서 page 파라미터를 가져옴
 	    String pageParam = request.getParameter("page");
@@ -687,7 +687,6 @@ public class MyController {
 
 		String reviewId = request.getParameter("reviewId");
 		String adminId = (String) session.getAttribute("adminId");
-//		String adminId = "admin"; // 테스트용 어드민 아이디
 		String replyText = request.getParameter("replyText");
 		
 		int rpId = Integer.parseInt(reviewId);
@@ -757,7 +756,7 @@ public class MyController {
 	{
 		
 		// 한 페이지에 보여줄 항목 수
-	    int pageSize = 5;
+	    int pageSize = 10;
 
 	    // 현재 페이지 - request에서 page 파라미터를 가져옴
 	    String pageParam = request.getParameter("page");
@@ -825,7 +824,7 @@ public class MyController {
 	{
 		
 		// 한 페이지에 보여줄 항목 수
-	    int pageSize = 5;
+	    int pageSize = 10;
 
 	    // 현재 페이지 - request에서 page 파라미터를 가져옴
 	    String pageParam = request.getParameter("page");
