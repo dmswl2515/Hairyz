@@ -32,6 +32,15 @@ public class MbController {
     @Value("${KAKAO-KEY}")
     private String KAKAO_KEY;
     
+    @Value("${DAILY-GOOGLE-KEY}")
+    private String DAILY_GOOGLE_KEY;
+    
+    @Value("${DAILY-KAKAO-KEY}")
+    private String DAILY_KAKAO_KEY;
+    
+    @Value("${DAILY-FB-KEY}")
+    private String DAILY_FB_KEY;
+    
     @RequestMapping("/join.do")
     public String join(Model model) {
     	
@@ -86,6 +95,9 @@ public class MbController {
     public String login(Model model) {
     	
     	model.addAttribute("kakaoKey", KAKAO_KEY);
+    	model.addAttribute("googleClientId", DAILY_GOOGLE_KEY);
+    	model.addAttribute("kakaoClientId", DAILY_KAKAO_KEY);
+    	model.addAttribute("facebookAppId", DAILY_FB_KEY);
     	
         return "login"; // login.jsp 반환
     }
@@ -183,6 +195,11 @@ public class MbController {
             response.put("code", "not_found");
             response.put("desc", "SNS 계정과 연동된 이메일이 없습니다. 추가 정보 입력이 필요합니다.");
         }
+        
+        // API 키 추가
+        response.put("googleClientId", DAILY_GOOGLE_KEY);
+        response.put("kakaoClientId", DAILY_KAKAO_KEY);
+        response.put("facebookAppId", DAILY_FB_KEY);
 
         return ResponseEntity.ok(response);
     }

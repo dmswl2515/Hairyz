@@ -16,7 +16,7 @@
 function onSignIn() {
 	google.accounts.id
 			.initialize({
-				client_id : "714732093906-kud1iod6kpo8t9m01k6l6dki2mp461hq.apps.googleusercontent.com",
+				client_id : "${googleClientId}",
 				callback : handleCredentialResponse
 			});
 	google.accounts.id.prompt();
@@ -37,7 +37,7 @@ function handleCredentialResponse(response) {
 /* ------------------------------------------------------------------------------------------ */
 	
    // Kakao
-   Kakao.init('3fe60097c9ec0969b537421877e8ae54');
+   Kakao.init('kakaoClientId');
    function loginWithKakao() {
        Kakao.Auth.login({
            success: function(authObj) {
@@ -45,12 +45,12 @@ function handleCredentialResponse(response) {
                    url: '/v2/user/me',
                    success: function(res) {
                        var id = res.id;
-                       var nickname = res.properties.nickname;
-                       var email = res.kakao_account.email || ''; // 이메일이 없을 경우 빈 문자열로 설정
+                       //var nickname = res.properties.nickname;
+                       //var email = res.kakao_account.email || ''; // 이메일이 없을 경우 빈 문자열로 설정
                			console.log('Id: ' + id);
-               			console.log('Nickname: ' + nickname);
-               			console.log('Email: ' + email);
-               			
+               			//console.log('Nickname: ' + nickname);
+               			//console.log('Email: ' + email);
+               			var email = '';
                			if (email === '') {
                             // 이메일이 없을 경우 사용자에게 이메일 입력을 요청
                             promptForEmail();
@@ -72,21 +72,23 @@ function handleCredentialResponse(response) {
    
 	// 이메일 입력을 요청하는 함수
    function promptForEmail() {
+	   var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
        var email = prompt("Kakao에서 이메일이 제공되지 않았습니다. 이메일을 입력해주세요.");
        
-       if (email) {
-           snsLogin(email); // 이메일 입력 후 snsLogin 호출
+       if (email && emailPattern.test(email)) {
+           snsLogin(email);  // 유효한 이메일일 경우 snsLogin 호출
        } else {
-           alert("이메일 입력이 필요합니다.");
+           alert("유효한 이메일 주소를 입력해주세요.");
        }
    }
 
 	/* ------------------------------------------------------------------------------------------ */
 
 	// Naver
+	/*
 	function initNaverLogin() {
 	  naverLogin = new naver.LoginWithNaverId({
-	    clientId: "YbQ2xy32RJJryAeB2oB8",
+	    clientId: "${DAILY-NAVER-KEY}",
 	    callbackUrl: "http://localhost:8081/login.do",
 	    isPopup: true,
 	    onLogin: function() {
@@ -99,13 +101,14 @@ function handleCredentialResponse(response) {
 	    }
 	  });
 	}
+	*/
 
 /* ------------------------------------------------------------------------------------------ */
    
   // Facebook
    window.fbAsyncInit = function() {
 	FB.init({
-		appId: '535635602529499',
+		appId: '${facebookAppId}',
 		cookie: true,
 		xfbml: true,
 		version: 'v20.0'
@@ -273,7 +276,9 @@ function submit_ajax() {
 			<button type="button" class="btn btn-danger" onclick="onSignIn();">Google 로그인</button><br>
 			<button type="button" class="btn btn-primary" onclick="fbLogin();">Facebook 로그인</button>
 			<button type="button" class="btn btn-warning" onclick="loginWithKakao();">Kakao 로그인</button><br>
+			<!-- 
 			<button type="button" class="btn btn-success" id="naverLoginButton">Naver 로그인</button><br>
+			 -->
 			<button type="button" class="btn btn-secondary" onclick="javascript:window.location='join.do'">회원가입</button><br>
 		</div>
 	</form>
