@@ -131,7 +131,7 @@
 	    margin-top: 10px;
 	}
 	
-	.btn {
+	.purchase .btn {
 	    padding: 5px 10px;
 	    margin-left: 20px; /* 버튼과 텍스트 사이의 간격 */
 	}
@@ -174,7 +174,7 @@
 
 
 
-	<div class=container>
+	<div class="container purchase">
 		<h3 class="text-center mt-5"><strong>결제하기</strong></h3>
 		<form method="POST" action="s_completeBuy">
 			<input type="hidden" id="odNo" name="odNo" value="${orderNumber}">

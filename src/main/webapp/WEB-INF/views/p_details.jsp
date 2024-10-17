@@ -129,8 +129,8 @@
 	    border-radius: 5px;
 	    margin: 15% auto; /* 중앙 정렬 */
 	    padding: 20px;
+	    width: 20%; 
 	    border: 1px solid #888;
-	    width: 20%; /* 모달 너비 */
 	    text-align: center;
 	}
 	
@@ -540,7 +540,7 @@
 			       	<!-- 모달 -->
 					<div class="modal fade" id="qnaModal" tabindex="-1" role="dialog" aria-labelledby="qnaModalLabel" aria-hidden="true">
 					    <div class="modal-dialog" role="document">
-					        <div class="modal-content">
+					        <div class="modal-content" style="width: 100%;">
 					            <div class="modal-header">
 					                <h5 class="modal-title text-center" id="qnaModalLabel">Q&A 작성하기</h5>
 					                <button type="button" class="close" data-dismiss="modal" aria-label="Close">

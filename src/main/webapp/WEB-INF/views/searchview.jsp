@@ -99,7 +99,7 @@
 			                </span>
 			            </h5>
 			            <div class="mt-2 mb-4">
-			                <span>${bList.bd_content}</span>
+			                <span>${bList.bd_content_delimg}</span>
 			            </div>
 			            <div>
 			                <span style="font-weight:bold; margin-right:15px;">${bList.bd_writer}</span>
@@ -107,12 +107,10 @@
 			            </div>
 			            
 			        </div>
-			
-			        <c:if test="${not empty bList.bd_modname}">
-			            <img src="${pageContext.request.contextPath}/upload/${bList.bd_modname}" 
-			                 alt="상품 이미지" 
-			                 style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;">
-			        </c:if>
+					<c:set var="imageUrl" value="${bList.extractImageUrl()}" />
+					<c:if test="${not empty imageUrl}">
+					    <img src="${imageUrl}" alt="썸네일" style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;" >
+					</c:if>
 			        </a>
 			    </div>
 			    <hr style="border-color: #ffc107;" >
@@ -126,11 +124,14 @@
 		    		<a href="s_main" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
 		    </h5>
 		    <hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
+			
 			<c:if test="${empty productList}">
 				<div style="display:flex; justify-content: center; align-items: center;">
 			        <span class="text-center align-middle mt-5 mb-4">검색결과가 없습니다.</span>
 				</div>
 			</c:if>
+			
+			<c:if test="${not empty productList}">
 	        <c:forEach var="pList" items="${productList}">
 			    <div style="display: flex; align-items: flex-start;">    
 			        <div class="content" style="display: flex; flex-direction: column;">
@@ -141,7 +142,7 @@
 			                </span>
 			            </h5>
 			            <div class="mt-5";>
-			                ${pList.pd_price}원
+			                <fmt:formatNumber value="${pList.pd_price}" type="number" groupingUsed="true" />원
 			            </div>
 			        </div>
 			        <c:if test="${not empty pList.pd_chng_fname}">
@@ -150,10 +151,11 @@
 				                 alt="상품 이미지" 
 				                 style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;">
 			          </a>
-			        </c:if>
+			        </c:if>   
 			    </div>
 			    <hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
 			</c:forEach>
+			</c:if>
 		</div>
 		<hr style="border-color: #ffc107; border-width: 5px;">
 	</div>
