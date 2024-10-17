@@ -144,56 +144,19 @@ hr {
 <body>
 	<!-- 로그 및 로그인 -->
     <div class="content">
-        <div class="custom-container">
-            <div class="row align-items-center py-3">
-                <div class="col-9 logo-container">
-                    <a href="main_view.do">
-                        <img src="images/logo.png" alt="로고">
-                    </a>
-                </div>
-				
-				<div class="col-3 text-right">
-                   	<a href="myProfile_view.do" class="btn btn-outline-warning">마이페이지</a>
-                   	<a href="s_cart" class="btn btn-outline-warning">장바구니</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="custom-container">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/list.do">커뮤니티</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="s_main">쇼핑</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="hospitalMap.do">동물병원</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="cafeMap.do">멍카페</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="petAdoption.do">캠페인</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+		<%@ include file="header.jsp" %>
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do"><b>내 프로필</b></a>
+				<li><a href="${pageContext.request.contextPath}/myProfile_view.do"><b>내 프로필</b></a>
 					<ul>
-						<li><a href="editProfile.do?id=${ profile_view.mb_id }">&nbsp;-회원정보 수정</a></li>
-						<li><a href="editPassword.do?id=${ profile_view.mb_id }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="${pageContext.request.contextPath}/editProfile.do?id=${ profile_view.mb_id }">&nbsp;-회원정보 수정</a></li>
+						<li><a href="${pageContext.request.contextPath}/editPassword.do?id=${ profile_view.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="petList.do?id=${ profile_view.mb_id }">반려동물 프로필</a></li>
-				<li><a href="orderLookup.do?id=${ profile_view.mb_id }">주문 조회</a></li>
-				<li><a href="returnExchange.do?id=${ profile_view.mb_id }">취소/교환/반품</a></li>
+				<li><a href="${pageContext.request.contextPath}/petList.do?id=${ profile_view.mb_id }">반려동물 프로필</a></li>
+				<li><a href="${pageContext.request.contextPath}/orderLookup.do?id=${ profile_view.mb_id }">주문 조회</a></li>
+				<li><a href="${pageContext.request.contextPath}/returnExchange.do?id=${ profile_view.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
@@ -236,10 +199,10 @@ hr {
 	
 	            <!-- 회원정보 수정, 로그아웃 버튼 -->
 	            <div class="btn-container">
-	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='editProfile.do?id=${ profile_view.mb_id }'">회원정보 수정</button>
+	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='${pageContext.request.contextPath}/editProfile.do?id=${ profile_view.mb_id }'">회원정보 수정</button>
 	            </div>
 	            <div class="btn-container">
-	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='logout.do'">로그아웃</button>
+	                <button type="button" class="btn btn-warning" onclick="javascript:window.location='${pageContext.request.contextPath}/logout.do'">로그아웃</button>
 	            </div>
 	        </div>
 	    </div>

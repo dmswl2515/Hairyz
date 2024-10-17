@@ -143,6 +143,13 @@ hr {
 <script>
 	
 	function infoConfirm() {
+		
+		if (document.reg_frm.newPassword.value.length == 0) {
+			alert("비밀번호는 필수사항입니다.");
+			reg_frm.pw.focus();
+			return;
+		}
+		
 		if (document.reg_frm.newPassword.value != document.reg_frm.newPw_check.value) {
 			alert("새 비밀번호가 일치하지 않습니다.");
 			reg_frm.newPassword.focus();
@@ -162,15 +169,15 @@ hr {
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do">내 프로필</a>
+				<li><a href="${pageContext.request.contextPath}/myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ editPassword }">&nbsp;-회원정보 수정</a></li>
-						<li><a href="editPassword.do?id=${ editPassword }">&nbsp;-<b>비밀번호 변경</b></a></li>
+						<li><a href="${pageContext.request.contextPath}/editProfile.do?id=${ editPassword }">&nbsp;-회원정보 수정</a></li>
+						<li><a href="${pageContext.request.contextPath}/editPassword.do?id=${ editPassword }">&nbsp;-<b>비밀번호 변경</b></a></li>
 					</ul>
 				</li>
-				<li><a href="petList.do?id=${ editPassword }">반려동물 프로필</a></li>
-				<li><a href="orderLookup.do?id=${ editPassword }">주문 조회</a></li>
-				<li><a href="returnExchange.do?id=${ editPassword }">취소/교환/반품</a></li>
+				<li><a href="${pageContext.request.contextPath}/petList.do?id=${ editPassword }">반려동물 프로필</a></li>
+				<li><a href="${pageContext.request.contextPath}/orderLookup.do?id=${ editPassword }">주문 조회</a></li>
+				<li><a href="${pageContext.request.contextPath}/returnExchange.do?id=${ editPassword }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
@@ -180,7 +187,7 @@ hr {
 	        <div class="custom-container">
 	            <h1 class="myPage-title">비밀번호 변경</h1>
 	
-	            <form action="updatePassword.do?id=${ editPassword }" method="post" name="reg_frm" class="was-validated">
+	            <form action="${pageContext.request.contextPath}/updatePassword.do?id=${ editPassword }" method="post" name="reg_frm" class="was-validated" novalidate>
 					<div class="form-group">
 		                <div class="input-group">
 		                	<input type="password" class="form-control" name="password" id="password" size="15" placeholder="기존 비밀번호" required>
@@ -196,12 +203,12 @@ hr {
 		            <!-- Divider -->
 		            <hr>
 		
-		            <!-- 회원정보 수정, 로그아웃 버튼 -->
+		            <!-- 비밀번호 수정, 취소 버튼 -->
 		            <div class="btn-container">
 		                <button type="button" class="btn btn-warning" onclick="infoConfirm()">수정하기</button>
 		            </div>
 		            <div class="btn-container">
-		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='myProfile_view.do'">취소</button>
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='${pageContext.request.contextPath}/myProfile_view.do'">취소</button>
 		            </div>
 		        </form>
 	
