@@ -9,9 +9,18 @@
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
-/* 기본 레이아웃 설정 */
-body.main {  }
-
+body.main footer hr { margin-top: 50px; }
+.main .carousel.slide { max-width: 1920px; }
+.main .carousel-item img { height: 600px; margin: auto; }
+.carousel-control { top: 50%; margin-top: -25px; width: 50px; height: 50px; border-radius: 50%; background-color: rgba(0, 0, 0, 0.2); }
+.carousel-control-prev { left:50px; }
+.carousel-control-next { right: 50px; }
+.carousel-item {  }
+.carousel-item.item01 { background: #ff65a1; }
+.carousel-item.item02 { background: #fdd1db url("images/slider2_bg.png") repeat-x 0 center; background-size: contain; }
+.carousel-item.item03 { background: #a7c800 url("images/slider3_bg.png") repeat-x 0 center; background-size: contain; }
+.carousel-item.item04 { background: #f0ecea; }
+.carousel-item.item05 { background: #fff4dc; }
 </style>
 </head>
 <body class="main">
@@ -39,7 +48,7 @@ body.main {  }
 
         <!-- 슬라이더 -->
 		<div id="carouselExampleIndicators"
-			class="carousel slide custom-container" data-ride="carousel">
+			class="carousel slide" data-ride="carousel">
 			<ol class="carousel-indicators">
 				<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
 				<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -48,37 +57,37 @@ body.main {  }
 				<li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
 			</ol>
 			<div class="carousel-inner">
-				<div class="carousel-item active">
+				<div class="carousel-item item01 active">
 					<a href="${pageContext.request.contextPath}/list.do">
-						<img class="d-block w-100" src="images/slider1.png" alt="First slide">
+						<img class="d-block" src="images/slider1.png" alt="커뮤니티">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item02">
 					<a href="${pageContext.request.contextPath}/s_main">
-						<img class="d-block w-100" src="images/slider2.png" alt="Second slide">
+						<img class="d-block" src="images/slider2.png" alt="쇼핑">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item03">
 					<a href="${pageContext.request.contextPath}/hospitalMap.do">
-						<img class="d-block w-100" src="images/slider3.png" alt="Third slide">
+						<img class="d-block" src="images/slider3.png" alt="동물병원">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item04">
 					<a href="${pageContext.request.contextPath}/cafeMap.do">
-						<img class="d-block w-100" src="images/slider4.png" alt="Fourth slide">
+						<img class="d-block" src="images/slider4.png" alt="멍카페">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item05">
 					<a href="${pageContext.request.contextPath}/petAdoption.do">
-						<img class="d-block w-100" src="images/slider5.png" alt="Fifth slide">
+						<img class="d-block" src="images/slider5.png" alt="유기동물 현황">
 					</a>
 				</div>
 			</div>
-			<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+			<a class="carousel-control carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 			 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
 			 <span class="sr-only">Previous</span>
 			</a>
-			 <a class="carousel-control-next" href="#carouselExampleIndicators"role="button" data-slide="next">
+			 <a class="carousel-control carousel-control-next" href="#carouselExampleIndicators"role="button" data-slide="next">
 			  <span class="carousel-control-next-icon" aria-hidden="true"></span>
 			  <span class="sr-only">Next</span>
 			</a>

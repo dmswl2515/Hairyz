@@ -69,8 +69,8 @@ footer hr {
 			%>
                 	<a href="${pageContext.request.contextPath}/login.do" class="btn btn-outline-warning" onclick="redirectToLogin()">로그인</a>
                 <%}else{%>
-                	<a href="/myProfile_view.do" class="btn btn-outline-warning">마이페이지</a>
-                	<a href="/s_cart" class="btn btn-outline-warning">장바구니</a>
+                	<a href="${pageContext.request.contextPath}/myProfile_view.do" class="btn btn-outline-warning">마이페이지</a>
+                	<a href="${pageContext.request.contextPath}/s_cart" class="btn btn-outline-warning">장바구니</a>
                 <%} %>
             </div>
         </div>
@@ -81,19 +81,19 @@ footer hr {
         <div class="custom-container">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/list.do">커뮤니티</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/list.do">커뮤니티</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/s_main">쇼핑</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/s_main">쇼핑</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/hospitalMap.do">동물병원</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/hospitalMap.do">동물병원</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/cafeMap.do">멍카페</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/cafeMap.do">멍카페</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/petAdoption.do">캠페인</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/petAdoption.do">유기동물 현황</a>
                 </li>
             </ul>
         </div>
