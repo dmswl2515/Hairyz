@@ -3,64 +3,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>털뭉치즈</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* 기본 레이아웃 설정 */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>털뭉치즈</title>
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+/* 기본 레이아웃 설정 */
+body.main {  }
 
-        /* 내용물이 차지할 공간을 유지 */
-        .content {
-            flex: 1;
-        }
-
-        /* footer를 페이지 하단에 고정 */
-        footer {
-            background-color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            width: 100%;
-        }
-
-        /* hr 두께 설정 */
-        hr {
-            border: 1px solid #d8d8d8;
-            width: 100%;
-            margin-top: 100px
-        }
-
-        .custom-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .logo-container {
-            text-align: center;
-        }
-
-        .logo-container img {
-            max-width: 100px;
-            margin-left: 250px; 
-        }
-
-        .slider {
-            height: 400px;
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+</style>
 </head>
-<body>
+<body class="main">
 	<!-- 로그 및 로그인 -->
     <div class="content">
 		<%@ include file="header.jsp" %>
@@ -130,19 +84,10 @@
 			</a>
 		</div>
 
-		<!-- Divider -->
-        <div class="custom-container">
-            <hr>
-        </div>
     </div>
     
     <%@ include file="kakaoCh.jsp" %>
-    
-    <!-- FOOTER -->
-    <footer class="container">
-        <p class="float-end"><strong>털뭉치즈</strong></p>
-        <p>COMPANY : 털뭉치즈</p>
-    </footer>
+    <%@ include file="footer.jsp" %>
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
