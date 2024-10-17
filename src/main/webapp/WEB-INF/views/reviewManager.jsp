@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>구매평 관리</title>
+    <title>후기 관리</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- jQuery 라이브러리 추가 -->
@@ -56,7 +56,7 @@ body {
    				 <%@ include file="sideMenu.jsp" %>
    				 <div class="content" style="margin-left: 50px;">
 			    	<div class="custom-container">
-					    <h2 class="text-center my-4">판매 관리</h2>
+					    <h2 class="text-center my-4">후기 관리</h2>
 					    <table class="table table-hover table-striped table-bordered text-center align-middle">
 					        <thead class="thead-dark">
 					            <tr>

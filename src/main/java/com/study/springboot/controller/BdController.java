@@ -341,7 +341,7 @@ public class BdController {
         @RequestParam(value = "category", required = false) String category,
         Model model) {
 
-        int pageSize = 3; // 한 페이지에 보여줄 게시글 수
+        int pageSize = 10; // 한 페이지에 보여줄 게시글 수
         int totalCount;
 
         if ("all".equals(category)) {
@@ -375,7 +375,7 @@ public class BdController {
 					          @RequestParam(value = "keyword", required = false) String keyword,
 					          Model model) {
 
-        int pageSize = 3; // 한 페이지에 보여줄 게시글 수
+        int pageSize = 10; // 한 페이지에 보여줄 게시글 수
         int totalCount;
 
         // 검색 조건이 있을 때 isSearch를 true로 설정
