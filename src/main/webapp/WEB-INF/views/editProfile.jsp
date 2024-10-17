@@ -172,15 +172,15 @@ function previewImage(event) {
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do">내 프로필</a>
+				<li><a href="${pageContext.request.contextPath}/myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ editProfile.mb_id }">&nbsp;-<b>회원정보 수정</b></a></li>
-						<li><a href="editPassword.do?id=${ editProfile.mb_id }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="${pageContext.request.contextPath}/editProfile.do?id=${ editProfile.mb_id }">&nbsp;-<b>회원정보 수정</b></a></li>
+						<li><a href="${pageContext.request.contextPath}/editPassword.do?id=${ editProfile.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="petList.do?id=${ editProfile.mb_id }">반려동물 프로필</a></li>
-				<li><a href="orderLookup.do?id=${ editProfile.mb_id }">주문 조회</a></li>
-				<li><a href="returnExchange.do?id=${ editProfile.mb_id }">취소/교환/반품</a></li>
+				<li><a href="${pageContext.request.contextPath}/petList.do?id=${ editProfile.mb_id }">반려동물 프로필</a></li>
+				<li><a href="${pageContext.request.contextPath}/orderLookup.do?id=${ editProfile.mb_id }">주문 조회</a></li>
+				<li><a href="${pageContext.request.contextPath}/returnExchange.do?id=${ editProfile.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
@@ -190,7 +190,7 @@ function previewImage(event) {
 	        <div class="custom-container">
 	            <h1 class="myPage-title">회원정보 수정</h1>
 	
-	            <form action="updateProfile.do" method="post" name="reg_frm" class="was-validated" enctype="multipart/form-data">
+	            <form action="${pageContext.request.contextPath}/updateProfile.do" method="post" name="reg_frm" class="was-validated" enctype="multipart/form-data">
 		            <!-- 프로필 사진 -->
 		            <div class="box">
 				        <!-- 이미지 미리보기 영역 -->
@@ -258,7 +258,7 @@ function previewImage(event) {
 		                <button type="submit" class="btn btn-warning">수정하기</button>
 		            </div>
 		            <div class="btn-container">
-		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='accountDelete.do?id=${ editProfile.mb_id }'">회원탈퇴</button>
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='${pageContext.request.contextPath}/accountDelete.do?id=${ editProfile.mb_id }'">회원탈퇴</button>
 		            </div>
 		        </form>
 	

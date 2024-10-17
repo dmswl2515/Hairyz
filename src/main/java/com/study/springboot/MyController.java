@@ -391,11 +391,14 @@ public class MyController {
 		String breed = request.getParameter("breed");
 		String gender = request.getParameter("gender");
 		String weight = request.getParameter("weight");
-		
-		
 		Double dWeight = Double.parseDouble(weight);
 		
-		pteListDao.insertPet(name, mb_no, birth, pettype, breed, gender, dWeight, dst, fileName, filePath);
+		if(fileName != null) {
+			
+			pteListDao.insertPet(name, mb_no, birth, pettype, breed, gender, dWeight, dst, fileName, filePath);
+		}else {
+			pteListDao.insertPet2(name, mb_no, birth, pettype, breed, gender, dWeight);
+		}
 		
 		int mbNum = Integer.parseInt(mb_no);
 		MemberDto dto = memberDao.selectMember2(mbNum);
@@ -630,7 +633,7 @@ public class MyController {
 	{
 		
 		// 한 페이지에 보여줄 항목 수
-	    int pageSize = 5;
+	    int pageSize = 10;
 
 	    // 현재 페이지 - request에서 page 파라미터를 가져옴
 	    String pageParam = request.getParameter("page");
@@ -687,7 +690,6 @@ public class MyController {
 
 		String reviewId = request.getParameter("reviewId");
 		String adminId = (String) session.getAttribute("adminId");
-//		String adminId = "admin"; // 테스트용 어드민 아이디
 		String replyText = request.getParameter("replyText");
 		
 		int rpId = Integer.parseInt(reviewId);
@@ -757,7 +759,7 @@ public class MyController {
 	{
 		
 		// 한 페이지에 보여줄 항목 수
-	    int pageSize = 5;
+	    int pageSize = 10;
 
 	    // 현재 페이지 - request에서 page 파라미터를 가져옴
 	    String pageParam = request.getParameter("page");
@@ -825,7 +827,7 @@ public class MyController {
 	{
 		
 		// 한 페이지에 보여줄 항목 수
-	    int pageSize = 5;
+	    int pageSize = 10;
 
 	    // 현재 페이지 - request에서 page 파라미터를 가져옴
 	    String pageParam = request.getParameter("page");

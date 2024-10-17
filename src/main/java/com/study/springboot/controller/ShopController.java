@@ -26,6 +26,7 @@ import com.study.springboot.dto.CartDto;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.dto.OrdersDto;
 import com.study.springboot.dto.PDto;
+import com.study.springboot.dto.ProductOrderDto;
 import com.study.springboot.dto.ProductReviewDto;
 import com.study.springboot.dto.QDto;
 import com.study.springboot.dto.QnaReplyDto;
@@ -314,7 +315,27 @@ public class ShopController {
 	    System.out.println("Recipient Address (odRaddress): " + ordersDto.getOdRaddress());
 	    System.out.println("Recipient Address 2 (odRaddress2): " + ordersDto.getOdRaddress2());
 	    System.out.println("Memo (odMemo): " + ordersDto.getOdMemo());
-
+	    
+	    List<ProductOrderDto> productOrders = ordersDto.getProductOrders();
+	    if (productOrders != null && !productOrders.isEmpty()) {
+	        for (ProductOrderDto productOrder : productOrders) {
+	            System.out.println("Product Number: " + productOrder.getPdNum());
+	            System.out.println("Product Quantity: " + productOrder.getPdQuantity());
+	    
+		    // 제품의 pdAmount 업데이트 (수량 감소)
+		    PDto product = pService.findByPdNum(ordersDto.getOdNum());
+		    if (product != null) {
+		        int updatedAmount = product.getPd_amount() - ordersDto.getOdAmount();
+		        if (updatedAmount < 0) {
+		            updatedAmount = 0; // 재고가 음수가 되지 않도록 처리
+		        }
+		        product.setPd_amount(updatedAmount);
+		        pService.saveProduct(product); // 업데이트 처리
+		    } else {
+		        System.out.println("Product not found for pdNum: " + ordersDto.getOdNum());
+		    }
+	    }
+	    }
     	
 	    oService.insertOrder(ordersDto);
 	    

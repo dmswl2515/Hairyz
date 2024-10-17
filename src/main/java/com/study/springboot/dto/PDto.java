@@ -45,7 +45,7 @@ public class PDto
 
     private Character pd_selling; // 상품 판매상태 (Y/N)
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "pd_rdate")
     private Date pdRdate; // 상품 등록일
 

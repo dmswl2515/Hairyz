@@ -9,6 +9,10 @@
 		insert into petlist (pl_id, pl_name, pl_mbNum, pl_birth, pl_pettype, pl_breed, pl_gender, pl_weight, pl_imgPath, pl_orgName, pl_modName) values (petlist_seq.nextval, #{param1}, #{param2}, #{param3}, #{param4}, #{param5}, #{param6}, #{param7}, #{param8}, #{param9}, #{param10})
 	</insert>
 	
+	<insert id="insertPet2">
+		insert into petlist (pl_id, pl_name, pl_mbNum, pl_birth, pl_pettype, pl_breed, pl_gender, pl_weight) values (petlist_seq.nextval, #{param1}, #{param2}, #{param3}, #{param4}, #{param5}, #{param6}, #{param7})
+	</insert>
+	
 	<select id="petList" resultType="com.study.springboot.dto.PetListDto">
 		select * from petlist where pl_mbNum = #{param1} order by pl_id desc
 	</select>

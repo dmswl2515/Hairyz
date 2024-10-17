@@ -25,6 +25,7 @@
         WHERE 
             pr_productId = #{productId}
           AND pr_visibility = 'Y'
+        ORDER BY pr_reviewDate DESC
     </select>
 
 	<select id="selectReview" resultType="com.study.springboot.dto.ProductReviewDto">
