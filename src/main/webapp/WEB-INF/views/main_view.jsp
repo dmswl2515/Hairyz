@@ -3,64 +3,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>털뭉치즈</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* 기본 레이아웃 설정 */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        /* 내용물이 차지할 공간을 유지 */
-        .content {
-            flex: 1;
-        }
-
-        /* footer를 페이지 하단에 고정 */
-        footer {
-            background-color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            width: 100%;
-        }
-
-        /* hr 두께 설정 */
-        hr {
-            border: 1px solid #d8d8d8;
-            width: 100%;
-            margin-top: 100px
-        }
-
-        .custom-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .logo-container {
-            text-align: center;
-        }
-
-        .logo-container img {
-            max-width: 100px;
-            margin-left: 250px; 
-        }
-
-        .slider {
-            height: 400px;
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>털뭉치즈</title>
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body.main footer hr { margin-top: 50px; }
+.main .carousel.slide { max-width: 1920px; }
+.main .carousel-item img { height: 600px; margin: auto; }
+.carousel-control { top: 50%; margin-top: -25px; width: 50px; height: 50px; border-radius: 50%; background-color: rgba(0, 0, 0, 0.2); }
+.carousel-control-prev { left:50px; }
+.carousel-control-next { right: 50px; }
+.carousel-item {  }
+.carousel-item.item01 { background: #ff65a1; }
+.carousel-item.item02 { background: #fdd1db url("images/slider2_bg.png") repeat-x 0 center; background-size: contain; }
+.carousel-item.item03 { background: #a7c800 url("images/slider3_bg.png") repeat-x 0 center; background-size: contain; }
+.carousel-item.item04 { background: #f0ecea; }
+.carousel-item.item05 { background: #fff4dc; }
+</style>
 </head>
-<body>
+<body class="main">
 	<!-- 로그 및 로그인 -->
     <div class="content">
 		<%@ include file="header.jsp" %>
@@ -85,7 +48,7 @@
 
         <!-- 슬라이더 -->
 		<div id="carouselExampleIndicators"
-			class="carousel slide custom-container" data-ride="carousel">
+			class="carousel slide" data-ride="carousel">
 			<ol class="carousel-indicators">
 				<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
 				<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -94,55 +57,46 @@
 				<li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
 			</ol>
 			<div class="carousel-inner">
-				<div class="carousel-item active">
+				<div class="carousel-item item01 active">
 					<a href="${pageContext.request.contextPath}/list.do">
-						<img class="d-block w-100" src="images/slider1.png" alt="First slide">
+						<img class="d-block" src="images/slider1.png" alt="커뮤니티">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item02">
 					<a href="${pageContext.request.contextPath}/s_main">
-						<img class="d-block w-100" src="images/slider2.png" alt="Second slide">
+						<img class="d-block" src="images/slider2.png" alt="쇼핑">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item03">
 					<a href="${pageContext.request.contextPath}/hospitalMap.do">
-						<img class="d-block w-100" src="images/slider3.png" alt="Third slide">
+						<img class="d-block" src="images/slider3.png" alt="동물병원">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item04">
 					<a href="${pageContext.request.contextPath}/cafeMap.do">
-						<img class="d-block w-100" src="images/slider4.png" alt="Fourth slide">
+						<img class="d-block" src="images/slider4.png" alt="멍카페">
 					</a>
 				</div>
-				<div class="carousel-item">
+				<div class="carousel-item item05">
 					<a href="${pageContext.request.contextPath}/petAdoption.do">
-						<img class="d-block w-100" src="images/slider5.png" alt="Fifth slide">
+						<img class="d-block" src="images/slider5.png" alt="유기동물 현황">
 					</a>
 				</div>
 			</div>
-			<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+			<a class="carousel-control carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 			 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
 			 <span class="sr-only">Previous</span>
 			</a>
-			 <a class="carousel-control-next" href="#carouselExampleIndicators"role="button" data-slide="next">
+			 <a class="carousel-control carousel-control-next" href="#carouselExampleIndicators"role="button" data-slide="next">
 			  <span class="carousel-control-next-icon" aria-hidden="true"></span>
 			  <span class="sr-only">Next</span>
 			</a>
 		</div>
 
-		<!-- Divider -->
-        <div class="custom-container">
-            <hr>
-        </div>
     </div>
     
     <%@ include file="kakaoCh.jsp" %>
-    
-    <!-- FOOTER -->
-    <footer class="container">
-        <p class="float-end"><strong>털뭉치즈</strong></p>
-        <p>COMPANY : 털뭉치즈</p>
-    </footer>
+    <%@ include file="footer.jsp" %>
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
