@@ -277,7 +277,7 @@ function submit_ajax() {
 					</div>
 				</div>
 				<hr class="mb-4">
-				<input type="button" class="btn btn-primary btn-lg btn-block" value="회원가입" onclick="form_check(event)"> 
+				<input type="button" class="btn btn-warning btn-lg btn-block" value="회원가입" onclick="form_check(event)"> 
 				<input type="button" class="btn btn-outline-secondary btn-lg btn-block" value="로그인" onclick="window.location='${pageContext.request.contextPath}/login.do'">
 			</form>
 			<script>
