@@ -165,15 +165,15 @@ hr {
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do">내 프로필</a>
+				<li><a href="${pageContext.request.contextPath}/myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ accountDelete }">&nbsp;-회원정보 수정</a></li>
-						<li><a href="editPassword.do?id=${ accountDelete }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="${pageContext.request.contextPath}/editProfile.do?id=${ accountDelete }">&nbsp;-회원정보 수정</a></li>
+						<li><a href="${pageContext.request.contextPath}/editPassword.do?id=${ accountDelete }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="petList.do?id=${ accountDelete }">반려동물 프로필</a></li>
-				<li><a href="orderLookup.do?id=${ accountDelete }">주문 조회</a></li>
-				<li><a href="returnExchange.do?id=${ accountDelete }">취소/교환/반품</a></li>
+				<li><a href="${pageContext.request.contextPath}/petList.do?id=${ accountDelete }">반려동물 프로필</a></li>
+				<li><a href="${pageContext.request.contextPath}/orderLookup.do?id=${ accountDelete }">주문 조회</a></li>
+				<li><a href="${pageContext.request.contextPath}/returnExchange.do?id=${ accountDelete }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
@@ -183,7 +183,7 @@ hr {
 	        <div class="custom-container">
 	            <h1 class="myPage-title">회원 탈퇴</h1>
 	
-	            <form action="deleteAccount.do?id=${ accountDelete }" method="post" name="reg_frm" class="was-validated">
+	            <form action="${pageContext.request.contextPath}/deleteAccount.do?id=${ accountDelete }" method="post" name="reg_frm" class="was-validated">
 					<div class="form-group">
 		                <div class="input-group">
 		                	<input type="password" class="form-control" name="password" id="password" size="15" placeholder="비밀번호 입력" required>
@@ -198,7 +198,7 @@ hr {
 		                <button type="button" class="btn btn-warning" onclick="infoConfirm()">탈퇴하기</button>
 		            </div>
 		            <div class="btn-container">
-		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='myProfile_view.do'">취소</button>
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='${pageContext.request.contextPath}/myProfile_view.do'">취소</button>
 		            </div>
 		        </form>
 	

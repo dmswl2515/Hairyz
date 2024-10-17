@@ -178,15 +178,15 @@ input[type="radio"].btn-check {
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do">내 프로필</a>
+				<li><a href="${pageContext.request.contextPath}/myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ petRegister.mb_id }">&nbsp;-회원정보 수정</a></li>
-						<li><a href="editPassword.do?id=${ petRegister.mb_id }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="${pageContext.request.contextPath}/editProfile.do?id=${ petRegister.mb_id }">&nbsp;-회원정보 수정</a></li>
+						<li><a href="${pageContext.request.contextPath}/editPassword.do?id=${ petRegister.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="petList.do?id=${ petRegister.mb_id }"><b>반려동물 프로필</b></a></li>
-				<li><a href="orderLookup.do?id=${ petRegister.mb_id }">주문 조회</a></li>
-				<li><a href="returnExchange.do?id=${ petRegister.mb_id }">취소/교환/반품</a></li>
+				<li><a href="${pageContext.request.contextPath}/petList.do?id=${ petRegister.mb_id }"><b>반려동물 프로필</b></a></li>
+				<li><a href="${pageContext.request.contextPath}/orderLookup.do?id=${ petRegister.mb_id }">주문 조회</a></li>
+				<li><a href="${pageContext.request.contextPath}/returnExchange.do?id=${ petRegister.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
@@ -196,7 +196,7 @@ input[type="radio"].btn-check {
 	        <div class="custom-container">
 	            <h1 class="myPage-title">반려동물 등록</h1>
 	
-	            <form action="petProfileCreate.do?mb_no=${petRegister.mb_no }" method="post" name="reg_frm" class="was-validated" enctype="multipart/form-data">
+	            <form action="${pageContext.request.contextPath}/petProfileCreate.do?mb_no=${petRegister.mb_no }" method="post" name="reg_frm" class="was-validated" enctype="multipart/form-data">
 		            <!-- 프로필 사진 -->
 				    <div class="box">
 				        <!-- 이미지 미리보기 영역 -->
@@ -267,7 +267,7 @@ input[type="radio"].btn-check {
 		                <button type="submit" class="btn btn-warning">등록</button>
 		            </div>
 		            <div class="btn-container">
-		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='petList.do?id=${ petRegister.mb_id }'">취소</button>
+		                <button type="button" class="btn btn-warning" onclick="javascript:window.location='${pageContext.request.contextPath}/petList.do?id=${ petRegister.mb_id }'">취소</button>
 		            </div>
 		        </form>
 	

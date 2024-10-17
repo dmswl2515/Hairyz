@@ -8,7 +8,6 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-<%@ include file="navbarStyle.jsp" %>
 <meta charset="UTF-8">
 <title>커뮤니티 | 털뭉치즈</title>
  <style>

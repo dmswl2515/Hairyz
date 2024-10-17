@@ -10,5 +10,6 @@ import com.study.springboot.dto.PetListDto;
 public interface IPetListDao
 {
 	public int insertPet(String name, String mbNum, String birth, String pettype, String breed, String gender, double weigth, String imgPath, String orgNamem, String modName);
+	public int insertPet2(String name, String mbNum, String birth, String pettype, String breed, String gender, double weigth);
 	public List<PetListDto> petList(int mbNum);
 }
