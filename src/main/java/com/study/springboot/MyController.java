@@ -391,11 +391,14 @@ public class MyController {
 		String breed = request.getParameter("breed");
 		String gender = request.getParameter("gender");
 		String weight = request.getParameter("weight");
-		
-		
 		Double dWeight = Double.parseDouble(weight);
 		
-		pteListDao.insertPet(name, mb_no, birth, pettype, breed, gender, dWeight, dst, fileName, filePath);
+		if(fileName != null) {
+			
+			pteListDao.insertPet(name, mb_no, birth, pettype, breed, gender, dWeight, dst, fileName, filePath);
+		}else {
+			pteListDao.insertPet2(name, mb_no, birth, pettype, breed, gender, dWeight);
+		}
 		
 		int mbNum = Integer.parseInt(mb_no);
 		MemberDto dto = memberDao.selectMember2(mbNum);
