@@ -49,7 +49,7 @@
 	    line-height: 2; /* 이 테이블에만 적용 */
 	}
 	
-	img {
+	picture {
 		margin-left:10px;
 		margin-top:10px;
 		width:100px; 
@@ -181,7 +181,7 @@
 				            <td>
 				                <div style="display: flex; align-items: center;">
 				                    <a href="${pageContext.request.contextPath}/p_details?pdNum=${item.pdNum}" style="color: black;">
-				                        <img src="${pageContext.request.contextPath}/upload/${item.pdChngFname}" id="productImg-${item.pdNum}" alt="${item.pdName}">
+				                        <img src="${pageContext.request.contextPath}/upload/${item.pdChngFname}" class="picture" id="productImg-${item.pdNum}" alt="${item.pdName}">
 				                    </a>
 				                    <p id="productName-${item.pdNum}" style="margin-left: 15px; margin-top: 15px;">${item.pdName}</p>
 				                    <input type="hidden" name="productName" value="${item.pdName}">
