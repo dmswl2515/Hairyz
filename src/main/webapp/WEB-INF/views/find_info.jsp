@@ -125,7 +125,7 @@ function hidePreloader() {
 
 <!-- 프리로더 -->
 <div id="preloader">
-    <img src="/images/spinner.gif" alt="Loading...">
+    <img src="${pageContext.request.contextPath}/images/spinner.gif" alt="Loading...">
 </div>
 
 <%@ include file="kakaoCh.jsp" %>

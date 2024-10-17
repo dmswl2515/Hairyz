@@ -123,7 +123,7 @@ public class MyController {
     
     // 회원정보 수정 및 내 프로필 이동
     @RequestMapping("/updateProfile.do")
-    public String updateProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws ServletException, IOException {
+    public String updateProfile(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session) throws ServletException, IOException {
     	
     	String originalName = null;
 		String saveFileName = null;
@@ -209,6 +209,8 @@ public class MyController {
 			memberDao.updateProfile2(id, nickName, phone, zipcode, addr1, addr2);
 		}
     	
+    	
+    	session.setAttribute("userNickname", nickName); // 세션 닉네임 업데이트
     	
     	MemberDto dto = memberDao.selectMember(id);
     	model.addAttribute("profile_view", dto);

@@ -62,7 +62,7 @@
 		
 		<div class="container list my-4">
 			<!-- 게시글 검색 -->
-			<form id="searchForm" action="/boardSearch" method="get">
+			<form id="searchForm" action="${pageContext.request.contextPath}/boardSearch" method="get">
 			    <input type="hidden" name="category" value="${param.category}">
 			    <input type="hidden" name="page" value="${param.page}">
 			    <div class="input-group searchWrap mb-4 mx-auto col-md-6">
@@ -116,11 +116,11 @@
 			    }
 			
 			    function changeURL(page, category) {
-			        // URL 변경
-			        console.log('Navigating to /list.do?page=' + page + '&category=' + category);
+			    	var basePath = '${pageContext.request.contextPath}';
 			        
 			        // URL 변경
-			        window.location.href = '/list.do?page=' + page + '&category=' + category;
+			        window.location.href = basePath + '/list.do?page=' + page + '&category=' + category;
+			        //console.log('Navigating to /list.do?page=' + page + '&category=' + category);
 			    }
 			});
 			</script>
@@ -141,7 +141,7 @@
 			                    <div class="board-item" data-board-time="${formattedDate}">
 			                        <div class="content">
 			                            <h5>
-			                                <a href="/post_view.do/${board.bd_no}?page=${currentPage}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="text-dark">
+			                                <a href="${pageContext.request.contextPath}/post_view.do/${board.bd_no}?page=${currentPage}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="text-dark">
 			                                    ${board.bd_title}
 			                                </a>
 			                                <span class="badge badge-danger new-badge" style="display:none;">new</span>
@@ -174,7 +174,7 @@
 			                    <div class="board-item" data-board-time="${formattedDate}">
 			                        <div class="content">
 			                            <h5>
-			                                <a href="/post_view.do/${board.bd_no}?page=${currentPage}&category=${category}" class="text-dark">
+			                                <a href="${pageContext.request.contextPath}/post_view.do/${board.bd_no}?page=${currentPage}&category=${category}" class="text-dark">
 			                                    ${board.bd_title}
 			                                </a>
 			                                <span class="badge badge-danger new-badge" style="display:none;">new</span>
@@ -233,6 +233,7 @@
 		    <script>
 			document.getElementById('writeBtn').addEventListener('click', function(event) {
 			    event.preventDefault(); // 기본 링크 동작 방지
+			    var basePath = '${pageContext.request.contextPath}';
 			    
 			    // 세션에서 사용자 정보 확인
 			    var userId = '<c:out value="${sessionScope.userId}" />';
@@ -244,11 +245,11 @@
 		                const redirectUrl = window.location.href;
 		                
 		                sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
-		                window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+		                window.location.href = basePath + "/login.do?redirect=" + encodeURIComponent(redirectUrl);
 			        }
 			    } else {
 			        // 세션 정보가 있으면 글쓰기 페이지로 이동
-			        window.location.href = '/write.do';
+			        window.location.href = basePath + '/write.do';
 			    }
 			});
 			</script>
@@ -260,19 +261,19 @@
 			            <c:when test="${isSearch}">
 			                <c:if test="${currentPage > 1}">
 			                    <li class="page-item">
-			                        <a href="/boardSearch?page=${currentPage - 1}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">이전</a>
+			                        <a href="${pageContext.request.contextPath}/boardSearch?page=${currentPage - 1}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">이전</a>
 			                    </li>
 			                </c:if>
 			
 			                <c:forEach var="page" begin="1" end="${totalPages}">
 			                    <li class="page-item ${currentPage == page ? 'active' : ''}">
-			                        <a href="/boardSearch?page=${page}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">${page}</a>
+			                        <a href="${pageContext.request.contextPath}/boardSearch?page=${page}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">${page}</a>
 			                    </li>
 			                </c:forEach>
 			
 			                <c:if test="${currentPage < totalPages}">
 			                    <li class="page-item">
-			                        <a href="/boardSearch?page=${currentPage + 1}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">다음</a>
+			                        <a href="${pageContext.request.contextPath}/boardSearch?page=${currentPage + 1}&category=${category}&condition=${searchCondition}&keyword=${searchKeyword}" class="page-link">다음</a>
 			                    </li>
 			                </c:if>
 			            </c:when>
@@ -303,12 +304,13 @@
 		</div>
 	</div>
 	<script>
-	    function searchPosts() {
-	        var condition = $('#searchCondition').val();
-	        var keyword = $('#searchKeyword').val();
-	        var url = '/list.do?condition=' + encodeURIComponent(condition) + '&keyword=' + encodeURIComponent(keyword);
-	        window.location.href = url;
-	    }
+    function searchPosts() {
+    	var basePath = '${pageContext.request.contextPath}';
+        var condition = $('#searchCondition').val();
+        var keyword = $('#searchKeyword').val();
+        var url = basePath + '/list.do?condition=' + encodeURIComponent(condition) + '&keyword=' + encodeURIComponent(keyword);
+        window.location.href = url;
+    }
 	</script>
 					
 	<%@ include file="kakaoCh.jsp" %>
