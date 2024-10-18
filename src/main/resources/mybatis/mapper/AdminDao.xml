@@ -15,7 +15,7 @@
 	<select id="getAllQna" resultType="com.study.springboot.dto.QDto">
 	    SELECT *
 	    FROM QNA
-	    ORDER BY qna_rstate
+	    ORDER BY qna_rstate, qna_date DESC
 	</select>
 	
 	<!-- 커뮤니티 관리 -->

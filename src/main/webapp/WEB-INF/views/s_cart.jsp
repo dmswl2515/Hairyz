@@ -49,7 +49,7 @@
 	    line-height: 2; /* 이 테이블에만 적용 */
 	}
 	
-	picture {
+	.picture {
 		margin-left:10px;
 		margin-top:10px;
 		width:100px; 
