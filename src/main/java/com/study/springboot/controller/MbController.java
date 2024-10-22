@@ -18,6 +18,7 @@ import com.study.springboot.dao.IMemberDao;
 import com.study.springboot.dto.MemberDto;
 import com.study.springboot.service.MemberService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -105,7 +106,7 @@ public class MbController {
     @PostMapping("/loginOk.do")
     @ResponseBody
     public String login(@RequestParam("id") String id, @RequestParam("pw") String pw, @RequestParam(value = "redirect", required = false) String redirect, 
-    				    HttpSession session) {
+    					HttpServletRequest request, HttpSession session) {
     	
     	MemberDto member = memberDao.findById(id);  // 회원 정보를 먼저 가져옴
         String jsonResponse;
@@ -120,6 +121,10 @@ public class MbController {
 
         if (isValidUser) {
             int mbState = member.getMb_state();  // 회원 상태를 가져옴
+            
+            // 세션 초기화
+            session.invalidate();  // 기존 세션 무효화
+            session = request.getSession(true);  // 새로운 세션 생성
 
             if (mbState == 1) {
                 // 정상 회원인 경우
@@ -127,7 +132,7 @@ public class MbController {
                 session.setAttribute("userNickname", member.getMb_nickname()); 
 
                 // 리다이렉트 URL 처리
-                if (redirect != null && !redirect.isEmpty()) {
+                if (redirect != null && !redirect.isEmpty() || redirect.equals("/logout.do")) {
                     session.removeAttribute("redirect");
                     jsonResponse = "{\"code\": \"redirect\", \"url\": \"" + redirect + "\"}";
                 } else {
@@ -154,13 +159,18 @@ public class MbController {
     }
     
     @PostMapping("/checkSnsLoginEmail.do")
-    public ResponseEntity<Map<String, String>> checkSnsLoginEmail(@RequestBody Map<String, String> params, HttpSession session) {
+    public ResponseEntity<Map<String, String>> checkSnsLoginEmail(@RequestBody Map<String, String> params,
+    															  HttpServletRequest request, HttpSession session) {
         String email = params.get("email");
         String redirect = params.get("redirect"); // redirect URL 가져오기
 //        System.out.println("redirectUrl : " + redirect);
         
         MemberDto dto = memberDao.findById(email);  // 이메일로 회원 정보 조회
         Map<String, String> response = new HashMap<>();
+        
+        // 세션 초기화
+        session.invalidate();  // 기존 세션 무효화
+        session = request.getSession(true);  // 새로운 세션 생성
         
         if (dto != null) {
             int mbState = dto.getMb_state();  // 회원 상태 확인
@@ -172,7 +182,13 @@ public class MbController {
 
                 response.put("code", "exists");
                 response.put("desc", "SNS 계정으로 로그인 되었습니다.");
-                response.put("redirect", redirect != null ? redirect : "/main_view.do"); // redirect URL 추가
+                
+                // 리다이렉트 URL 처리
+                if (redirect == null || redirect.isEmpty() || redirect.equals("/logout.do")) {
+                    response.put("redirect", "/main_view.do"); // 기본 URL로 리다이렉트
+                } else {
+                    response.put("redirect", redirect); // 기존 redirect URL 사용
+                }
 
             } else if (mbState == 2) {  // 탈퇴한 회원
                 response.put("code", "withdrawn");
