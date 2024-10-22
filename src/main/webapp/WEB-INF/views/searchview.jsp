@@ -80,7 +80,7 @@
 		    <div>
 		    	<h5 style="display: flex; justify-content: space-between; align-items: center;">
 		    		<strong>커뮤니티</strong>
-		    		<a href="list.do" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
+		    		<a href="${pageContext.request.contextPath}/list.do" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
 		    	</h5>
 		    </div>
 		    <hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
@@ -93,7 +93,7 @@
 	        	<c:if test="${status.index < 3}">
 				    <div style="display: flex; align-items: flex-start;">    
 				        <div class="content" style="display: flex; flex-direction: column;">
-				            <a href="post_view.do/${bList.bd_no}" class="black-link">
+				            <a href="${pageContext.request.contextPath}/post_view.do/${bList.bd_no}" class="black-link">
 				            <h5>
 				                <span style="font-weight: bold;">
 				                    ${bList.bd_title}
@@ -123,7 +123,7 @@
 		<div class="contents" id="shop-content">
 		    <h5 style="display: flex; justify-content: space-between; align-items: center;">
 		    	<strong>쇼핑</strong>
-		    		<a href="s_main" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
+		    		<a href="${pageContext.request.contextPath}/s_main" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
 		    </h5>
 		    <hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
 			
@@ -139,7 +139,7 @@
 			        	<c:if test="${status.index < 3}">
 						    <div class="product-item" style="display: flex; align-items: flex-start;">   
 						        <div class="content" style="display: flex; flex-direction: column;">
-						            <a href="p_details?pdNum=${pList.pdNum}" class="black-link">
+						            <a href="${pageContext.request.contextPath}/p_details?pdNum=${pList.pdNum}" class="black-link">
 						            <h5>
 						                <span style="font-weight: bold;">
 						                    ${pList.pdName}

@@ -17,7 +17,7 @@
 <!-- 부트페이 -->
 <script src="https://js.bootpay.co.kr/bootpay-5.0.1.min.js" type="application/javascript"></script>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>결제하기</title>
 </head>
 <body>
 	<div class="content">
