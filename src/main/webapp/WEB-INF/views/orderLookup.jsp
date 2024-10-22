@@ -246,102 +246,80 @@ function updateStatusBadge(orderno, state) {
 
 
 $(document).ready(function() {
-    let rating = 0;  // 별점 값을 저장할 변수
-
-    $('.star').on('click', function() {
-        // 클릭한 별의 data-value 값을 가져옴
-        rating = $(this).data('value');
+	let rating = 0;
+    // 별점 처리
+    $(document).on('click', '.star', function() {
+        const orderNo = $(this).closest('.modal').find('.submitReview').data('order-no');
+        const rating = $(this).data('value');
         
-        // 별의 색상 업데이트
-        $('.star').removeClass('selected');
-        for (let i = 1; i <= rating; i++) {
-            $('.star[data-value="' + i + '"]').addClass('selected');
-        }
+        // 해당 주문의 별점 색상 업데이트
+        $(this).siblings('.star').removeClass('selected');
+        $(this).prevAll().addBack().addClass('selected');
 
-        // rating 값을 콘솔에 출력해서 확인 (필요 시)
-        console.log('선택한 별점: ' + rating);
+        console.log('주문번호: ' + orderNo + ', 선택한 별점: ' + rating);
+	    // 리뷰 등록
+	    $(document).on('click', '.submitReview', function() {
+	        const orderNo = $(this).data('order-no');
+	        const reviewText = $('#reviewText-' + orderNo).val();
+	        const uploadImageInput = $('#uploadImage-' + orderNo)[0];
+	        const file = uploadImageInput.files[0];
+	        
+	        const formData = new FormData();
+	        formData.append('rating', rating); // 클릭한 별점 값을 문자열로 변환해서 추가
+	        formData.append('memberNo', '${member.mb_no}'); // member.mb_no 추가
+	        formData.append('orderNo', orderNo);
+	        formData.append('reviewText', reviewText);
+	
+	        if (file) {
+	            formData.append('image', file);
+	        }
+	
+	        $.ajax({
+	            url: 'productRevie.do',
+	            type: 'POST',
+	            data: formData,
+	            contentType: false,
+	            processData: false,
+	            success: function(response) {
+	                console.log('리뷰가 등록되었습니다.', response);
+	                $('#reviewModal-' + orderNo).modal('hide');
+	                location.reload();
+	            },
+	            error: function(xhr, status, error) {
+	                console.error('리뷰 등록 실패:', error);
+	            }
+	        });
+	    });
     });
 
-    // 등록 버튼 클릭 이벤트
-    $('#submitReview').on('click', function() {
-        const reviewText = $('#reviewText').val(); // 리뷰 내용
-        const uploadImageInput = $('#uploadImage')[0]; // 파일 입력
-        const file = uploadImageInput.files[0]; // 선택한 파일
-        const orderNo = $(this).data('order-no'); // data-order-no 속성 가져오기
 
-        console.log("rating : " + rating); // rating 변수가 클릭된 값
+    // 이미지 미리보기
+    $(document).on('change', '[id^="uploadImage-"]', function() {
+        const orderNo = $(this).attr('id').split('-')[1];
+        const previewImage = $('#previewImage-' + orderNo);
+        const previewContainer = $('#previewContainer-' + orderNo);
+        const removePreviewBtn = $('#removePreview-' + orderNo);
 
-        // FormData 객체 생성
-        const formData = new FormData();
-        formData.append('memberNo', '${member.mb_no}'); // member.mb_no 추가
-        formData.append('orderNo', orderNo); // order.orderno 추가
-        formData.append('rating', String(rating)); // 클릭한 별점 값을 문자열로 변환해서 추가
-        formData.append('reviewText', reviewText);
-        
-        if (file) {
-            formData.append('image', file); // 이미지 파일 추가
-        }
-
-        // AJAX 요청
-        $.ajax({
-            url: 'productRevie.do',
-            type: 'POST',
-            data: formData,
-            contentType: false, // 파일 전송을 위한 설정
-            processData: false, // jQuery가 데이터를 처리하지 않도록 설정
-            success: function(response) {
-                // 성공적으로 리뷰가 등록된 경우
-                console.log('리뷰가 등록되었습니다.', response);
-                // 모달 닫기
-                $('#reviewModal').modal('hide');
-                // 추가 작업 (예: 페이지 새로 고침 또는 알림 표시)
-                location.reload(); // 페이지 새로 고침 (선택 사항)
-            },
-            error: function(xhr, status, error) {
-                console.error('리뷰 등록 실패:', error);
-                alert('리뷰 등록에 실패했습니다.'); // 에러 메시지
-            }
-        });
-    });
-});
-
-
-
-// 사진 스크립트
-document.addEventListener('DOMContentLoaded', function() {
-    const uploadImageInput = document.getElementById('uploadImage');
-    const previewImage = document.getElementById('previewImage');
-    const previewContainer = document.getElementById('previewContainer');
-    const removePreviewBtn = document.getElementById('removePreview');
-
-    // 이미지 업로드 시 미리보기 출력
-    uploadImageInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        
+        const file = this.files[0];
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-
             reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                previewContainer.style.display = 'inline-block'; // 미리보기 보이게
-                removePreviewBtn.style.display = 'inline-block'; // X 버튼 보이게
+                previewImage.attr('src', e.target.result);
+                previewContainer.show();
+                removePreviewBtn.show();
             };
-
-            reader.readAsDataURL(file); // 파일을 읽고 미리보기에 출력
-        } else {
-            alert('이미지 파일만 업로드 가능합니다.');
+            reader.readAsDataURL(file);
         }
     });
 
-    // X 버튼 클릭 시 미리보기 제거
-    removePreviewBtn.addEventListener('click', function() {
-        previewImage.src = ''; // 이미지 URL 초기화
-        previewContainer.style.display = 'none'; // 미리보기 숨기기
-        uploadImageInput.value = ''; // 파일 입력 초기화
-        removePreviewBtn.style.display = 'none'; // X 버튼 숨기기
+    // 미리보기 이미지 삭제
+    $(document).on('click', '[id^="removePreview-"]', function() {
+        const orderNo = $(this).attr('id').split('-')[1];
+        $('#uploadImage-' + orderNo).val('');
+        $('#previewImage-' + orderNo).attr('src', '').hide();
+        $(this).hide();
     });
 });
-
 
 </script>
 </head>
@@ -420,71 +398,70 @@ document.addEventListener('DOMContentLoaded', function() {
 			                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="updateOrderState(${order.orderno}, 3)">취소</button>
 										    <button type="button" class="btn btn-sm btn-outline-primary" onclick="updateOrderState(${order.orderno}, 4)">교환</button>
 										    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="updateOrderState(${order.orderno}, 5)">반품</button>
-											<button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#reviewModal">구매평 작성</button>
+										    <c:if test="${order.state != 3}">
+												<button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#reviewModal-${order.orderno}">구매평 작성</button>
+											</c:if>
 											
 											<!-- 모달 -->
-											<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+											<div class="modal fade" id="reviewModal-${order.orderno}" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel-${order.orderno}" aria-hidden="true">
 											    <div class="modal-dialog modal-lg" role="document">
 											        <div class="modal-content">
 											            <div class="modal-header">
-											                <h5 class="modal-title" id="reviewModalLabel">구매평 작성</h5>
+											                <h5 class="modal-title" id="reviewModalLabel-${order.orderno}">구매평 작성</h5>
 											                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 											                    <span aria-hidden="true">&times;</span>
 											                </button>
 											            </div>
 											            <div class="modal-body">
-														    <div class="d-flex justify-content-center mb-4">
-														        <!-- 이미지와 상품 정보 컨테이너 -->
-														        <div class="d-flex">
-														            <!-- 상품 이미지 -->
-														            <img src="${pageContext.request.contextPath}/upload/${order.changedfilename}" alt="상품사진" class="img-thumbnail" style="width: 150px; height: auto;">
-														
-														            <!-- 상품 정보 -->
-														            <div class="ml-3">
-														                <!-- 상품 이름 (굵게 표시) -->
-														                <h5 class="font-weight-bold">${order.productname}</h5>
-														
-														                <!-- 구매 수량 -->
-														                <p>구매 수량: ${order.orderamount}개</p>
-														            </div>
-														        </div>
-														    </div>
-														
-														    <!-- 상품 만족도 및 구매평 작성 부분 -->
-														    <div class="form-group">
-														        <label for="rating">상품은 만족하셨나요?</label>
-														        <div class="star-rating" id="rating">
-														            <span class="star" data-value="1">★</span>
-														            <span class="star" data-value="2">★</span>
-														            <span class="star" data-value="3">★</span>
-														            <span class="star" data-value="4">★</span>
-														            <span class="star" data-value="5">★</span>
-														        </div>
-														    </div>
-														    <div class="form-group">
-														        <label for="reviewText">구매평</label>
-														        <textarea class="form-control" id="reviewText" rows="3" maxlength="500" placeholder="10자 이상 입력해주세요."></textarea>
-														        <small id="reviewTextCount" class="form-text text-muted">0/500</small>
-														    </div>
-														    <div class="form-group">
-															    <label for="uploadImage" class="btn btn-warning">사진 첨부하기</label>
-															    <input type="file" class="form-control-file d-none" id="uploadImage">
-															</div>
-															<div id="previewContainer" style="position: relative; display: none;">
-															    <img id="previewImage" src="" alt="미리보기 이미지" style="max-width: 200px; max-height: 200px;">
-															    <!-- X 버튼 -->
-															    <button id="removePreview" style="position: absolute; top: 5px; right: 5px; background-color: black; color: white; border: none; cursor: pointer;">X</button>
-															</div>
-														</div>
-										
+											                <div class="d-flex justify-content-center mb-4">
+											                    <!-- 이미지와 상품 정보 컨테이너 -->
+											                    <div class="d-flex">
+											                        <!-- 상품 이미지 -->
+											                        <img src="${pageContext.request.contextPath}/upload/${order.changedfilename}" alt="상품사진" class="img-thumbnail" style="width: 150px; height: auto;">
+											                    
+											                        <!-- 상품 정보 -->
+											                        <div class="ml-3">
+											                            <!-- 상품 이름 (굵게 표시) -->
+											                            <h5 class="font-weight-bold">${order.productname}</h5>
+											                            <!-- 구매 수량 -->
+											                            <p>구매 수량: ${order.orderamount}개</p>
+											                        </div>
+											                    </div>
+											                </div>
+											
+											                <!-- 리뷰 작성 부분 -->
+											                <div class="form-group">
+											                    <label for="rating-${order.orderno}">상품은 만족하셨나요?</label>
+											                    <div class="star-rating" id="rating-${order.orderno}">
+											                        <span class="star" data-value="1">★</span>
+											                        <span class="star" data-value="2">★</span>
+											                        <span class="star" data-value="3">★</span>
+											                        <span class="star" data-value="4">★</span>
+											                        <span class="star" data-value="5">★</span>
+											                    </div>
+											                </div>
+											                <div class="form-group">
+											                    <label for="reviewText-${order.orderno}">구매평</label>
+											                    <textarea class="form-control" id="reviewText-${order.orderno}" rows="3" maxlength="500" placeholder="10자 이상 입력해주세요."></textarea>
+											                    <small id="reviewTextCount-${order.orderno}" class="form-text text-muted">0/500</small>
+											                </div>
+											                <div class="form-group">
+											                    <label for="uploadImage-${order.orderno}" class="btn btn-warning">사진 첨부하기</label>
+											                    <input type="file" class="form-control-file d-none" id="uploadImage-${order.orderno}">
+											                </div>
+											                <div id="previewContainer-${order.orderno}" style="position: relative; display: none;">
+											                    <img id="previewImage-${order.orderno}" src="" alt="미리보기 이미지" style="max-width: 200px; max-height: 200px;">
+											                    <button id="removePreview-${order.orderno}" style="position: absolute; top: 5px; right: 5px; background-color: black; color: white; border: none; cursor: pointer;">X</button>
+											                </div>
+											            </div>
+											
 											            <div class="modal-footer">
 											                <button type="button" class="btn btn-warning" data-dismiss="modal">취소</button>
-											                <button type="button" class="btn btn-warning" id="submitReview" data-member-no="${member.mb_no}" data-order-no="${order.orderno}">등록</button>
+											                <button type="button" class="btn btn-warning submitReview" data-member-no="${member.mb_no}" data-order-no="${order.orderno}">등록</button>
 											            </div>
 											        </div>
 											    </div>
-											</div>	
-											
+											</div>
 			                            </td>
 			                        </tr>
 			                    </c:forEach>
