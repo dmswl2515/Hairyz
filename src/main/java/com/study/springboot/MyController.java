@@ -861,7 +861,10 @@ public class MyController {
 	    
 	    
 	    // 총 항목 수 계산
-	    int totalCount = pDto.getTotal();
+	    int totalCount = 0;
+	    if(pDto != null) {
+	    	totalCount = pDto.getTotal();
+	    }
 	    // 총 페이지 수 계산
 	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
