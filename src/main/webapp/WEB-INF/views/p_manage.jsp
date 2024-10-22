@@ -124,7 +124,7 @@
 		                    </td>
 		                    <td class="text-center align-middle">${item.pd_amount}개</td>
 		                    <td class="text-center align-middle">
-		                        <form method="post" action="/updateSellingStatus" id="sellingForm" onsubmit="return submit_form();">
+		                        <form method="post" action="${pageContext.request.contextPath}/updateSellingStatus" id="sellingForm" onsubmit="return submit_form();">
 								    <input type="hidden" name="pdNum" value="${item.pdNum}" />
 								    <c:choose>
 									    <c:when test="${fn:contains(item.pd_selling, 'Y')}">
@@ -147,7 +147,7 @@
 								            console.log(sellStatus)
 								            
 								            $.ajax({
-								    			url:'/updateSellingStatus',
+								    			url:'${pageContext.request.contextPath}/updateSellingStatus',
 								    			type:'POST',
 								    			data:{pdNum : pdNum, sellStatus : sellStatus},
 								    			dataType: 'json',
@@ -172,14 +172,14 @@
 		                        
 		                        <input type="button" class="btn btn-warning custom-width" 
 		                        value="상품 수정" 
-		                        onclick="window.location.href='p_modify?page=${currentPage}&pdNum=${item.pdNum}';"/>
+		                        onclick="window.location.href='${pageContext.request.contextPath}/p_modify?page=${currentPage}&pdNum=${item.pdNum}';"/>
 		                    </td>
 		                </tr>
 		            </c:forEach>
 		        </tbody>
 		    </table>   	    
 		<div class="container d-flex justify-content-end">
-	        <input type="button" class="btn btn-secondary custom-width" value="등록하기"  onclick="window.location.href='p_registration';"/>
+	        <input type="button" class="btn btn-secondary custom-width" value="등록하기"  onclick="window.location.href='${pageContext.request.contextPath}/p_registration';"/>
        	</div>
        	</div>
 		
@@ -191,7 +191,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -201,7 +201,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -212,7 +212,7 @@
 	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
+	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -223,7 +223,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -233,7 +233,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>

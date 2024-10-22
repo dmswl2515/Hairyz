@@ -114,7 +114,7 @@
 			                	</span>
 			                </td>
 			                <td class="text-center align-middle">
-			                	<a href="post_view.do/${cList.bd_no}" style="color: black;">
+			                	<a href="${pageContext.request.contextPath}/post_view.do/${cList.bd_no}" style="color: black;">
 			                		${cList.bd_title}
 			                	</a>	
 			                </td>
@@ -147,7 +147,7 @@
 	
 	        if (selectedItems.length > 0) {
 	            // AJAX 요청으로 서버에 숨길 항목들 전달
-	            fetch('/hideCommunityPosts', {
+	            fetch('${pageContext.request.contextPath}/hideCommunityPosts', {
 	                method: 'POST',
 	                headers: {
 	                    'Content-Type': 'application/json',
@@ -180,7 +180,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_community.do?page=1&pageSize=${pageSize}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_community.do?page=1&pageSize=${pageSize}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -190,7 +190,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_community.do?page=${currentPage - 1}&pageSize=${pageSize}'">&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_community.do?page=${currentPage - 1}&pageSize=${pageSize}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -201,7 +201,7 @@
 	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_community.do?page=${i}&pageSize=${pageSize}'">${i}</button>
+	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_community.do?page=${i}&pageSize=${pageSize}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -212,7 +212,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_community.do?page=${currentPage + 1}&pageSize=${pageSize}'">&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_community.do?page=${currentPage + 1}&pageSize=${pageSize}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -222,7 +222,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_community.do?page=${totalPages}&pageSize=${pageSize}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_community.do?page=${totalPages}&pageSize=${pageSize}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>

@@ -140,7 +140,7 @@
 			        
 				        <input type="submit" class="btn btn-outline-warning mb-2 custom-width" value="수정하기" onclick="showMessage()"/></br>
 				        <input type="button" class="btn btn-outline-warning custom-width" value="취소하기"
-				               onclick="window.location.href='/p_manage'"/>
+				               onclick="window.location.href='${pageContext.request.contextPath}/p_manage'"/>
 			    </form>
 			    
 			    <script>

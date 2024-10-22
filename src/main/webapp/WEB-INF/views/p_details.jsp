@@ -472,7 +472,7 @@
 		        </c:when>
 		        <c:otherwise>
 		            <button type="button" class="btn page-button" style="color:gray;" 
-		            		onclick="location.href='p_details?reviewPage=1&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">&lt;&lt;</button>
+		            		onclick="location.href='${pageContext.request.contextPath}/p_details?reviewPage=1&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">&lt;&lt;</button>
 		        </c:otherwise>
 		    </c:choose>
 		
@@ -483,7 +483,7 @@
 		        </c:when>
 		        <c:otherwise>
 		            <button type="button" class="btn page-button" style="color:gray;" 
-		            		onclick="location.href='p_details?reviewPage=${currentReviewPage - 1}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">&lt;</button>
+		            		onclick="location.href='${pageContext.request.contextPath}/p_details?reviewPage=${currentReviewPage - 1}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">&lt;</button>
 		        </c:otherwise>
 		    </c:choose>
 		
@@ -495,7 +495,7 @@
 		            </c:when>
 		            <c:otherwise>
 		                <button type="button" class="btn page-button" style="color:gray;" 
-		                		onclick="location.href='p_details?reviewPage=${i}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">${i}</button>
+		                		onclick="location.href='${pageContext.request.contextPath}/p_details?reviewPage=${i}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}'">${i}</button>
 		            </c:otherwise>
 		        </c:choose>
 		    </c:forEach>
@@ -507,7 +507,7 @@
 		        </c:when>
 		        <c:otherwise>
 		            <button type="button" class="btn page-button" style="color:gray;" 
-		                    onclick="location.href='p_details?reviewPage=${currentReviewPage + 1}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}&scrollToReviews=true';">&gt;</button>
+		                    onclick="location.href='${pageContext.request.contextPath}/p_details?reviewPage=${currentReviewPage + 1}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}&scrollToReviews=true';">&gt;</button>
 		        </c:otherwise>
 		    </c:choose>
 		
@@ -518,7 +518,7 @@
 		        </c:when>
 		        <c:otherwise>
 		            <button type="button" class="btn page-button" style="color:gray;" 
-		            		onclick="location.href='p_details?reviewPage=${totalReviewPages}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}&scrollToReviews=true';">&gt;&gt;</button>
+		            		onclick="location.href='${pageContext.request.contextPath}/p_details?reviewPage=${totalReviewPages}&pdNum=${product.pdNum}&pr_reviewId=${item.pr_reviewId}&scrollToReviews=true';">&gt;&gt;</button>
 		        </c:otherwise>
 		    </c:choose>
 			</div>
@@ -750,7 +750,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?qnaPage=1&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;&lt;</button>
+	            		onclick="location.href='${pageContext.request.contextPath}/p_details?qnaPage=1&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -761,7 +761,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?qnaPage=${currentQnaPage - 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;</button>
+	            		onclick="location.href='${pageContext.request.contextPath}/p_details?qnaPage=${currentQnaPage - 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -773,7 +773,7 @@
 	            </c:when>
 	            <c:otherwise>
 	                <button type="button" class="btn page-button" style="color:gray;" 
-	                		onclick="location.href='p_details?qnaPage=${i}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">${i}</button>
+	                		onclick="location.href='${pageContext.request.contextPath}/p_details?qnaPage=${i}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -785,7 +785,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	                    onclick="location.href='p_details?qnaPage=${currentQnaPage + 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;</button>
+	                    onclick="location.href='${pageContext.request.contextPath}/p_details?qnaPage=${currentQnaPage + 1}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -796,7 +796,7 @@
 	        </c:when>
 	        <c:otherwise>
 	            <button type="button" class="btn page-button" style="color:gray;" 
-	            		onclick="location.href='p_details?qnaPage=${totalQnaPages}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;&gt;</button>
+	            		onclick="location.href='${pageContext.request.contextPath}/p_details?qnaPage=${totalQnaPages}&pdNum=${product.pdNum}&qna_no=${qDTO.qna_no}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
@@ -863,7 +863,7 @@
 	    console.log(Productquantity)
 	    console.log(Productprice)
 	    
-	    let url = '/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
+	    let url = '${pageContext.request.contextPath}/s_purchase?productNum=' + encodeURIComponent(ProductNum) +
 	          '&productName=' + encodeURIComponent(ProductName) +
 	          '&productImage=' + encodeURIComponent(ProductImage) +
 	          '&productQuantity=' + encodeURIComponent(Productquantity) +
@@ -882,7 +882,7 @@
 		        const redirectUrl = window.location.href;
 		        
 		        sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
-		        window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+		        window.location.href = "${pageContext.request.contextPath}/login.do?redirect=" + encodeURIComponent(redirectUrl);
 		        return; // 더 이상 진행하지 않음
 		    }
 		 
@@ -910,7 +910,7 @@
 	        sbagPrice: price
 	    };
 	
-	    fetch('/addProduct', {
+	    fetch('${pageContext.request.contextPath}/addProduct', {
 	        method: 'POST',
 	        headers: {
 	            'Content-Type': 'application/json'
@@ -955,7 +955,7 @@
 	}
 
 	function goToCartPage() {
-	    window.location.href = "s_cart"; // 장바구니 페이지로 이동
+	    window.location.href = "${pageContext.request.contextPath}/s_cart"; // 장바구니 페이지로 이동
 	}
 	
 	// Q&A 모달 열기
@@ -965,7 +965,7 @@
 	        const redirectUrl = window.location.href;
 	        
 	        sessionStorage.setItem('redirect', redirectUrl); // 현재 페이지 URL을 세션 스토리지에 저장
-	        window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl);
+	        window.location.href = "${pageContext.request.contextPath}/login.do?redirect=" + encodeURIComponent(redirectUrl);
 	        return;
 	    } else{        	
 	        $('#qnaModal').modal('show');
@@ -990,7 +990,7 @@
 	
 	    // 서버에 데이터를 전송 (예시: AJAX 사용)
 	    $.ajax({
-	        url: '/submitQnA', // Q&A를 제출할 URL
+	        url: '${pageContext.request.contextPath}/submitQnA', // Q&A를 제출할 URL
 	        type: 'POST',
 	        data: {
 	            content: content,
@@ -1003,7 +1003,7 @@
 	            $('#qnaModal').modal('hide');
 	            document.getElementById('qnaForm').reset(); // 폼 초기화
 	            
-	            window.location.href = "/p_details?pdNum=" + productNum; 
+	            window.location.href = "${pageContext.request.contextPath}/p_details?pdNum=" + productNum; 
 	        },
 	        error: function(error) {
 	            alert('문의 등록에 실패했습니다. 다시 시도해 주세요.');

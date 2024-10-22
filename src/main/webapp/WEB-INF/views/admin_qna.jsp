@@ -81,7 +81,7 @@
 				                <input type="hidden" value="${qList.qna_no}">
 							</td>
 			                <td class="text-center align-middle">
-			                	<a href="p_details?pdNum=${qList.qna_pnum}" style="color: black;">
+			                	<a href="${pageContext.request.contextPath}/p_details?pdNum=${qList.qna_pnum}" style="color: black;">
 			                		${qList.qna_pnum}
 			                	</a>	
 			                </td>
@@ -138,7 +138,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=1&pageSize=${pageSize}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=1&pageSize=${pageSize}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -148,7 +148,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${currentPage - 1}&pageSize=${pageSize}'">&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${currentPage - 1}&pageSize=${pageSize}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -159,7 +159,7 @@
 	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${i}&pageSize=${pageSize}'">${i}</button>
+	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${i}&pageSize=${pageSize}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -170,7 +170,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${currentPage + 1}&pageSize=${pageSize}'">&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${currentPage + 1}&pageSize=${pageSize}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -180,7 +180,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${totalPages}&pageSize=${pageSize}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${totalPages}&pageSize=${pageSize}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
