@@ -27,22 +27,6 @@
     	flex: 0; /* 원하는 값으로 조정 */
 	}
 	
-	.table {
-     	border-color: #ffc107; /* 테이블 테두리 색상 */
-     	border-collapse: collapse;
-  }
-
-  .table th{
-  	  background-color: #fff9c4;
-  }
-  
-  .table td {
-      border-color: #ffc107; /* 테이블 헤더와 셀 테두리 색상 */
-  }
-  
-  .table thead th {
-      border-bottom: 1px solid #ffcc00;
-  }
   
   .product-container {
 	  display: flex; /* 수평정렬 */
@@ -60,23 +44,24 @@
 	}
 	
 	.page-button {
-			background-color: #ffe082;
-			border: 1px solid #ffc107;
-			color: gray;
+			background-color: #ffffff;
+			border: 1px solid #d3d3d3;
+			color: #000000;
 			justify-content: center;
 			cursor: pointer;
-		}
+	}
 		
 	.page-button:hover {
-	        background-color: #ffc107; /* 호버 시 색상 변화 */
-	    }
+	        background-color: #0d6efd; /* 호버 시 색상 변화 */
+	        color: #000000;
+	}
 </style>
 	
 	<div class="container">
 		<h3 class="text-center mt-5 mb-4"><strong>커뮤니티 관리</strong></h3>
-		<table class="table table-bordered mb-2">
-			  <thead>
-			    <tr class="table-warning text-center">
+		<table class="table table-hover table-striped table-bordered text-center align-middle mb-2">
+			  <thead class="thead-dark">
+			    <tr>
 			      <th class="text-center align-middle">
 			      	<div class="d-flex justify-content-center align-items-center" style="height: 100%; margin-left:10px;">
 	                      <input class="form-check-input" type="checkbox" id="selectAll">
@@ -145,7 +130,7 @@
 	</div>
 	
 	<div class="container d-flex justify-content-end">
-	        <input type="button" class="btn btn-outline-warning custom-width page-button" value="선택항목 숨기기"/>
+	        <input type="button" class="btn btn-warning custom-width" value="선택항목 숨기기"/>
     </div>
     
     <script>
