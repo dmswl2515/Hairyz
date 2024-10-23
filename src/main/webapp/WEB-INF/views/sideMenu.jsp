@@ -9,32 +9,32 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 200px; height: 100vh; position: fixed;">
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-            <a href="memberManagement.do" class="nav-link text-dark">
+            <a href="${pageContext.request.contextPath}/memberManagement.do" class="nav-link text-dark">
                 회원관리
             </a>
         </li>
         <li>
-            <a href="p_manage" class="nav-link text-dark">
+            <a href="${pageContext.request.contextPath}/p_manage" class="nav-link text-dark">
                 상품관리
             </a>
         </li>
         <li>
-            <a href="salesManagement.do" class="nav-link text-dark">
+            <a href="${pageContext.request.contextPath}/salesManagement.do" class="nav-link text-dark">
                 판매관리
             </a>
         </li>
         <li>
-            <a href="admin_qna.do" class="nav-link text-dark">
+            <a href="${pageContext.request.contextPath}/admin_qna.do" class="nav-link text-dark">
                 QnA관리
             </a>
         </li>
         <li>
-            <a href="reviewManager.do" class="nav-link text-dark">
+            <a href="${pageContext.request.contextPath}/reviewManager.do" class="nav-link text-dark">
                 후기관리
             </a>
         </li>
         <li>
-            <a href="admin_community.do" class="nav-link text-dark">
+            <a href="${pageContext.request.contextPath}/admin_community.do" class="nav-link text-dark">
                 커뮤니티관리
             </a>
         </li>

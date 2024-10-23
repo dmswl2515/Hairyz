@@ -68,9 +68,9 @@
      <script type="text/javascript">
         function hideQnA() {
             const qnaNo = '${qnaNo}';
-            
+            var basePath = '${pageContext.request.contextPath}'; 
             $.ajax({
-                url: 'hideQna.do',
+                url: basePath + '/hideQna.do',
                 type: 'POST',
                 data: {
                     qnaNo: qnaNo
@@ -89,9 +89,10 @@
         function submitQnA() {
             const qnaNo = '${qnaNo}';
             const qnaText = document.getElementById('qnaText').value;
+            var basePath = '${pageContext.request.contextPath}'; 
             
             $.ajax({
-                url: 'submitQnaReply.do',
+                url: basePath + '/submitQnaReply.do',
                 type: 'POST',
                 data: {
                 	qnaNo: qnaNo,

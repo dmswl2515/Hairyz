@@ -275,7 +275,7 @@ $(document).ready(function() {
 	            formData.append('image', file);
 	        }
 	
-        	var basePath = '${pageContext.request.contextPath}'; 
+        	var baseP	ath = '${pageContext.request.contextPath}'; 
 	        $.ajax({
 	            url: basePath + '/productRevie.do',
 	            type: 'POST',

@@ -68,9 +68,9 @@
      <script type="text/javascript">
         function hideReview() {
             const reviewId = '${id}';
-            
+            var basePath = '${pageContext.request.contextPath}'; 
             $.ajax({
-                url: 'hideReview.do',
+                url: basePath + '/hideReview.do',
                 type: 'POST',
                 data: {
                     reviewId: reviewId
@@ -89,9 +89,10 @@
         function submitReply() {
             const reviewId = '${id}';
             const replyText = document.getElementById('replyText').value;
+            var basePath = '${pageContext.request.contextPath}'; 
             
             $.ajax({
-                url: 'submitReply.do',
+                url: basePath + '/submitReply.do',
                 type: 'POST',
                 data: {
                     reviewId: reviewId,
