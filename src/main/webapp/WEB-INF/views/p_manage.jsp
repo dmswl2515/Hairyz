@@ -49,29 +49,6 @@
 		    vertical-align: middle !important; /* 모든 테이블 셀의 내용을 세로로 가운데 정렬 */
 		}
 		
-		.table {
-	        border-color: #ffc107; /* 테이블 테두리 색상 */
-	   }
-	
-	   .table th{
-	  	    background-color: #fff9c4;
-	   }
-	  
-	   .table td {
-	        border-color: #ffc107; /* 테이블 헤더와 셀 테두리 색상 */
-	   }
-	  
-	   .table thead th {
-		    border-bottom: 1px solid #ffcc00;
-	   }
-		
-	   .table-white {
-			background-color: #ffffff;
-	   }
-		
-	   .table-bottom-border {
-		    border-bottom: 1px solid #ffc107; /* 원하는 색상과 두께로 테두리 설정 */
-	  }
 		
 	  /* 페이지네이션 */
 	  .director {
@@ -82,16 +59,17 @@
 	  }
 		
 	  .page-button {
-			background-color: #ffe082;
-			border: 1px solid #ffc107;
-			color: gray;
+			background-color: #ffffff;
+			border: 1px solid #d3d3d3;
+			color: #000000;
 			justify-content: center;
 			cursor: pointer;
-	  }
-			
-	  .page-button:hover {
-	        background-color: #ffc107; /* 호버 시 색상 변화 */
-	  }
+	 }
+		
+	.page-button:hover {
+	        background-color: #0d6efd; /* 호버 시 색상 변화 */
+	        color: #000000;
+	 }
 	
 	  .custom-container {
            max-width: 1000px;
@@ -110,14 +88,14 @@
                     
                 </select>
                 <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="통합검색" aria-label="Search" style="width: 300px;" value="${keyword}">
-                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">검색</button>
+                <button class="btn btn-warning my-2 my-sm-0" type="submit">검색</button>
             </form>
         </div>     
 	
 		<div class="container">
-		    <table class="table table-bordered mb-2">
-		        <thead>
-		            <tr class="table-warning text-center">
+		    <table class="table table-hover table-striped table-bordered text-center align-middle mb-2">
+		        <thead class="thead-dark">
+		            <tr>
 		                <th scope="col">상품번호</th>
 		                <th scope="col">상품명</th>
 		                <th scope="col">재고</th>
@@ -146,16 +124,16 @@
 		                    </td>
 		                    <td class="text-center align-middle">${item.pd_amount}개</td>
 		                    <td class="text-center align-middle">
-		                        <form method="post" action="/updateSellingStatus" id="sellingForm" onsubmit="return submit_form();">
+		                        <form method="post" action="${pageContext.request.contextPath}/updateSellingStatus" id="sellingForm" onsubmit="return submit_form();">
 								    <input type="hidden" name="pdNum" value="${item.pdNum}" />
 								    <c:choose>
 									    <c:when test="${fn:contains(item.pd_selling, 'Y')}">
-									        <input type="button" id="toggleSellingButton" class="btn btn-outline-danger custom-width mb-2"
+									        <input type="button" id="toggleSellingButton" class="btn btn-danger custom-width mb-2"
 									               value="판매 중지" onclick="submit_form('${item.pdNum}', 'Y')"/>
 									    </c:when>
 									    <c:when test="${fn:contains(item.pd_selling, 'N')}">
 									        
-									        <input type="button" id="toggleSellingButton" class="btn btn-outline-warning custom-width mb-2"
+									        <input type="button" id="toggleSellingButton" class="btn btn-warning custom-width mb-2"
 									               value="판매 재시작" style="text-align: center; padding-right: 95px;" onclick="submit_form('${item.pdNum}', 'N')"/>
 									    </c:when>
 									</c:choose>
@@ -169,7 +147,7 @@
 								            console.log(sellStatus)
 								            
 								            $.ajax({
-								    			url:'/updateSellingStatus',
+								    			url:'${pageContext.request.contextPath}/updateSellingStatus',
 								    			type:'POST',
 								    			data:{pdNum : pdNum, sellStatus : sellStatus},
 								    			dataType: 'json',
@@ -192,16 +170,16 @@
 								</form>
 		                        <br>
 		                        
-		                        <input type="button" class="btn btn-outline-warning custom-width" 
+		                        <input type="button" class="btn btn-warning custom-width" 
 		                        value="상품 수정" 
-		                        onclick="window.location.href='p_modify?page=${currentPage}&pdNum=${item.pdNum}';"/>
+		                        onclick="window.location.href='${pageContext.request.contextPath}/p_modify?page=${currentPage}&pdNum=${item.pdNum}';"/>
 		                    </td>
 		                </tr>
 		            </c:forEach>
 		        </tbody>
 		    </table>   	    
 		<div class="container d-flex justify-content-end">
-	        <input type="button" class="btn btn-outline-warning custom-width" value="등록하기"  onclick="window.location.href='p_registration';"/>
+	        <input type="button" class="btn btn-secondary custom-width" value="등록하기"  onclick="window.location.href='${pageContext.request.contextPath}/p_registration';"/>
        	</div>
        	</div>
 		
@@ -213,7 +191,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=1&condition=${condition}&keyword=${keyword}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -223,7 +201,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${currentPage - 1}&condition=${condition}&keyword=${keyword}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -234,7 +212,7 @@
 	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
+	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${i}&condition=${condition}&keyword=${keyword}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -245,7 +223,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${currentPage + 1}&condition=${condition}&keyword=${keyword}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -255,7 +233,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/p_manage?page=${totalPages}&condition=${condition}&keyword=${keyword}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>

@@ -42,7 +42,7 @@
 			    <form action="p_registration" method="post" enctype="multipart/form-data" class="text-center">
 			        <!-- 첫 번째 파일 선택 -->
 			        <div style="text-align: center;">
-				        <img id="productImagePreview1" src="images/add_photo.png" alt="상품 이미지 1" 
+				        <img id="productImagePreview1" src="${pageContext.request.contextPath}/images/add_photo.png" alt="상품 이미지 1" 
 	    					 class="image-preview" style="width: 150px; height: 150px; cursor: pointer; object-fit: cover; border-radius: 15px;" />
 			            <input type="file" name="file" id="fileInput" class="form-control-file" required 
 			            	   onchange="checkFileSize(event, 'productImagePreview1', 'fileName')" style="display: none;"/><br>
@@ -77,7 +77,7 @@
 			       
 			
 			        <div style="text-align: center;">
-			            <img id="productImagePreview2" src="images/add_photo.png" alt="상품 상세 이미지 2" 
+			            <img id="productImagePreview2" src="${pageContext.request.contextPath}/images/add_photo.png" alt="상품 상세 이미지 2" 
      						 class="image-preview" style="width: 150px; height: 150px; cursor: pointer; object-fit: cover; border-radius: 15px;" /><br>
 			            
 			            <input type="file" name="file2" id="fileInput2" class="form-control-file" required 

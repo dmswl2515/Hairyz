@@ -22,22 +22,7 @@
 		<%@ include file="sideMenu.jsp" %>
 	</div>	
 <style>
-	.table {
-     border-color: #ffc107; /* 테이블 테두리 색상 */
-     border-collapse: collapse;
-  }
 
-  .table th{
-  	  background-color: #fff9c4;
-  }
-  
-  .table td {
-      border-color: #ffc107; /* 테이블 헤더와 셀 테두리 색상 */
-  }
-  
-  .table thead th {
-      border-bottom: 1px solid #ffcc00;
-  }
   
   .product-container {
 	  display: flex; /* 수평정렬 */
@@ -55,23 +40,24 @@
 	}
 	
 	.page-button {
-			background-color: #ffe082;
-			border: 1px solid #ffc107;
-			color: gray;
+			background-color: #ffffff;
+			border: 1px solid #d3d3d3;
+			color: #000000;
 			justify-content: center;
 			cursor: pointer;
 		}
 		
 	.page-button:hover {
-	        background-color: #ffc107; /* 호버 시 색상 변화 */
+	        background-color: #0d6efd; /* 호버 시 색상 변화 */
+	        color: #000000;
 	    }
 </style>
 	
 	<div class="container">
 		<h3 class="text-center mt-5 mb-4"><strong>Q&A 관리</strong></h3>
-		<table class="table table-bordered mb-2">
-			  <thead>
-			    <tr class="table-warning text-center">
+		<table class="table table-hover table-striped table-bordered text-center align-middle mb-2">
+			  <thead class="thead-dark">
+			    <tr>
 			      <th scope="col">번호</th>
 			      <th scope="col">상품번호</th>
 			      <th scope="col">날짜</th>
@@ -95,7 +81,7 @@
 				                <input type="hidden" value="${qList.qna_no}">
 							</td>
 			                <td class="text-center align-middle">
-			                	<a href="p_details?pdNum=${qList.qna_pnum}" style="color: black;">
+			                	<a href="${pageContext.request.contextPath}/p_details?pdNum=${qList.qna_pnum}" style="color: black;">
 			                		${qList.qna_pnum}
 			                	</a>	
 			                </td>
@@ -106,8 +92,8 @@
 	                        <td onclick="window.open('qnaReply.do?qnaNo=${qList.qna_no}&number=${(currentPage - 1) * pageSize + status.index + 1}&qnaDate=${qList.qna_date}&qnaName=${qList.qna_name}&qnaContent=${qList.qna_content}', '_blank', 'width=700, height=600, top=50, left=50, scrollbars=yes')" style="cursor: pointer;">
 	                            <div class="product-container">    
                                     <c:choose>
-								        <c:when test="${fn:length(qList.qna_content) > 28}">
-								            ${fn:substring(qList.qna_content, 0, 28)}... <!-- 글자 수가 10을 초과하면 자르고 "..."을 추가 -->
+								        <c:when test="${fn:length(qList.qna_content) > 23}">
+								            ${fn:substring(qList.qna_content, 0, 23)}... <!-- 글자 수가 10을 초과하면 자르고 "..."을 추가 -->
 								        </c:when>
 								        <c:otherwise>
 								            ${qList.qna_content} <!-- 글자 수가 10 이하인 경우 그대로 출력 -->
@@ -115,13 +101,13 @@
 								    </c:choose>
 								    
 								    &nbsp;&nbsp;			                                    
-	                                <div style="margin-top: 1px;">
+	                                <div style="display: inline-block; vertical-align: middle; margin-top: 1px;">
 	                                    <c:if test="${qList.qna_qstate == '비공개'}">
 	                                        <i class="fas fa-lock"></i>&nbsp;&nbsp;
 	                                    </c:if>
 	                                    
 	                                    <c:if test="${qList.isNew()}">
-	                                        <span class="badge badge-secondary">New</span>
+	                                        <span class="badge badge-secondary" style="vertical-align: middle;">New</span>
 	                                    </c:if>
 	                                </div>
 	                            </div>     
@@ -152,7 +138,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=1&pageSize=${pageSize}'">&lt;&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=1&pageSize=${pageSize}'">&lt;&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -162,7 +148,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&lt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${currentPage - 1}&pageSize=${pageSize}'">&lt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${currentPage - 1}&pageSize=${pageSize}'">&lt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -173,7 +159,7 @@
 	                <button type="button" class="btn page-button" style="color:gray;" disabled>${i}</button>
 	            </c:when>
 	            <c:otherwise>
-	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${i}&pageSize=${pageSize}'">${i}</button>
+	                <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${i}&pageSize=${pageSize}'">${i}</button>
 	            </c:otherwise>
 	        </c:choose>
 	    </c:forEach>
@@ -184,7 +170,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${currentPage + 1}&pageSize=${pageSize}'">&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${currentPage + 1}&pageSize=${pageSize}'">&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 	
@@ -194,7 +180,7 @@
 	            <button type="button" class="btn page-button" style="color:gray;" disabled>&gt;&gt;</button>
 	        </c:when>
 	        <c:otherwise>
-	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='admin_qna.do?page=${totalPages}&pageSize=${pageSize}'">&gt;&gt;</button>
+	            <button type="button" class="btn page-button" style="color:gray;" onclick="location.href='${pageContext.request.contextPath}/admin_qna.do?page=${totalPages}&pageSize=${pageSize}'">&gt;&gt;</button>
 	        </c:otherwise>
 	    </c:choose>
 		</div>
