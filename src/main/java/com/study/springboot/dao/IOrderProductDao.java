@@ -16,5 +16,6 @@ public interface IOrderProductDao
 	public List<OrderProductDto> selectReturnExchange(int od_mno);
 	public PageDto orderTotal();
 	public List<OrderProductDto> selectPageSalesM(int startRow, int endRow);
+	public PageDto orderProductTotal();
 	
 }

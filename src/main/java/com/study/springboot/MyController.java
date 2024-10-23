@@ -607,7 +607,7 @@ public class MyController {
 	    }
 
 	    // 총 항목 수 계산
-	    PageDto pDto = orderProductDao.orderTotal();
+	    PageDto pDto = orderProductDao.orderProductTotal();
 	    int totalCount = pDto.getTotal();
 	    // 총 페이지 수 계산
 	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);

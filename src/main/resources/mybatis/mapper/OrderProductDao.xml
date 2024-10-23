@@ -71,6 +71,10 @@
 		SELECT COUNT(*) as total FROM orders
 	</select>
 	
+	<select id="orderProductTotal" resultType="com.study.springboot.dto.PageDto">
+		select count(*) as total from orders o join product p on o.od_num = p.pd_num order by o.od_date desc
+	</select>
+	
 	<select id="selectPageSalesM" resultType="com.study.springboot.dto.OrderProductDto">
 		SELECT *
 		FROM (

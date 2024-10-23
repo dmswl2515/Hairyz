@@ -77,7 +77,7 @@ body {
 					                <c:otherwise>
 					                    <c:forEach var="rm" items="${reviewManager}" varStatus="status">
 					                    	 <c:if test="${rm.pr_visibility == 'Y'}">
-						                        <tr style="cursor: pointer;" onclick="window.open('reviewReply.do?reviewId=${rm.pr_reviewId}&reviewDate=${rm.pr_reviewDate}&mbName=${rm.pr_MbNnme}&reviewText=${rm.pr_reviewText}', '_blank', 'width=700, height=600, top=50, left=50, scrollbars=yes')">
+						                        <tr style="cursor: pointer;" onclick="window.open('${pageContext.request.contextPath}/reviewReply.do?reviewId=${rm.pr_reviewId}&reviewDate=${rm.pr_reviewDate}&mbName=${rm.pr_MbNnme}&reviewText=${rm.pr_reviewText}', '_blank', 'width=700, height=600, top=50, left=50, scrollbars=yes')">
 						                            <td>${rm.pr_reviewId}</td>
 						                            <td>${rm.pr_reviewDate}</td>
 						                            <td>${rm.pr_MbNnme}</td>
@@ -125,10 +125,11 @@ body {
 							
 							<script>
 							function navigateToPage(pageNumber) {
+								var basePath = '${pageContext.request.contextPath}'; 
 							    if (pageNumber < 1 || pageNumber > ${totalPages}) {
 							        return; // 페이지 번호가 범위를 벗어나면 아무 것도 하지 않음
 							    }
-							    window.location.href = "reviewManager.do?page=" + pageNumber; // 페이지 이동
+							    window.location.href = basePath + "/reviewManager.do?page=" + pageNumber; // 페이지 이동
 							}
 							</script>
 
