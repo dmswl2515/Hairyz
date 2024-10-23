@@ -60,7 +60,7 @@ function updateMemberState(action) {
 
     // 선택된 회원들에 대해 AJAX로 상태 업데이트
     $.ajax({
-        url: 'updateMemberState.do',
+        url: '${pageContext.request.contextPath}/updateMemberState.do',
         type: 'POST',
         traditional: true,  // 배열 전송
         data: { 
@@ -89,7 +89,7 @@ function searchMembers() {
     }
 
     // 검색어와 카테고리를 포함하여 검색 요청 전송
-    window.location.href = "keywordMemberManagement.do?category=" + searchCategory + "&keyword=" + encodeURIComponent(searchKeyword);
+    window.location.href = "${pageContext.request.contextPath}/keywordMemberManagement.do?category=" + searchCategory + "&keyword=" + encodeURIComponent(searchKeyword);
 }
 
 </script>
@@ -205,7 +205,7 @@ function searchMembers() {
 							    if (pageNumber < 1 || pageNumber > ${totalPages}) {
 							        return; // 페이지 번호가 범위를 벗어나면 아무 것도 하지 않음
 							    }
-							    window.location.href = "memberManagement.do?page=" + pageNumber; // 페이지 이동
+							    window.location.href = "${pageContext.request.contextPath}/memberManagement.do?page=" + pageNumber; // 페이지 이동
 							}
 							</script>
 		

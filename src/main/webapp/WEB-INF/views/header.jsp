@@ -103,6 +103,6 @@ footer hr {
 	function redirectToLogin() {
 	    const redirectUrl = window.location.href; // 현재 페이지 URL을 가져옴
 	    sessionStorage.setItem('redirect', redirectUrl); // 세션 스토리지에 저장
-	    window.location.href = "login.do?redirect=" + encodeURIComponent(redirectUrl); // 로그인 페이지로 이동
+	    window.location.href = "${pageContext.request.contextPath}/login.do?redirect=" + encodeURIComponent(redirectUrl); // 로그인 페이지로 이동
 	}
 </script>

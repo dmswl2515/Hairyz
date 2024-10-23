@@ -154,7 +154,7 @@ function submit_ajax() {
 			var result = JSON.parse(json);
 			if (result.code == "success") {
 				alert(result.desc);
-				window.location.replace("login.do");
+				window.location.replace("${pageContext.request.contextPath}/login.do");
 			} else {
 				alert(result.desc);
 			}
