@@ -78,9 +78,9 @@ public class ShopController {
     
     
 	@RequestMapping("/s_main")    
-	public String shoppingMainPage(@RequestParam(defaultValue = "1") int page,
-	                               @RequestParam(required = false) String pd_animal,
-	                               @RequestParam(required = false) String pd_category,
+	public String shoppingMainPage(@RequestParam(name="page", defaultValue = "1") int page,
+	                               @RequestParam(name="pd_animal", required = false) String pd_animal,
+	                               @RequestParam(name="pd_category", required = false) String pd_category,
 	                               Model model) {
 	    
 	    // 페이지당 항목 수 설정
@@ -118,8 +118,8 @@ public class ShopController {
 	}
     
     @RequestMapping("/p_details")    
-    public String productDetail(@RequestParam(defaultValue = "1") int qnaPage, 
-    							@RequestParam(defaultValue = "1") int reviewPage,
+    public String productDetail(@RequestParam(name="qnaPage", defaultValue = "1") int qnaPage, 
+    							@RequestParam(name="reviewPage", defaultValue = "1") int reviewPage,
 								@RequestParam("pdNum") int pdNum,
 								@RequestParam(value = "qna_no", required = false, defaultValue = "0") int qna_no,
 								HttpSession session,
