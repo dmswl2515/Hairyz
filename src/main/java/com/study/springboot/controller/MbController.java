@@ -131,13 +131,20 @@ public class MbController {
                 session.setAttribute("userId", member.getMb_id()); 
                 session.setAttribute("userNickname", member.getMb_nickname()); 
 
+//                System.out.println("redirect URL : " + redirect);
                 // 리다이렉트 URL 처리
-                if (redirect != null && !redirect.isEmpty() || redirect.equals("/logout.do")) {
-                    session.removeAttribute("redirect");
+                if (redirect != null && redirect.contains("/logout.do")) {
+                    // 로그아웃 페이지로의 리다이렉트를 방지
+                    session.removeAttribute("redirect");  // 혹시 세션에 저장된 redirect가 있으면 삭제
+                    jsonResponse = "{\"code\": \"redirect\", \"url\": \"/main_view.do\"}";  // 기본 URL로 리다이렉트
+                } else if (redirect != null && !redirect.isEmpty()) {
+                    // 정상적인 리다이렉트 URL이 있는 경우
                     jsonResponse = "{\"code\": \"redirect\", \"url\": \"" + redirect + "\"}";
                 } else {
-                    jsonResponse = "{\"code\": \"redirect\", \"url\": \"main_view.do\"}";
+                    // 리다이렉트 URL이 없거나 비어있는 경우 기본 경로로 리다이렉트
+                    jsonResponse = "{\"code\": \"redirect\", \"url\": \"/main_view.do\"}";
                 }
+
             } else if (mbState == 2) {
                 // 탈퇴한 회원
                 jsonResponse = "{\"code\": \"error\", \"desc\": \"로그인 할 수 없는 계정입니다. 관리자에게 문의해주세요.\"}";
@@ -183,12 +190,21 @@ public class MbController {
                 response.put("code", "exists");
                 response.put("desc", "SNS 계정으로 로그인 되었습니다.");
                 
+//                System.out.println("redirect URL : " + redirect);
                 // 리다이렉트 URL 처리
-                if (redirect == null || redirect.isEmpty() || redirect.equals("/logout.do")) {
-                    response.put("redirect", "/main_view.do"); // 기본 URL로 리다이렉트
+                if (redirect != null && redirect.contains("/logout.do")) {
+                    // 로그아웃 페이지로의 리다이렉트를 방지하고 세션에 저장된 redirect 삭제
+                    session.removeAttribute("redirect");
+                    response.put("redirect", "/main_view.do");  // 기본 URL로 리다이렉트
+                } else if (redirect != null && !redirect.isEmpty()) {
+                    // 정상적인 리다이렉트 URL이 있는 경우
+                    response.put("redirect", redirect);
                 } else {
-                    response.put("redirect", redirect); // 기존 redirect URL 사용
+                    // 리다이렉트 URL이 없거나 비어있는 경우 기본 경로로 리다이렉트
+                    response.put("redirect", "/main_view.do");
                 }
+
+
 
             } else if (mbState == 2) {  // 탈퇴한 회원
                 response.put("code", "withdrawn");
