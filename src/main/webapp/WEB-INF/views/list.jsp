@@ -227,7 +227,7 @@
 		
 		    <!-- 글쓰기 버튼 -->
 		    <div class="mt-4">
-		        <a href="#" id="writeBtn" class="btn btn-warning">글쓰기</a>
+		        <a href="${pageContext.request.contextPath}/#" id="writeBtn" class="btn btn-warning">글쓰기</a>
 		    </div>
 		    <script>
 			document.getElementById('writeBtn').addEventListener('click', function(event) {
@@ -280,19 +280,19 @@
 			            <c:otherwise>
 			                <c:if test="${currentPage > 1}">
 			                    <li class="page-item">
-			                        <a href="?page=${currentPage - 1}&category=${category}" class="page-link">&lt;</a>
+			                        <a href="${pageContext.request.contextPath}?page=${currentPage - 1}&category=${category}" class="page-link">&lt;</a>
 			                    </li>
 			                </c:if>
 			
 			                <c:forEach var="page" begin="1" end="${totalPages}">
 			                    <li class="page-item ${currentPage == page ? 'active' : ''}">
-			                        <a href="?page=${page}&category=${category}" class="page-link">${page}</a>
+			                        <a href="${pageContext.request.contextPath}?page=${page}&category=${category}" class="page-link">${page}</a>
 			                    </li>
 			                </c:forEach>
 			
 			                <c:if test="${currentPage < totalPages}">
 			                    <li class="page-item">
-			                        <a href="?page=${currentPage + 1}&category=${category}" class="page-link">&gt;</a>
+			                        <a href="${pageContext.request.contextPath}?page=${currentPage + 1}&category=${category}" class="page-link">&gt;</a>
 			                    </li>
 			                </c:if>
 			            </c:otherwise>

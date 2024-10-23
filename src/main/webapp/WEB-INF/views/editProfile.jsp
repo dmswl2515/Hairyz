@@ -199,7 +199,7 @@ function previewImage(event) {
 					            <img id="preview-image" class="profile" src="${pageContext.request.contextPath}/upload/${editProfile.mb_orgname}" alt="반려동물 사진">
 					        </c:when>
 					        <c:otherwise>
-					            <img id="preview-image" class="profile" src="images/logo.png" alt="기본 반려동물 사진">
+					            <img id="preview-image" class="profile" src="${pageContext.request.contextPath}/images/logo.png" alt="기본 반려동물 사진">
 					        </c:otherwise>
 					    </c:choose>
 				    </div>

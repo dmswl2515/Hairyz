@@ -161,7 +161,7 @@ function snsLogin(snsEmail) {
     const redirectUrl = sessionStorage.getItem('redirect'); // 세션 스토리지에서 리다이렉트 URL 가져오기
     
     $.ajax({
-        url: '/checkSnsLoginEmail.do',
+        url: '${pageContext.request.contextPath}/checkSnsLoginEmail.do',
         type: 'POST',
         contentType: 'application/json', // Content-Type 설정
         data: JSON.stringify({ email: snsEmail, redirect: redirectUrl }), // JSON.stringify 사용
@@ -173,13 +173,13 @@ function snsLogin(snsEmail) {
                 if (response.redirect) {
                     window.location.href = response.redirect; // 요청한 URL로 이동
                 } else {
-                    window.location.href = '/main_view.do'; // 기본 페이지로 이동
+                    window.location.href = '${pageContext.request.contextPath}/main_view.do'; // 기본 페이지로 이동
                 }
              	
             } else if (response.code === 'not_found') {
                 alert(response.desc);
                 // 새 회원이므로 회원가입 페이지로 이동
-                window.location.href = '/join.do?snsEmail=' + encodeURIComponent(snsEmail);
+                window.location.href = '${pageContext.request.contextPath}/join.do?snsEmail=' + encodeURIComponent(snsEmail);
             } else {
                 alert(response.desc); // 나머지 상태에 대해 메시지 처리
             }
@@ -216,7 +216,7 @@ function submit_ajax() {
     }
     
 	$.ajax({
-		url: '/loginOk.do',
+		url: '${pageContext.request.contextPath}/loginOk.do',
 		type: 'POST',
 		data: queryString,
 		dataType: 'text',
@@ -269,7 +269,7 @@ function submit_ajax() {
 			<div class="invalid-feedback">아이디를 입력해주세요.</div>
 			<input type="password" class="form-control mt_15" id="pw" name="pw" placeholder="비밀번호" required>
 			<div class="invalid-feedback">비밀번호를 입력해주세요.</div>
-			<p class="find-area mt_15"><a href="findInfo.do">아이디 / 비밀번호 찾기</a></p>
+			<p class="find-area mt_15"><a href="${pageContext.request.contextPath}/findInfo.do">아이디 / 비밀번호 찾기</a></p>
 		</div>
 		<div class="oauth-buttons">
 			<button type="button" class="btn btn-dark" onclick="form_check(event)">로그인</button><br>
