@@ -174,7 +174,7 @@
 			 	
 			 	// 페이지 네비게이션 함수
 			    function navigateToPage(page) {
-			        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
+			        const baseURL = "${pageContext.request.contextPath}/s_main"; // 기본 URL
 			        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
 			        
 			        // URL을 동적으로 업데이트 (페이지 이동)
@@ -184,7 +184,7 @@
 			 	
 			 	// URL 업데이트 함수
 			    function updateURL() {
-			        const baseURL = "http://localhost:8081/s_main"; // 기본 URL
+			        const baseURL = "${pageContext.request.contextPath}/s_main"; // 기본 URL
 			        const page = 1; // 페이지는 1로 고정
 			        const url = baseURL + "?page=" + page + "&pd_animal=" + selectedAnimal + "&pd_category=" + selectedCategory;
 			

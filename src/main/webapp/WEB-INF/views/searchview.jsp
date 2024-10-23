@@ -80,7 +80,7 @@
 		    <div>
 		    	<h5 style="display: flex; justify-content: space-between; align-items: center;">
 		    		<strong>커뮤니티</strong>
-		    		<a href="list.do" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
+		    		<a href="${pageContext.request.contextPath}/list.do" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
 		    	</h5>
 		    </div>
 		    <hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
@@ -89,31 +89,33 @@
 			        <span class="text-center align-middle mt-5 mb-4">검색결과가 없습니다.</span>
 				</div>
 			</c:if>
-	        <c:forEach var="bList" items="${boardList}">
-			    <div style="display: flex; align-items: flex-start;">    
-			        <div class="content" style="display: flex; flex-direction: column;">
-			            <a href="post_view.do/${bList.bd_no}" class="black-link">
-			            <h5>
-			                <span style="font-weight: bold;">
-			                    ${bList.bd_title}
-			                </span>
-			            </h5>
-			            <div class="mt-2 mb-4">
-			                <span>${bList.bd_content_delimg}</span>
-			            </div>
-			            <div>
-			                <span style="font-weight:bold; margin-right:15px;">${bList.bd_writer}</span>
-			                <span><fmt:formatDate value="${bList.bd_date}" pattern="yyyy-MM-dd" /></span>
-			            </div>
-			            
-			        </div>
-					<c:set var="imageUrl" value="${bList.extractImageUrl()}" />
-					<c:if test="${not empty imageUrl}">
-					    <img src="${imageUrl}" alt="썸네일" style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;" >
-					</c:if>
-			        </a>
-			    </div>
-			    <hr style="border-color: #ffc107;" >
+	        <c:forEach var="bList" items="${boardList}" varStatus="status">
+	        	<c:if test="${status.index < 3}">
+				    <div style="display: flex; align-items: flex-start;">    
+				        <div class="content" style="display: flex; flex-direction: column;">
+				            <a href="${pageContext.request.contextPath}/post_view.do/${bList.bd_no}" class="black-link">
+				            <h5>
+				                <span style="font-weight: bold;">
+				                    ${bList.bd_title}
+				                </span>
+				            </h5>
+				            <div class="mt-2 mb-4">
+				                <span>${bList.bd_content_delimg}</span>
+				            </div>
+				            <div>
+				                <span style="font-weight:bold; margin-right:15px;">${bList.bd_writer}</span>
+				                <span><fmt:formatDate value="${bList.bd_date}" pattern="yyyy-MM-dd" /></span>
+				            </div>
+				            
+				        </div>
+						<c:set var="imageUrl" value="${bList.extractImageUrl()}" />
+						<c:if test="${not empty imageUrl}">
+						    <img src="${imageUrl}" alt="썸네일" style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;" >
+						</c:if>
+				        </a>
+				    </div>
+				    <hr style="border-color: #ffc107;" >
+			    </c:if>
 			</c:forEach>
 		</div>
 		
@@ -121,7 +123,7 @@
 		<div class="contents" id="shop-content">
 		    <h5 style="display: flex; justify-content: space-between; align-items: center;">
 		    	<strong>쇼핑</strong>
-		    		<a href="s_main" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
+		    		<a href="${pageContext.request.contextPath}/s_main" style="font-size: smaller; font-weight: normal; margin-left: auto; color:gray;">더보기 +</a>
 		    </h5>
 		    <hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
 			
@@ -131,34 +133,37 @@
 				</div>
 			</c:if>
 			
-			<c:if test="${not empty productList}">
-	        <c:forEach var="pList" items="${productList}">
-			    <div style="display: flex; align-items: flex-start;">    
-			        <div class="content" style="display: flex; flex-direction: column;">
-			            <a href="p_details?pdNum=${pList.pdNum}" class="black-link">
-			            <h5>
-			                <span style="font-weight: bold;">
-			                    ${pList.pdName}
-			                </span>
-			            </h5>
-			            <div class="mt-5";>
-			                <fmt:formatNumber value="${pList.pd_price}" type="number" groupingUsed="true" />원
-			            </div>
-			        </div>
-			        <c:if test="${not empty pList.pd_chng_fname}">
-			        	
-				            <img src="${pageContext.request.contextPath}/upload/${pList.pd_chng_fname}" 
-				                 alt="상품 이미지" 
-				                 style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;">
-			          </a>
-			        </c:if>   
-			    </div>
-			    <hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
-			</c:forEach>
-			</c:if>
+			<div id="product-container">
+				<c:if test="${not empty productList}">
+			        <c:forEach var="pList" items="${productList}" varStatus="status">
+			        	<c:if test="${status.index < 3}">
+						    <div class="product-item" style="display: flex; align-items: flex-start;">   
+						        <div class="content" style="display: flex; flex-direction: column;">
+						            <a href="${pageContext.request.contextPath}/p_details?pdNum=${pList.pdNum}" class="black-link">
+						            <h5>
+						                <span style="font-weight: bold;">
+						                    ${pList.pdName}
+						                </span>
+						            </h5>
+						            <div class="mt-5";>
+						                <fmt:formatNumber value="${pList.pd_price}" type="number" groupingUsed="true" />원
+						            </div>
+						        </div>
+						        <c:if test="${not empty pList.pd_chng_fname}">
+						        	
+							            <img src="${pageContext.request.contextPath}/upload/${pList.pd_chng_fname}" 
+							                 alt="상품 이미지" 
+							                 style="width:100px; height:100px; object-fit:cover; margin-left:15px; border-radius: .25rem;">
+						          </a>
+						        </c:if>   
+						    </div>
+					    	<hr style="border-color: #ffc107; margin-left:-20px; margin-right:-20px;">
+						</c:if>    
+					</c:forEach>
+				</c:if>
+			</div>
+			<hr style="border-color: #ffc107; border-width: 5px;">
 		</div>
-		<hr style="border-color: #ffc107; border-width: 5px;">
-	</div>
 	
 	<%@ include file="kakaoCh.jsp" %>
 					

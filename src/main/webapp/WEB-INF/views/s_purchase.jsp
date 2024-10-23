@@ -17,7 +17,7 @@
 <!-- 부트페이 -->
 <script src="https://js.bootpay.co.kr/bootpay-5.0.1.min.js" type="application/javascript"></script>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>결제하기</title>
 </head>
 <body>
 	<div class="content">
@@ -418,7 +418,7 @@
 				        memoInput.style.height = '35px';
 				        memoInput.style.marginBottom = '10px';
 				        memoInput.required = true;
-				        memoInput.maxLength = 50; //글자수 제
+				        memoInput.maxLength = 50; //글자수 제한
 				        memoInput.placeholder = '직접입력해주세요';
 				        
 				        const charCount = document.createElement('span');
@@ -426,7 +426,7 @@
 				        charCount.style.color = 'gray';
 				        charCount.style.position = 'absolute'; // 포지션을 절대값으로
 			            charCount.style.marginTop = '10px'; // input의 위쪽에서 떨어진 위치 조정
-			            charCount.style.marginLeft = '-35px'; // input의 왼쪽에서 떨어진 위치 조정
+			            charCount.style.marginLeft = '10px'; // input의 왼쪽에서 떨어진 위치 조정
 				        charCount.textContent = '0/50';
 				
 				        // 기존 select 요소를 input 필드로 교체
@@ -439,7 +439,7 @@
 				     	 // 입력할 때마다 글자 수 업데이트
 				        memoInput.addEventListener('input', function() {
 				            const currentLength = memoInput.value.length;
-				            charCount.textContent = `${currentLength}/50`;
+				            charCount.textContent = currentLength + `/50`;
 				        });
 				    }
 				});

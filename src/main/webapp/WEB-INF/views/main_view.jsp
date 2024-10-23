@@ -29,7 +29,7 @@ body.main footer hr { margin-top: 50px; }
 		<%@ include file="header.jsp" %>
         <!-- 통합검색 창 -->
         <div class="custom-container my-4">
-            <form action="/searchAll" class="form-inline d-flex justify-content-center" onsubmit="return validateForm();">
+            <form action="${pageContext.request.contextPath}/searchAll" class="form-inline d-flex justify-content-center" onsubmit="return validateForm();">
                 <input class="form-control mr-sm-2" id="searchInput" type="text" name="sKeyword" placeholder="통합검색" aria-label="Search" style="width: 30%;">
                 <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">검색</button>
             </form>

@@ -244,4 +244,16 @@ public class MbController {
         return "find_info"; // find_info.jsp를 반환
     }
 
+    @RequestMapping("/error1")
+    	public String test1() {
+    		//없는 페이지 호출
+    		return "error1";
+    }
+    
+    @RequestMapping("/test2")
+	public String test2() {
+		//에러나는 페이지 호출
+		return "error-test";
+    }
+   
 }

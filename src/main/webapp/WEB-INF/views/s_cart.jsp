@@ -11,7 +11,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>장바구니</title>
 </head>
 <body>
 	<div class="content">
@@ -287,7 +287,7 @@
 					 	
 					    if (selectedItems.length > 0) {
 					        // AJAX 요청으로 서버에 삭제할 상품들 전달
-					        fetch('/DeleteCart', {
+					        fetch('${pageContext.request.contextPath}/DeleteCart', {
 					            method: 'POST',
 					            headers: {
 					                'Content-Type': 'application/json',
@@ -329,7 +329,7 @@
 				   	
 			   	     if (soldOutItems.length > 0) {
 			   	         // Ajax 요청으로 서버에 삭제 요청
-			   	         fetch('/remove-soldout', { // 삭제를 처리할 서버 URL
+			   	         fetch('${pageContext.request.contextPath}/remove-soldout', { // 삭제를 처리할 서버 URL
 			   	             method: 'POST',
 			   	             headers: {
 			   	                 'Content-Type': 'application/json'
@@ -467,7 +467,7 @@
        	   		<button onclick="goToPurchase()" id="purchaseBtn" class="btn btn-outline-warning orderBtn mb-3">
 					주문하기
 				</button>
-				<a href="s_main" class="gray-link">계속 쇼핑하기</a>
+				<a href="${pageContext.request.contextPath}/s_main" class="gray-link">계속 쇼핑하기</a>
        	   	</div>
 		</div>
 	</div>
@@ -526,7 +526,7 @@
 		});
 	    
      	// URL 생성 (상품 배열을 처리하여 URL로 인코딩)
-        let url = '/s_purchase?';
+        let url = '${pageContext.request.contextPath}/s_purchase?';
         productInfoList.forEach(function(product, index) {
         	url += 'productNum=' + encodeURIComponent(product.productNum) +
 		           '&productName=' + encodeURIComponent(product.productName) +
