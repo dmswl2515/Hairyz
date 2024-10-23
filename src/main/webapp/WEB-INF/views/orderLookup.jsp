@@ -192,8 +192,9 @@ body {
 </style>
 <script>
 function updateOrderState(orderno, state) {
+	var basePath = '${pageContext.request.contextPath}'; 
     $.ajax({
-        url: 'orderState.do',
+        url: basePath + '/orderState.do',
         type: 'POST',
         data: { 
         	orderno: orderno, 
@@ -274,8 +275,9 @@ $(document).ready(function() {
 	            formData.append('image', file);
 	        }
 	
+        	var basePath = '${pageContext.request.contextPath}'; 
 	        $.ajax({
-	            url: 'productRevie.do',
+	            url: basePath + '/productRevie.do',
 	            type: 'POST',
 	            data: formData,
 	            contentType: false,
@@ -330,15 +332,15 @@ $(document).ready(function() {
 		<!-- 세로 메뉴 -->
 		<div class="sidebar">
 			<ul>
-				<li><a href="myProfile_view.do">내 프로필</a>
+				<li><a href="${pageContext.request.contextPath}/myProfile_view.do">내 프로필</a>
 					<ul>
-						<li><a href="editProfile.do?id=${ member.mb_id }">&nbsp;-회원정보 수정</a></li>
-						<li><a href="editPassword.do?id=${ member.mb_id }">&nbsp;-비밀번호 변경</a></li>
+						<li><a href="${pageContext.request.contextPath}/editProfile.do?id=${ member.mb_id }">&nbsp;-회원정보 수정</a></li>
+						<li><a href="${pageContext.request.contextPath}/editPassword.do?id=${ member.mb_id }">&nbsp;-비밀번호 변경</a></li>
 					</ul>
 				</li>
-				<li><a href="petList.do?id=${ member.mb_id }">반려동물 프로필</a></li>
-				<li><a href="orderLookup.do?id=${ member.mb_id }"><b>주문 조회</b></a></li>
-				<li><a href="returnExchange.do?id=${ member.mb_id }">취소/교환/반품</a></li>
+				<li><a href="${pageContext.request.contextPath}/petList.do?id=${ member.mb_id }">반려동물 프로필</a></li>
+				<li><a href="${pageContext.request.contextPath}/orderLookup.do?id=${ member.mb_id }"><b>주문 조회</b></a></li>
+				<li><a href="${pageContext.request.contextPath}/returnExchange.do?id=${ member.mb_id }">취소/교환/반품</a></li>
 			</ul>
 		</div>
 
