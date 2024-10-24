@@ -200,7 +200,7 @@ input[type="radio"].btn-check {
 		            <!-- 프로필 사진 -->
 				    <div class="box">
 				        <!-- 이미지 미리보기 영역 -->
-				        <img id="preview-image" class="profile" src="/images/logo.png" alt="기본 이미지">
+				        <img id="preview-image" class="profile" src="images/logo.png" alt="기본 이미지">
 				    </div>
 				
 				    <!-- 파일 업로드 버튼 -->

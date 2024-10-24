@@ -109,6 +109,7 @@ function submitPost() {
 	}
 
     var basePath = '${pageContext.request.contextPath}';
+    console.log(basePath);
     // Ajax 요청으로 게시글 데이터 전송
     $.ajax({
         url: basePath + '/writeOk.do',  // 게시글 저장을 위한 서버 경로
@@ -121,7 +122,7 @@ function submitPost() {
             console.log("응답 데이터:", response);
             if (response.result === "success") {  // response.code -> response.result
                 alert("게시글 작성이 완료되었습니다.");
-                window.location.href = response.redirectUrl;  // 게시글 목록으로 이동
+                window.location.href = basePath + response.redirectUrl;  // 게시글 목록으로 이동
             } else {
                 alert(response.message || "알 수 없는 오류가 발생했습니다.");  // response.message가 없을 경우 대비
             }

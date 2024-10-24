@@ -26,7 +26,7 @@ function form_check(event) {
 function submit_ajax() {
 	var queryString = $("#login_frm").serialize();
 	$.ajax({
-		url: '/loginOk_admin.do',
+		url: '${pageContext.request.contextPath}/loginOk_admin.do',
 		type: 'POST',
 		data: queryString,
 		dataType: 'text',

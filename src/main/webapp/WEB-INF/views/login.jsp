@@ -159,6 +159,7 @@ function fbLogin() {
 
 function snsLogin(snsEmail) {
     const redirectUrl = sessionStorage.getItem('redirect'); // 세션 스토리지에서 리다이렉트 URL 가져오기
+    var basePath = '${pageContext.request.contextPath}';
     
     $.ajax({
         url: '${pageContext.request.contextPath}/checkSnsLoginEmail.do',
@@ -171,7 +172,7 @@ function snsLogin(snsEmail) {
                 
              	// 기존 회원이므로 로그인 처리 후 리다이렉트
                 if (response.redirect) {
-                    window.location.href = response.redirect; // 요청한 URL로 이동
+                    window.location.href = basePath + response.redirect; // 요청한 URL로 이동
                 } else {
                     window.location.href = '${pageContext.request.contextPath}/main_view.do'; // 기본 페이지로 이동
                 }
@@ -225,7 +226,7 @@ function submit_ajax() {
 			var result = JSON.parse(json);
 			if (result.code == "success") {
 				alert(result.desc);
-				window.location.replace("main_view.do");
+				window.location.replace("${pageContext.request.contextPath}/main_view.do");
 			} else if (result.code == "redirect") {
 				// 요청한 URL로 리다이렉트
 				window.location.replace(result.url);
