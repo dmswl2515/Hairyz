@@ -129,7 +129,7 @@ public class PController {
     }
 
     @GetMapping("/p_manage")
-    public String getAllProducts(@RequestParam(defaultValue = "1") int page,
+    public String getAllProducts(@RequestParam(name="page", defaultValue = "1") int page,
     							 @RequestParam(value = "condition", required = false) String condition,
         						 @RequestParam(value = "keyword", required = false) String keyword,
         						 Model model) {

@@ -66,7 +66,7 @@ public class AdminController {
     
     // 관리자 - QnA 관리화면
     @RequestMapping("/admin_qna.do")
-    public String getAllQna(@RequestParam(defaultValue = "1") int page,
+    public String getAllQna(@RequestParam(name="page", defaultValue = "1") int page,
     						Model model) {
     	
     	List<QDto> qnaList = adminService.getAllQna();
