@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -70,6 +71,9 @@ public class ShopController {
 	
 	@Autowired
     private PService pService;
+	
+	@Value("${BOOTPAY-KEY}")
+    private String BOOTPAY_KEY;
 	
 	
 	
@@ -246,6 +250,9 @@ public class ShopController {
             Integer uniqueOrderNumber = oService.generateUniqueOrderNumber();
             model.addAttribute("orderNumber", uniqueOrderNumber);
     	    
+            
+            //Bootpay API KEY 
+            model.addAttribute("BootPayKey", BOOTPAY_KEY);
     	    
     	    // 뷰 이름을 반환하여 해당 뷰를 렌더링
     	    return "s_purchase";       

@@ -569,7 +569,7 @@
     						console.log("Calculated totalPrice: " + finalTotalPrice);
 							
 							Bootpay.requestPayment({
-					            "application_id": "6703330ccc5274a3ac3fc385",
+					            "application_id": "${BootPayKey}",
 					            "price": finalTotalPrice,
 					            "order_name": "주문 결제",
 					            "order_id": orderNumber,
