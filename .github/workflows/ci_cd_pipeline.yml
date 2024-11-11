@@ -70,5 +70,8 @@ jobs:
           scp -i /tmp/private_key.pem ./build/libs/Hairyz.war ec2-user@${{ secrets.AWS_WEB_ADDRESS }}:/home/ec2-user/apache-tomcat-10.1.31/webapps/
     
           # 배포 후 EC2에서 서비스 재시작
-          ssh -i /tmp/private_key.pem ec2-user@${{ secrets.AWS_WEB_ADDRESS }} 'sudo systemctl restart Hairyz'
+          ssh -i /tmp/private_key.pem ec2-user@${{ secrets.AWS_WEB_ADDRESS }} '
+            /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh && \
+            /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
+          '
 
