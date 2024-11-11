@@ -20,6 +20,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Set environment variables
+        run: |
+          echo "KAKAO_KEY_ADMIN=${{ secrets.KAKAO_KEY_ADMIN }}" >> $GITHUB_ENV
+          echo "GOOGLE_KEY=${{ secrets.GOOGLE_KEY }}" >> $GITHUB_ENV
+          echo "KAKAO_KEY=${{ secrets.KAKAO_KEY }}" >> $GITHUB_ENV
+          echo "NAVER_KEY=${{ secrets.NAVER_KEY }}" >> $GITHUB_ENV
+          echo "FB_KEY=${{ secrets.FB_KEY }}" >> $GITHUB_ENV
+          echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> $GITHUB_ENV
+          echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> $GITHUB_ENV
+          echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> $GITHUB_ENV
+          echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> $GITHUB_ENV
+          echo "BOOTPAY_KEY=${{ secrets.BOOTPAY_KEY }}" >> $GITHUB_ENV
+
       - name: Build and run tests
         run: |
           ./gradlew build  
