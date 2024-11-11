@@ -62,7 +62,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # GitHub Secrets에 저장된 AWS 액세스 키
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # GitHub Secrets에 저장된 AWS 비밀 키
-          SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@${{ secrets.AWS_DB_ADDRESS }}:1521:xe'  # EC2 Elastic IP
+          SPRING_DATASOURCE_URL: "jdbc:oracle:thin:@${{ secrets.AWS_DB_ADDRESS }}:1521:xe"  # EC2 Elastic IP
           SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
