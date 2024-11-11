@@ -84,7 +84,7 @@ footer hr {
                     <a class="nav-link" href="${pageContext.request.contextPath}/list.do">커뮤니티</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/s_main">Shopping</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/s_main">Shop</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/hospitalMap.do">동물병원</a>
