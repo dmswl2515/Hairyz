@@ -83,7 +83,7 @@ public class MyController {
 	@Autowired
 	PService pService;
 	
-	@Value("${KAKAO-KEY}")
+	@Value("${KAKAO_KEY_ADMIN}")
 	private String KAKAO_KEY;
 
     @RequestMapping("/")

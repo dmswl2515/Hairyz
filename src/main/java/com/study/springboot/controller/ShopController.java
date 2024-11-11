@@ -72,7 +72,7 @@ public class ShopController {
 	@Autowired
     private PService pService;
 	
-	@Value("${BOOTPAY-KEY}")
+	@Value("${BOOTPAY_KEY}")
     private String BOOTPAY_KEY;
 	
 	

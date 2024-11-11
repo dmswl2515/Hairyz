@@ -30,16 +30,16 @@ public class MbController {
     @Autowired
     private IMemberDao memberDao;
 
-    @Value("${KAKAO-KEY}")
+    @Value("${KAKAO_KEY}")
     private String KAKAO_KEY;
     
-    @Value("${DAILY-GOOGLE-KEY}")
+    @Value("${GOOGLE_KEY}")
     private String DAILY_GOOGLE_KEY;
     
-    @Value("${DAILY-KAKAO-KEY}")
+    @Value("${KAKAO_KEY}")
     private String DAILY_KAKAO_KEY;
     
-    @Value("${DAILY-FB-KEY}")
+    @Value("${FB_KEY}")
     private String DAILY_FB_KEY;
     
     @RequestMapping("/join.do")

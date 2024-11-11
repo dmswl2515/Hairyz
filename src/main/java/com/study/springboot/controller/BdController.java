@@ -57,7 +57,7 @@ public class BdController {
     @Autowired
     private ServletContext servletContext;
     
-    @Value("${KAKAO-KEY}")
+    @Value("${KAKAO_KEY}")
     private String KAKAO_KEY;
     
     private static final Logger logger = LoggerFactory.getLogger(BdController.class); // Logger 생성
