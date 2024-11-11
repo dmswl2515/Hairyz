@@ -56,6 +56,10 @@ jobs:
         run: |
           echo "${{ secrets.AWS_SSH_KEY }}" | base64 -d > /tmp/private_key.pem
           chmod 600 /tmp/private_key.pem
+
+      # AWS DB Address 확인
+      - name: Print AWS DB Address
+        run: echo "AWS_DB_ADDRESS=${{ secrets.AWS_DB_ADDRESS }}"
   
 
       - name: Deploy to AWS EC2
