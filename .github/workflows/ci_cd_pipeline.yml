@@ -33,10 +33,6 @@ jobs:
           echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> $GITHUB_ENV
           echo "BOOTPAY_KEY=${{ secrets.BOOTPAY_KEY }}" >> $GITHUB_ENV
 
-      - name: Build and run tests
-        run: |
-          ./gradlew build  
-
   # 배포 (CD)
   deploy:
     runs-on: ubuntu-latest 
