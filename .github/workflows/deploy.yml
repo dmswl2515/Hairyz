@@ -44,3 +44,4 @@ jobs:
             # 7. 톰캣 재시작
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/startup.sh
+            
