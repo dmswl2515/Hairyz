@@ -36,7 +36,7 @@ jobs:
             sudo fuser -k -n tcp 8081 || true
 
             # 6. 배포할 파일을 EC2로 복사
-            scp -o StrictHostKeyChecking=no -i $${{ secrets.AWS_SSH_KEY }} ./build/libs/*Hairyz.war ${{ secrets.AWS_USER }}@${{ secrets.AWS_WEB_ADDRESS }}:/home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/
+            scp -o StrictHostKeyChecking=no -i ${{ secrets.AWS_SSH_KEY }} ./build/libs/*Hairyz.war ${{ secrets.AWS_USER }}@${{ secrets.AWS_WEB_ADDRESS }}:/home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/
 
             # 7. 톰캣 재시작
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/shutdown.sh
