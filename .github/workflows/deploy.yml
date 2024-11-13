@@ -1,0 +1,31 @@
+name : Deploy To EC2 
+
+on :
+  push : 
+    branches :
+      - main
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name : SSH(원격접속)로 EC2에 접속하기
+        uses : appleboy/ssh-action@v1.1.0
+        env :           												 #추가
+          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}  #추가
+        with :
+          host : ${{ secrets.AWS_WEB_ADDRESS }}
+          username : ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script_stop : true
+          script : |
+            cd /home/ec2-user/Hairyz
+            rm -rf src/main/resources/application.yml      				 #추가
+            git pull origin main
+            echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml  #추가
+            ./gradlew clean build
+            sudo fuser -k -n tcp 8081 || true
+            # 톰캣 재시작: shutdown.sh 실행 후 startup.sh로 재시작
+            sudo /home/$EC2_USERNAME/apache-tomcat-10.1.31/bin/shutdown.sh
+            sudo /home/$EC2_USERNAME/apache-tomcat-10.1.31/bin/startup.sh
