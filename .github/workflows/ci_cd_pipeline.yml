@@ -64,12 +64,19 @@ jobs:
 
       - name: Deploy to AWS EC2
         env:
+          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # GitHub Secrets에 저장된 AWS 액세스 키
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # GitHub Secrets에 저장된 AWS 비밀 키
           SPRING_DATASOURCE_URL: "jdbc:oracle:thin:@${{ secrets.AWS_DB_ADDRESS }}:1521:xe"  # EC2 Elastic IP
           SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
+          # 기존 application.yml 파일 삭제
+          rm -rf src/main/resources/application.yml
+    
+          # APPLICATION_PROPERTIES 환경 변수를 application.yml에 저장
+          echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
+
           # 배포할 파일을 EC2로 복사
           scp -i /tmp/private_key.pem ./build/libs/Hairyz.war ec2-user@${{ secrets.AWS_WEB_ADDRESS }}:/home/ec2-user/apache-tomcat-10.1.31/webapps/
     
