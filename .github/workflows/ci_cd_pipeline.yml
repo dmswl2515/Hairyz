@@ -77,11 +77,11 @@ jobs:
           echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
 
           # 배포할 파일을 EC2로 복사
-          scp -i /tmp/private_key.pem ./build/libs/Hairyz.war ec2-user@${{ secrets.AWS_WEB_ADDRESS }}:/home/ec2-user/apache-tomcat-10.1.31/webapps/
+          scp -o StrictHostKeyChecking=no -i $EC2_PRIVATE_KEY ./build/libs/Hairyz.war $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/apache-tomcat-10.1.31/webapps/
     
           # 배포 후 EC2에서 서비스 재시작
-          ssh -i /tmp/private_key.pem ec2-user@${{ secrets.AWS_WEB_ADDRESS }} '
-            /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh && \
-            /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
+          ssh -o StrictHostKeyChecking=no -i $EC2_PRIVATE_KEY $EC2_USERNAME@$EC2_HOST '
+            /home/$EC2_USERNAME/apache-tomcat-10.1.31/bin/shutdown.sh && \
+            /home/$EC2_USERNAME/apache-tomcat-10.1.31/bin/startup.sh
           '
 
