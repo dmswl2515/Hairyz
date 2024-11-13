@@ -28,22 +28,19 @@ jobs:
           script : |
             # 2. Git 레포지토리에서 최신 버전 Pull
             cd /home/ec2-user/Hairyz
-            rm -rf src/main/resources/application.yml      				 
+            rm -rf src/main/resources/application.yml
+            rm -rf /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/*Hairyz      				 
             git pull origin main
 
             # 3. 환경 변수 설정
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
 
-            # 4. 기존 WAR 파일 삭제 (빌드 전에 삭제)
-            rm -rf /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/Hairyz.war
-            rm -rf /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/Hairyz
-            
-            # 5. Gradle 빌드 수행
+            # 4. Gradle 빌드 수행
             ./gradlew clean build
 
-            # 6. Tomcat 포트 8081에서 이전 프로세스 종료
+            # 5. Tomcat 포트 8081에서 이전 프로세스 종료
             sudo fuser -k -n tcp 8081 || true
 
-            # 7. 톰캣 재시작
+            # 6. 톰캣 재시작
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/startup.sh
