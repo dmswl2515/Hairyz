@@ -36,5 +36,5 @@ jobs:
             sudo fuser -k -n tcp 8081 || true
 
             # 톰캣 재시작
-            sudo /home/$EC2_USERNAME/apache-tomcat-10.1.31/bin/shutdown.sh
-            sudo /home/$EC2_USERNAME/apache-tomcat-10.1.31/bin/startup.sh
+            sudo /home/$AWS_USER/apache-tomcat-10.1.31/bin/shutdown.sh
+            sudo /home/$AWS_USER/apache-tomcat-10.1.31/bin/startup.sh
