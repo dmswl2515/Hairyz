@@ -13,7 +13,7 @@ jobs:
       # 1. 비공개 SSH 키를 환경 변수에서 읽어 파일로 저장
       - name: Save private key
         run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > /tmp/private_key.pem
+          echo "${{ secrets.AWS_SSH_KEY }}" > /tmp/private_key.pem
           chmod 600 /tmp/private_key.pem
 
       # 2. 원격 EC2 서버에 접속하여 배포 작업
@@ -23,7 +23,7 @@ jobs:
           APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }} 
         with :
           host : ${{ secrets.AWS_WEB_ADDRESS }}
-          username : ${{ secrets.EC2_USERNAME }}
+          username : ${{ secrets.AWS_USER }}
           key: /tmp/private_key.pem  # 비공개 키 경로 지정
           script_stop : true
           script : |
