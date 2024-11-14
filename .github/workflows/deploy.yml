@@ -16,6 +16,11 @@ jobs:
           echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
+      - name: Add SSH key to agent
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
       # 1. 원격 EC2 서버에 접속하여 배포 작업
       - name : SSH(원격접속)로 EC2에 접속하기
         uses : appleboy/ssh-action@v1.1.0
@@ -47,4 +52,3 @@ jobs:
             # 7. 톰캣 재시작
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/startup.sh
-            
