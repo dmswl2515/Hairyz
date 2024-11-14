@@ -24,7 +24,7 @@ jobs:
         with :
           host : ${{ secrets.AWS_WEB_ADDRESS }}
           username : ${{ secrets.AWS_USER }}
-          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          key: ~/.ssh/my_private_key
           script_stop : true
           script : |
             # 2. Git 레포지토리에서 최신 버전 Pull
@@ -39,7 +39,7 @@ jobs:
             ./gradlew clean build
 
             # 5. 빌드된 WAR 파일을 Tomcat 웹앱에 배포
-            scp -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} /home/${{ secrets.AWS_USER }}/Hairyz/build/libs/*SNAPSHOT.war ${{ secrets.AWS_USER }}@${{ secrets.AWS_WEB_ADDRESS }}:/home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/
+            scp -i ~/.ssh/my_private_key /home/${{ secrets.AWS_USER }}/Hairyz/build/libs/*SNAPSHOT.war ${{ secrets.AWS_USER }}@${{ secrets.AWS_WEB_ADDRESS }}:/home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/
 
             # 6. Tomcat 포트 8081에서 이전 프로세스 종료
             sudo fuser -k -n tcp 8081 || true
