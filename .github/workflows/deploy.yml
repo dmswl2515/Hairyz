@@ -15,6 +15,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/my_private_key
           chmod 600 ~/.ssh/my_private_key
+          cat ~/.ssh/my_private_key
 
       # 1. 원격 EC2 서버에 접속하여 배포 작업
       - name : SSH(원격접속)로 EC2에 접속하기
