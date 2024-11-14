@@ -13,8 +13,8 @@ jobs:
       - name: save private key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/my_private_key
-          chmod 600 ~/.ssh/my_private_key
+          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
       # 1. 원격 EC2 서버에 접속하여 배포 작업
       - name : SSH(원격접속)로 EC2에 접속하기
@@ -24,7 +24,7 @@ jobs:
         with :
           host : ${{ secrets.AWS_WEB_ADDRESS }}
           username : ${{ secrets.AWS_USER }}
-          key: ~/.ssh/my_private_key
+          key: ~/.ssh/id_rsa
           script_stop : true
           script : |
             # 2. Git 레포지토리에서 최신 버전 Pull
@@ -39,7 +39,7 @@ jobs:
             ./gradlew clean build
 
             # 5. 빌드된 WAR 파일을 Tomcat 웹앱에 배포
-            scp -i ~/.ssh/my_private_key /home/${{ secrets.AWS_USER }}/Hairyz/build/libs/*SNAPSHOT.war ${{ secrets.AWS_USER }}@${{ secrets.AWS_WEB_ADDRESS }}:/home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/
+            scp -i ~/.ssh/id_rsa /home/${{ secrets.AWS_USER }}/Hairyz/build/libs/*SNAPSHOT.war ${{ secrets.AWS_USER }}@${{ secrets.AWS_WEB_ADDRESS }}:/home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/webapps/
 
             # 6. Tomcat 포트 8081에서 이전 프로세스 종료
             sudo fuser -k -n tcp 8081 || true
@@ -47,4 +47,3 @@ jobs:
             # 7. 톰캣 재시작
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/${{ secrets.AWS_USER }}/apache-tomcat-10.1.31/bin/startup.sh
-
