@@ -10,12 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check SSH directory
-        run: |
-          ls -l ~/.ssh
-
       - name: save private key
         run: |
+          mkdir -p ~/.ssh
+
           echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/my_private_key
           chmod 600 ~/.ssh/my_private_key
 
