@@ -30,7 +30,6 @@ jobs:
           host : ${{ secrets.AWS_WEB_ADDRESS }}
           username : ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          port : ${{ secrets.PORT}}
           script_stop : true
           script : |
             # 2. Git 레포지토리에서 최신 버전 Pull
