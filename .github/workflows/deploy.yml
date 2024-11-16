@@ -43,9 +43,12 @@ jobs:
             # 4. Gradle 빌드 수행
             ./gradlew clean build
 
-            # 5. war 파일 이동 
-            mv /home/ec2-user/Hairyz/build/libs/*SNAPSHOT.war /home/ec2-user/apache-tomcat-10.1.31/webapps/
+            # 5. 파일 이름 변경
+            mv ./build/libs/*SNAPSHOT.war ./project.war
 
-            # # 6. 톰캣 재시작
-            # sudo /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh
-            # sudo /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
+            # 6. war 파일 이동 
+            mv /home/ec2-user/Hairyz/build/libs/project.war /home/ec2-user/apache-tomcat-10.1.31/webapps/
+
+            # 7. 톰캣 재시작
+            sudo /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh
+            sudo /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
