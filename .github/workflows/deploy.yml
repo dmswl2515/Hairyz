@@ -59,13 +59,13 @@ jobs:
         run: |
           echo "Current directory:"
           pwd
-          ls -l /home/runner/work/Hairyz/Hairyz  
+          ls -l /home/runner/work/Hairyz/ 
 
       - name : Run Gradle build
         run : | 
             # 4. Gradle 빌드 수행
-            chmod +x /home/runner/work/Hairyz/Hairyz/gradlew
-            cd /home/runner/work/Hairyz/Hairyz
+            chmod +x /home/runner/work/Hairyz/gradlew
+            cd /home/runner/work/Hairyz/
             ./gradlew clean build
       
       - name : Rename WAR file
