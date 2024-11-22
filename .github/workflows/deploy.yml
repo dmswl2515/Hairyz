@@ -64,6 +64,7 @@ jobs:
       - name : Run Gradle build
         run : | 
             # 4. Gradle 빌드 수행
+            chmod +x /home/runner/work/Hairyz/Hairyz/gradlew
             cd /home/runner/work/Hairyz/Hairyz
             ./gradlew clean build
       
