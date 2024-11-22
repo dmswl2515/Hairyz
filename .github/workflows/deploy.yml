@@ -43,7 +43,7 @@ jobs:
       - name : Set Application properties
         run : |      
             # 3. 환경 변수 설정
-            echo "$API_KEY_PROPERTIES" > /home/ec2-user/Hairyz/src/main/resources/application-API-KEY.properties
+            echo "${{ secrets.APPLICATION_API_KEY }}" > /home/ec2-user/Hairyz/src/main/resources/application-API-KEY.properties
             echo "API_KEY_PROPERTIES: $API_KEY_PROPERTIES"
 
       - name : Run Gradle build
