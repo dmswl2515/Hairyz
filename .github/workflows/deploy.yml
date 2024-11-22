@@ -56,7 +56,8 @@ jobs:
       - name : Run Gradle build
         run : | 
             # 4. Gradle 빌드 수행
-            cd /home/ec2-user/Hairyz
+            pwd
+            cd /home/${{ secrets.AWS_USER }}/Hairyz
             ./gradlew clean build
       
       - name : Rename WAR file
