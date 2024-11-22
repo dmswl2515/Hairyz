@@ -59,7 +59,7 @@ jobs:
         run: |
           echo "Current directory:"
           pwd
-          ls -l /home/runner/work/Hairyz/ 
+          ls -l /home/
 
       - name : Run Gradle build
         run : | 
