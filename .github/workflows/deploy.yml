@@ -36,16 +36,16 @@ jobs:
           script_stop : true
           script : |
             # 2. Git 레포지토리에서 최신 버전 Pull
-            cd /home/ec2-user/Hairyz
-            echo "Current directory:"
-            pwd			 
+            cd /home/ec2-user/Hairyz	 
             git pull origin main
 
       - name: Check current directory
         run: |
           echo "Current directory:"
           pwd
-          ls -l /home/runner/
+          ls -l /home/runner/work/Hairyz/Hairyz
+          ls -l /home/runner/work/Hairyz
+
 
       - name : Run Gradle build
         run : | 
