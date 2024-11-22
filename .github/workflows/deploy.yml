@@ -36,7 +36,9 @@ jobs:
           script_stop : true
           script : |
             # 2. Git 레포지토리에서 최신 버전 Pull
-            cd /home/ec2-user/Hairyz			 
+            cd /home/ec2-user/Hairyz
+            echo "Current directory:"
+            pwd			 
             git pull origin main
             
       - name : Set API Keys as environment variables
