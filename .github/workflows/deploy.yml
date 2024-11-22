@@ -43,8 +43,7 @@ jobs:
         run: |
           echo "Current directory:"
           pwd
-          ls -l /home/runner/work/Hairyz/Hairyz
-          ls -l /home/runner/work/Hairyz
+          ls -l /home/runner/work/Hairyz/Hairyz/Hairyz
 
 
       - name : Run Gradle build
