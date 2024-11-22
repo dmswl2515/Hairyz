@@ -10,6 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name : Set API Keys as environment variables
+        run : |      
+            echo "KAKAO_KEY_ADMIN=${{ secrets.KAKAO_KEY_ADMIN }}" >> $GITHUB_ENV
+            echo "GOOGLE_KEY=${{ secrets.GOOGLE_KEY }}" >> $GITHUB_ENV
+            echo "KAKAO_KEY=${{ secrets.KAKAO_KEY }}" >> $GITHUB_ENV
+            echo "NAVER_KEY=${{ secrets.NAVER_KEY }}" >> $GITHUB_ENV
+            echo "FB_KEY=${{ secrets.FB_KEY }}" >> $GITHUB_ENV
+            echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> $GITHUB_ENV
+            echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> $GITHUB_ENV
+            echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> $GITHUB_ENV
+            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> $GITHUB_ENV
+            echo "BOOTPAY_KEY=${{ secrets.BOOTPAY_KEY }}" >> $GITHUB_ENV
+        shell: bash
+
       - name: save private key
         run: |
           mkdir -p ~/.ssh
@@ -38,20 +52,7 @@ jobs:
             # 2. Git 레포지토리에서 최신 버전 Pull
             cd /home/ec2-user/Hairyz	 
             git pull origin main
-
-      - name: Check current directory
-        run: |
-          echo "Current directory:"
-          pwd
-          ls -l /home/runner/work/Hairyz/Hairyz/Hairyz
-
-
-      - name : Run Gradle build
-        run : | 
-            # 4. Gradle 빌드 수행
-            chmod +x /home/runner/work/Hairyz/gradlew
-            cd /home/runner/work/Hairyz/
-            ./gradlew clean build
+            ./gradlew clean build 
       
       - name : Rename WAR file
         run : | 
