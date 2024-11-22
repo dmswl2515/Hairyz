@@ -58,11 +58,8 @@ jobs:
       
             # 4. 파일 이름 변경
             mv build/libs/*SNAPSHOT.war build/libs/project.war
-            ls -al
+            ls -al build/libs
 
-      
-      - name : Move WAR file to Tomcat
-        run : | 
             # 6. war 파일 이동 
             mv /home/ec2-user/Hairyz/build/libs/project.war /home/ec2-user/apache-tomcat-10.1.31/webapps/
       
