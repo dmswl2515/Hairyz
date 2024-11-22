@@ -25,7 +25,11 @@ jobs:
       - name : SSH(원격접속)로 EC2에 접속하기
         uses : appleboy/ssh-action@master
         env :           												
-          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }} 
+          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
+          DB_HOST: ${{ secrets.AWS_DB_ADDRESS }} 
+          DB_USER: ${{ secrets.DB_USERNAME }}    
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_SERVICE_NAME: ${{ secrets.DB_SERVICE_NAME }}
         with :
           host : ${{ secrets.AWS_WEB_ADDRESS }}
           username : ${{ secrets.AWS_USER }}
@@ -49,8 +53,10 @@ jobs:
             # 6. war 파일 이동 
             mv /home/ec2-user/Hairyz/build/libs/project.war /home/ec2-user/apache-tomcat-10.1.31/webapps/
 
-            
-            # 7. 톰캣 재시작
+            # 7. DB 연결 테스트 (오라클)
+            echo "Testing Oracle DB connection"
+            echo "SELECT * FROM member;" | sqlplus -S $DB_USER/$DB_PASSWORD@$DB_HOST:1521/$DB_SERVICE_NAME
+
+            # 8. 톰캣 재시작
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
-
