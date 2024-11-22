@@ -24,8 +24,7 @@ jobs:
       # 1. 원격 EC2 서버에 접속하여 배포 작업
       - name : SSH 접속 (EC2)
         uses : appleboy/ssh-action@master
-        env :           												
-          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_API_KEY }}
+        env : 
           DB_HOST: ${{ secrets.AWS_DB_ADDRESS }} 
           DB_USER: ${{ secrets.DB_USERNAME }}    
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -40,11 +39,19 @@ jobs:
             cd /home/ec2-user/Hairyz			 
             git pull origin main
             
-      - name : Set Application properties
+      - name : Set API Keys as environment variables
         run : |      
-            # 3. 환경 변수 설정
-            echo "${{ secrets.APPLICATION_API_KEY }}" > /home/ec2-user/Hairyz/src/main/resources/application-API-KEY.properties
-            echo "API_KEY_PROPERTIES: $API_KEY_PROPERTIES"
+            echo "KAKAO_KEY_ADMIN=${{ secrets.KAKAO_KEY_ADMIN }}" >> $GITHUB_ENV
+            echo "GOOGLE_KEY=${{ secrets.GOOGLE_KEY }}" >> $GITHUB_ENV
+            echo "KAKAO_KEY=${{ secrets.KAKAO_KEY }}" >> $GITHUB_ENV
+            echo "NAVER_KEY=${{ secrets.NAVER_KEY }}" >> $GITHUB_ENV
+            echo "FB_KEY=${{ secrets.FB_KEY }}" >> $GITHUB_ENV
+            echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> $GITHUB_ENV
+            echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> $GITHUB_ENV
+            echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> $GITHUB_ENV
+            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> $GITHUB_ENV
+            echo "BOOTPAY_KEY=${{ secrets.BOOTPAY_KEY }}" >> $GITHUB_ENV
+        shell: bash
 
       - name : Run Gradle build
         run : | 
