@@ -53,11 +53,16 @@ jobs:
             echo "BOOTPAY_KEY=${{ secrets.BOOTPAY_KEY }}" >> $GITHUB_ENV
         shell: bash
 
+      - name: Check current directory
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -l /home/runner/work/Hairyz/Hairyz  
+
       - name : Run Gradle build
         run : | 
             # 4. Gradle 빌드 수행
-            pwd
-            cd /home/${{ secrets.AWS_USER }}/Hairyz
+            cd /home/runner/work/Hairyz/Hairyz
             ./gradlew clean build
       
       - name : Rename WAR file
