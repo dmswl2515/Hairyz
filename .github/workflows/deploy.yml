@@ -45,7 +45,8 @@ jobs:
         run : |      
             # 3. 환경 변수 설정
             echo "$APPLICATION_PROPERTIES" > /home/ec2-user/Hairyz/src/main/resources/application.yml
-      
+            echo "APPLICATION_PROPERTIES: $APPLICATION_PROPERTIES"
+            
       - name : Run Gradle build
         run : | 
             # 4. Gradle 빌드 수행
