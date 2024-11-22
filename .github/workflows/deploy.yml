@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "Current directory:"
           pwd
-          ls -l /home/
+          ls -l /home/runner/
 
       - name : Run Gradle build
         run : | 
