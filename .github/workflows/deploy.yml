@@ -67,6 +67,7 @@ jobs:
             export LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib:$LD_LIBRARY_PATH
             sqlplus -S $DB_USER/$DB_PASSWORD@$DB_HOST:1521/$DB_SERVICE_NAME
             
+
       - name : Restart Tomcat
         run : | 
             # 8. 톰캣 재시작
