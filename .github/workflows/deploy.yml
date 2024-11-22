@@ -74,3 +74,4 @@ jobs:
             # 8. 톰캣 재시작
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
+            
