@@ -58,6 +58,7 @@ jobs:
       
             # 4. 파일 이름 변경
             mv build/libs/*SNAPSHOT.war build/libs/project.war
+            ls -al
 
       
       - name : Move WAR file to Tomcat
