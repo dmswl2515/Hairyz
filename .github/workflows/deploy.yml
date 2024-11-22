@@ -65,7 +65,7 @@ jobs:
 
             # 7. DB 연결 테스트 (오라클)
             echo "Testing Oracle DB connection"
-            echo "SELECT * FROM member;" | sqlplus -S $DB_USER/$DB_PASSWORD@$DB_HOST:1521/$DB_SERVICE_NAME
+            echo "SELECT * FROM member;" | sqlplus -S ${{ secrets.DB_USERNAME }}/${{ secrets.DB_PASSWORD }}@${{ secrets.AWS_DB_ADDRESS }}/${{ secrets.DB_SERVICE_NAME }}
       
       - name : Restart Tomcat
         run : | 
