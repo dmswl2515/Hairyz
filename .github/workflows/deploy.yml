@@ -63,13 +63,6 @@ jobs:
             mv /home/ec2-user/Hairyz/build/libs/project.war /home/ec2-user/apache-tomcat-10.1.31/webapps/
             ls -al /home/ec2-user/apache-tomcat-10.1.31/webapps/
 
-            # 7. DB 연결 테스트 (오라클)
-            export LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib:$LD_LIBRARY_PATH
-            sqlplus -S $DB_USER/$DB_PASSWORD@$DB_HOST:1521/$DB_SERVICE_NAME
-            
-
-      - name : Restart Tomcat
-        run : | 
             # 8. 톰캣 재시작
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
