@@ -49,14 +49,14 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           script_stop : true
           script : |
-            # 2. Git 레포지토리에서 최신 버전 Pull
+            # 2. Git 레포지토리에서 최신 버전 Pull 
             cd /home/ec2-user/Hairyz	 
             git pull origin main
+
+            # 3. build gradle
             ./gradlew clean build 
       
-      - name : Rename WAR file
-        run : | 
-            # 5. 파일 이름 변경
+            # 4. 파일 이름 변경
             mv build/libs/*SNAPSHOT.war build/libs/project.war
 
       
