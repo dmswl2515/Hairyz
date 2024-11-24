@@ -59,11 +59,11 @@ jobs:
             # 4. 파일 이름 변경
             mv build/libs/*SNAPSHOT.war build/libs/project.war
 
-            # 6. war 파일 이동 
+            # 5. war 파일 이동 
             mv /home/ec2-user/Hairyz/build/libs/project.war /home/ec2-user/apache-tomcat-10.1.31/webapps/
             ls -al /home/ec2-user/apache-tomcat-10.1.31/webapps/
 
-            # 8. 톰캣 재시작
+            # 6. 톰캣 재시작
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/shutdown.sh
             sudo /home/ec2-user/apache-tomcat-10.1.31/bin/startup.sh
             
